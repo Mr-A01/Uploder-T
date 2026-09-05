@@ -1,6 +1,6 @@
 module.exports = {
   darkMode: 'class',
-  content: ['./index.html'],
+  content: ['./index.html', './admin-panel.html', './src/**/*.js'],
   theme: {
     extend: {
       fontFamily: {

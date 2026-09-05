@@ -20,6 +20,10 @@ html:not(.dark) body{background:#fafafa;color:#0f172a}
 ::-webkit-scrollbar-thumb:hover{background:rgba(139,92,246,.3)}
 
 .surface{background:rgba(10,10,14,.7);backdrop-filter:blur(20px) saturate(1.4);border:1px solid rgba(139,92,246,.06)}
+button,a,input,select,textarea{font:inherit}
+button{cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid #a78bfa;outline-offset:2px}
+img{max-width:100%;display:block}
 html:not(.dark) .surface{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.06)}
 .surface-raised{background:rgba(15,15,20,.85);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(139,92,246,.08)}
 html:not(.dark) .surface-raised{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.08)}
@@ -86,7 +90,18 @@ html:not(.dark) .nav-item.active{color:#0f172a}
 
 .glow-ring{box-shadow:0 0 0 1px rgba(139,92,246,.15),0 0 24px -4px rgba(139,92,246,.15)}
 
-.page{display:none}.page.active{display:block;animation:fadeIn .3s}
+.page{display:none;min-width:0;overflow-x:hidden}.page.active{display:block;animation:fadeIn .3s}
+.auth-page-shell{min-height:100svh;position:relative;display:flex;align-items:flex-start;justify-content:center;overflow:hidden;padding:clamp(1.5rem,6vh,4rem) 1rem 5rem}
+.auth-page-content{position:relative;z-index:1;width:100%;max-width:24rem;margin:auto 0}
+.auth-brand{display:flex;align-items:center;justify-content:center;gap:.625rem;margin-bottom:1.75rem;font-size:1.125rem;font-weight:700}
+.auth-brand-mark{width:2.5rem;height:2.5rem;border-radius:.75rem;background:linear-gradient(135deg,#8b5cf6,#4c1d95);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px -8px rgba(124,58,237,.5)}
+.auth-card{border-radius:1rem;padding:clamp(1.25rem,5vw,1.75rem);width:100%}
+.auth-orb{position:absolute;width:24rem;height:24rem;border-radius:9999px;filter:blur(80px);opacity:.22;pointer-events:none}
+.auth-orb-one{top:5rem;inset-inline-end:-10rem;background:#7c3aed}.auth-orb-two{bottom:2rem;inset-inline-start:-10rem;background:#ec4899}
+.auth-admin-link{display:block;margin:1.25rem auto 0}
+.password-meter{display:flex;gap:.25rem;margin-top:.375rem}.password-meter span{height:2px;flex:1;border-radius:9999px;background:#334155}.password-meter span:nth-child(-n+3){background:#10b981}
+.route-enter{animation:routeEnter .35s cubic-bezier(.16,1,.3,1)}
+@keyframes routeEnter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @keyframes toastIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
@@ -111,8 +126,13 @@ html:not(.dark) .nav-item.active{color:#0f172a}
 html:not(.dark) .tab.active{color:#0f172a}
 .tab.active::after{content:'';position:absolute;bottom:-1px;inset-inline:0;height:2px;background:linear-gradient(90deg,#8b5cf6,#6366f1);border-radius:1px}
 
-@media(max-width:767px){.mob-nav{display:flex!important}}
+@media(max-width:767px){.mob-nav{display:flex!important;min-height:58px;padding-bottom:env(safe-area-inset-bottom);isolation:isolate}.mob-nav>div{width:100%;min-height:58px}.mob-nav a{min-height:58px;justify-content:center}.mob-nav a[aria-current="page"]{color:#c4b5fd}.mob-nav a:focus-visible{outline-offset:-3px}}
+@media(max-width:767px){body{padding-bottom:calc(4.5rem + env(safe-area-inset-bottom));}.surface-overlay{border-radius:1rem}.floating-btn{bottom:calc(5.75rem + env(safe-area-inset-bottom));left:1rem}.mini-player{bottom:calc(5rem + env(safe-area-inset-bottom));right:1rem;left:1rem}.mini-player>div{min-width:0!important;width:100%}}
 @media(max-width:1023px){.desk-sidebar{position:fixed!important;z-index:50;height:100vh;top:0}[dir="rtl"] .desk-sidebar{transform:translateX(100%)}[dir="ltr"] .desk-sidebar{transform:translateX(-100%)}.desk-sidebar.open{transform:translateX(0)!important}}
+.sidebar-backdrop{display:none;position:fixed;inset:0;background:rgba(2,6,23,.64);backdrop-filter:blur(3px);z-index:45;opacity:0;transition:opacity .25s}
+.sidebar-backdrop.open{display:block;opacity:1}
+.mob-nav a{color:#64748b;transition:color .2s,transform .2s}
+.mob-nav a.active{color:#a78bfa;transform:translateY(-1px)}
 
 .code{background:rgba(5,5,7,.8);border:1px solid rgba(139,92,246,.08);font-family:'JetBrains Mono',monospace;direction:ltr;text-align:left}
 
@@ -147,7 +167,8 @@ details summary::-webkit-details-marker{display:none}
 .waveform span{width:3px;background:linear-gradient(180deg,#8b5cf6,#6366f1);border-radius:2px;animation:wave 1s ease-in-out infinite}
 @keyframes wave{0%,100%{height:20%}50%{height:100%}}
 
-.floating-btn{position:fixed;bottom:80px;left:20px;z-index:85;animation:floatIn .3s cubic-bezier(.16,1,.3,1)}
+.floating-btn{position:fixed;bottom:80px;left:20px;z-index:85;animation:floatIn .3s cubic-bezier(.16,1,.3,1);touch-action:none;cursor:grab;user-select:none}
+.floating-btn.dragging{cursor:grabbing;transition:none!important;transform:scale(1.05);box-shadow:0 0 0 4px rgba(167,139,250,.18),0 16px 30px -10px rgba(124,58,237,.55)}
 @keyframes floatIn{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
 
 .confetti{position:fixed;pointer-events:none;z-index:9999;animation:confettiFall 3s ease-in forwards}
@@ -187,7 +208,8 @@ details summary::-webkit-details-marker{display:none}
 <div id="notif-root"></div>
 <div id="ctx-root"></div>
 <div id="mini-player-root"></div>
-<button id="ai-fab" class="floating-btn hidden md:flex w-12 h-12 rounded-full btn-primary items-center justify-center shadow-xl shadow-v-500/30" onclick="toggleAI()" title="AI Assistant">
+<div id="sidebar-backdrop" class="sidebar-backdrop" onclick="closeSidebar()" aria-hidden="true"></div>
+<button id="ai-fab" class="floating-btn flex w-12 h-12 rounded-full btn-primary items-center justify-center shadow-xl shadow-v-500/30" onclick="if(this.dataset.dragMoved!=='true')toggleAI();this.dataset.dragMoved=''" title="AI Assistant" aria-label="AI Assistant">
 <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v3a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/><path d="M2 12a10 10 0 0 0 8 9.8"/><path d="M22 12a10 10 0 0 1-8 9.8"/><circle cx="12" cy="7" r="1"/></svg>
 </button>
 
@@ -887,7 +909,7 @@ nx.webhooks.<span class="text-amber-300">on</span>(<span class="text-emerald-400
 <div class="flex-1 min-w-0 flex flex-col">
 <header class="surface-raised border-b border-white/[.04] sticky top-0 z-30">
 <div class="flex items-center gap-3 px-4 h-14">
-<button onclick="document.getElementById('a-sidebar').classList.toggle('open')" class="lg:hidden p-1.5 rounded-lg btn-ghost"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<button onclick="openSidebar()" class="lg:hidden p-1.5 rounded-lg btn-ghost" aria-label="Admin menu"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
 <div class="flex-1"><div class="text-[10px] text-s-500">Admin / <span id="a-crumb" class="text-s-300">Dashboard</span></div></div>
 <div class="flex items-center gap-2">
 <div class="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/[.08] border border-emerald-500/15"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span><span class="text-[10px] text-emerald-400 font-medium" data-t="admin_allOperational">All systems operational</span></div>
@@ -1930,6 +1952,12 @@ const TRASH=[
 {id:'t2',name:'old-banner.png',type:'image',size:2097152,deleted:'2026-08-28T14:00:00'},
 {id:'t3',name:'temp-files.zip',type:'archive',size:104857600,deleted:'2026-08-25T09:00:00'},
 ];
+try{
+  const savedFiles=JSON.parse(localStorage.getItem('nx-files')||'null');
+  const savedTrash=JSON.parse(localStorage.getItem('nx-trash')||'null');
+  if(Array.isArray(savedFiles))FILES.splice(0,FILES.length,...savedFiles);
+  if(Array.isArray(savedTrash))TRASH.splice(0,TRASH.length,...savedTrash);
+}catch{}
 const USERS=[
 {id:'u1',name:'Sarah Johnson',email:'sara@acme.com',role:'admin',status:'active',storage:4.2,files:1247,joined:'2024-03-15',lastActive:currentLang==='fa'?'۵ دقیقه پیش':'5 min ago'},
 {id:'u2',name:'Mohammad Rezaei',email:'mohammad@startup.io',role:'user',status:'active',storage:1.8,files:523,joined:'2024-05-22',lastActive:currentLang==='fa'?'۱ ساعت پیش':'1 hour ago'},
@@ -1946,6 +1974,8 @@ function fmtSize(b){if(!b)return currentLang==='fa'?'۰ بایت':'0 B';const k=
 function fmtDate(d){const diff=(Date.now()-new Date(d))/1000;if(diff<60)return currentLang==='fa'?'همین حالا':'just now';if(diff<3600){const m=Math.floor(diff/60);return (currentLang==='fa'?toFa(m):m)+(currentLang==='fa'?' دقیقه پیش':' min ago')}if(diff<86400){const h=Math.floor(diff/3600);return (currentLang==='fa'?toFa(h):h)+(currentLang==='fa'?' ساعت پیش':' hours ago')}if(diff<604800){const d=Math.floor(diff/86400);return (currentLang==='fa'?toFa(d):d)+(currentLang==='fa'?' روز پیش':' days ago')}return new Date(d).toLocaleDateString(currentLang==='fa'?'fa-IR':'en-US')}
 function fIcon(t){const m={image:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>',video:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',audio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>',doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',archive:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8M1 3h22v5H1zM10 12h4"/></svg>',code:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',other:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>'};return m[t]||m.other}
 function guessType(n){const e=n.split('.').pop().toLowerCase();if(['jpg','jpeg','png','gif','webp','svg'].includes(e))return'image';if(['mp4','mov','avi','mkv','webm'].includes(e))return'video';if(['mp3','wav','ogg','flac'].includes(e))return'audio';if(['pdf','doc','docx','txt','xls','xlsx','ppt','pptx'].includes(e))return'doc';if(['zip','rar','7z','tar','gz','apk'].includes(e))return'archive';if(['js','ts','py','rb','go','html','css','json','md'].includes(e))return'code';return'other'}
+function persistLibrary(){localStorage.setItem('nx-files',JSON.stringify(FILES));localStorage.setItem('nx-trash',JSON.stringify(TRASH))}
+function addLibraryFile(file){FILES.unshift({...file,id:file.id||'f-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),uploaded:file.uploaded||new Date().toISOString(),downloads:file.downloads||0,folder:file.folder||'/',fav:false,shared:false,tags:file.tags||[],versions:1});persistLibrary()}
 
 function toast(msg,type='info'){
 const c=document.getElementById('toasts');
@@ -1972,7 +2002,17 @@ function confetti(){
   }
 }
 
-function copy(text){navigator.clipboard.writeText(text).then(()=>toast(t('copied'),'success')).catch(()=>toast(t('copy_error'),'error'))}
+function copy(text){
+  const fallback=()=>{
+    const area=document.createElement('textarea');
+    area.value=text;area.style.position='fixed';area.style.opacity='0';
+    document.body.appendChild(area);area.select();
+    try{document.execCommand('copy');toast(t('copied'),'success')}catch{toast(t('copy_error'),'error')}
+    area.remove();
+  };
+  if(navigator.clipboard?.writeText)navigator.clipboard.writeText(text).then(()=>toast(t('copied'),'success')).catch(fallback);
+  else fallback();
+}
 
 function toggleTheme(){
 const h=document.documentElement;const d=h.classList.contains('dark');
@@ -1982,28 +2022,64 @@ localStorage.setItem('nx-theme',d?'light':'dark');
 }
 
 function navigate(h){window.location.hash=h}
-function openSidebar(){document.getElementById('u-sidebar')?.classList.add('open');document.getElementById('a-sidebar')?.classList.add('open')}
-function closeSidebar(){document.getElementById('u-sidebar')?.classList.remove('open');document.getElementById('a-sidebar')?.classList.remove('open')}
+function openSidebar(){document.getElementById('u-sidebar')?.classList.add('open');document.getElementById('a-sidebar')?.classList.add('open');document.getElementById('sidebar-backdrop')?.classList.add('open');document.body.classList.add('sidebar-open')}
+function closeSidebar(){document.getElementById('u-sidebar')?.classList.remove('open');document.getElementById('a-sidebar')?.classList.remove('open');document.getElementById('sidebar-backdrop')?.classList.remove('open');document.body.classList.remove('sidebar-open')}
+
+function enableSupportDrag(){
+  const fab=document.getElementById('ai-fab');if(!fab)return;
+  const saved=JSON.parse(localStorage.getItem('nx-fab-position')||'null');
+  if(saved?.left!=null&&saved?.top!=null){fab.style.left=`${saved.left}px`;fab.style.top=`${saved.top}px`;fab.style.bottom='auto'}
+  let startX=0,startY=0,startLeft=0,startTop=0,moved=false;
+  fab.addEventListener('pointerdown',event=>{
+    if(event.button!==0)return;
+    const rect=fab.getBoundingClientRect();startX=event.clientX;startY=event.clientY;startLeft=rect.left;startTop=rect.top;moved=false;fab.setPointerCapture(event.pointerId);fab.classList.add('dragging');
+  });
+  fab.addEventListener('pointermove',event=>{
+    if(!fab.hasPointerCapture(event.pointerId))return;
+    const dx=event.clientX-startX,dy=event.clientY-startY;
+    if(Math.abs(dx)>5||Math.abs(dy)>5)moved=true;
+    if(!moved)return;
+    const left=Math.max(8,Math.min(window.innerWidth-fab.offsetWidth-8,startLeft+dx));
+    const top=Math.max(8,Math.min(window.innerHeight-fab.offsetHeight-8,startTop+dy));
+    fab.style.left=`${left}px`;fab.style.top=`${top}px`;fab.style.bottom='auto';fab.dataset.dragMoved='true';
+  });
+  const finish=event=>{if(!fab.hasPointerCapture(event.pointerId))return;fab.releasePointerCapture(event.pointerId);fab.classList.remove('dragging');if(moved)localStorage.setItem('nx-fab-position',JSON.stringify({left:parseFloat(fab.style.left),top:parseFloat(fab.style.top)}))};
+  fab.addEventListener('pointerup',finish);fab.addEventListener('pointercancel',finish);
+}
 
 // ═══════════ ROUTER ═══════════
 function route(){
 const hash=window.location.hash||'#/';const p=hash.slice(1);
+closeSidebar();
+closeModal();closeDrawer();closeCmd();
+document.getElementById('notif-root').innerHTML='';document.getElementById('ctx-root').innerHTML='';
 document.querySelectorAll('.page').forEach(pg=>pg.classList.remove('active'));
 if(p==='/'||p===''){document.getElementById('p-landing').classList.add('active');animateCounters()}
 else if(p==='/login')document.getElementById('p-login').classList.add('active');
 else if(p==='/register')document.getElementById('p-register').classList.add('active');
 else if(p.startsWith('/request'))document.getElementById('p-request').classList.add('active');
 else if(p.startsWith('/s/')||p.startsWith('/file/'))document.getElementById('p-public').classList.add('active');
-else if(p.startsWith('/dashboard')){document.getElementById('p-dashboard').classList.add('active');document.getElementById('ai-fab').classList.remove('hidden');renderDash(p)}
-else if(p.startsWith('/admin')){document.getElementById('p-admin').classList.add('active');document.getElementById('ai-fab').classList.add('hidden');renderAdmin(p)}
+else if(p.startsWith('/dashboard')){document.getElementById('p-dashboard').classList.add('active');document.getElementById('ai-fab').classList.remove('hidden');renderDash(p);animateRoute('dash-main')}
+else if(p.startsWith('/admin')){document.getElementById('p-admin').classList.add('active');document.getElementById('ai-fab').classList.add('hidden');renderAdmin(p);animateRoute('admin-main')}
 else if(p==='/status'){document.getElementById('p-status').classList.add('active')}
 else if(p==='/terms'||p==='/privacy'){document.getElementById('p-legal').classList.add('active');renderLegal(p)}
 else if(p==='/features'||p==='/pricing'){document.getElementById('p-landing').classList.add('active');setTimeout(()=>{const el=document.getElementById(p.slice(1));if(el)el.scrollIntoView({behavior:'smooth'})},100)}
 else if(p==='/404'||p==='/403'||p==='/500'){document.getElementById('p-error').classList.add('active');renderError(p.slice(1))}
 else{document.getElementById('p-error').classList.add('active');renderError('404')}
 document.querySelectorAll('.nav-item').forEach(l=>{const r=l.getAttribute('data-r');if(r&&p.startsWith(r))l.classList.add('active');else l.classList.remove('active')});
+document.querySelectorAll('.mob-nav a').forEach(l=>{const target=l.getAttribute('href')?.slice(1);const active=!!target&&p===target;l.classList.toggle('active',active);if(active)l.setAttribute('aria-current','page');else l.removeAttribute('aria-current')});
 window.scrollTo(0,0);
 }
+
+function animateRoute(id){
+  const target=document.getElementById(id);if(!target)return;
+  target.classList.remove('route-enter');void target.offsetWidth;target.classList.add('route-enter');
+}
+
+document.addEventListener('click',e=>{
+  const link=e.target.closest('#u-sidebar a,#a-sidebar a,.mob-nav a');
+  if(link)closeSidebar();
+});
 
 function renderError(code){
 const titles={'404':t('error_404_title'),'403':t('error_403_title'),'500':t('error_500_title')};
@@ -2335,9 +2411,15 @@ cEl.innerHTML=[
 // ═══════════ DASHBOARD ═══════════
 function renderDash(path){
 const el=document.getElementById('dash-main');const sub=path.replace('/dashboard','')||'/';
+destroyCharts(el);
 const routes={'/':renderOverview,'/files':renderFiles,'/upload':renderUpload,'/import':renderImport,'/shared':renderShared,'/requests':renderRequests,'/favorites':renderFavorites,'/trash':renderTrash,'/analytics':renderAnalytics,'/api':renderApi,'/team':renderTeam,'/billing':renderBilling,'/security':renderSecurity,'/settings':renderSettings};
 (routes[sub]||renderOverview)(el);
 updateTranslations();
+}
+function destroyCharts(root){
+  if(typeof Chart==='undefined')return;
+  Object.values(Chart.instances||{}).forEach(chart=>chart.destroy());
+  root?.querySelectorAll('canvas').forEach(canvas=>Chart.getChart(canvas)?.destroy());
 }
 
 function renderOverview(el){
@@ -2447,13 +2529,13 @@ ${[
 setTimeout(()=>{
 Chart.defaults.font.family='Vazirmatn,Inter,sans-serif';
 const c1=document.getElementById('ch-overview');
-if(c1)new Chart(c1,{type:'line',data:{labels:currentLang==='fa'?['ش','ی','د','س','چ','پ','ج']:['M','T','W','T','F','S','S'],datasets:[{label:t('overview_uploads'),data:[45,62,58,78,92,85,104],borderColor:'#8b5cf6',backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(139,92,246,.2)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0},{label:t('overview_downloads'),data:[120,145,132,168,195,178,210],borderColor:'#c084fc',backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(192,132,252,.12)');g.addColorStop(1,'rgba(192,132,252,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'#94a3b8',boxWidth:6,boxHeight:6,usePointStyle:true,font:{size:10}}},tooltip:{backgroundColor:'rgba(10,10,14,.95)',borderColor:'rgba(139,92,246,.15)',borderWidth:1,padding:8,rtl:currentLang==='fa'}},scales:{x:{grid:{display:false},ticks:{color:'#64748b',font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{color:'#64748b',font:{size:9}}}},interaction:{mode:'index',intersect:false}}});
+if(c1&&!Chart.getChart(c1))new Chart(c1,{type:'line',data:{labels:currentLang==='fa'?['ش','ی','د','س','چ','پ','ج']:['M','T','W','T','F','S','S'],datasets:[{label:t('overview_uploads'),data:[45,62,58,78,92,85,104],borderColor:'#8b5cf6',backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(139,92,246,.2)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0},{label:t('overview_downloads'),data:[120,145,132,168,195,178,210],borderColor:'#c084fc',backgroundColor:(c)=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(192,132,252,.12)');g.addColorStop(1,'rgba(192,132,252,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',align:'end',labels:{color:'#94a3b8',boxWidth:6,boxHeight:6,usePointStyle:true,font:{size:10}}},tooltip:{backgroundColor:'rgba(10,10,14,.95)',borderColor:'rgba(139,92,246,.15)',borderWidth:1,padding:8,rtl:currentLang==='fa'}},scales:{x:{grid:{display:false},ticks:{color:'#64748b',font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{color:'#64748b',font:{size:9}}}},interaction:{mode:'index',intersect:false}}});
 const c2=document.getElementById('ch-storage');
-if(c2)new Chart(c2,{type:'doughnut',data:{labels:[t('overview_images'),t('overview_videos'),t('overview_docs'),t('overview_other')],datasets:[{data:[1200,820,280,100],backgroundColor:['#8b5cf6','#c084fc','#f472b6','#64748b'],borderWidth:0,cutout:'72%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
+if(c2&&!Chart.getChart(c2))new Chart(c2,{type:'doughnut',data:{labels:[t('overview_images'),t('overview_videos'),t('overview_docs'),t('overview_other')],datasets:[{data:[1200,820,280,100],backgroundColor:['#8b5cf6','#c084fc','#f472b6','#64748b'],borderWidth:0,cutout:'72%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}});
 },50);
 }
 
-let viewMode='grid';let selectedFiles=new Set();
+let viewMode='grid';let selectedFiles=new Set();let fileTypeFilter='all';let fileSort='recent';
 function renderFiles(el){
 el.innerHTML=`
 <div style="animation:fadeIn .3s">
@@ -2474,9 +2556,9 @@ el.innerHTML=`
 <svg class="w-3.5 h-3.5 absolute ${currentLang==='fa'?'right':'left'}-2.5 top-1/2 -translate-y-1/2 text-s-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
 <input type="text" placeholder="${t('files_searchPlaceholder')}" class="input w-full ${currentLang==='fa'?'pr':'pl'}-8 ${currentLang==='fa'?'pl':'pr'}-3 py-1.5 rounded-lg text-xs" id="fsearch" oninput="renderFilesArea(this.value)"/>
 </div>
-<select class="input px-2.5 py-1.5 rounded-lg text-xs"><option>${t('files_allTypes')}</option><option>${t('files_images')}</option><option>${t('files_videos')}</option><option>${t('files_docs')}</option><option>${t('files_audio')}</option><option>${t('files_archives')}</option></select>
-<select class="input px-2.5 py-1.5 rounded-lg text-xs hidden sm:block"><option>${t('files_recent')}</option><option>${t('files_name')}</option><option>${t('files_size')}</option><option>${t('files_downloads')}</option></select>
-<button onclick="toast('Filters','info')" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs hidden md:inline-flex items-center gap-1"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>${t('files_filter')}</button>
+<select class="input px-2.5 py-1.5 rounded-lg text-xs" aria-label="${t('files_allTypes')}" onchange="setFileType(this.value)"><option value="all">${t('files_allTypes')}</option><option value="image">${t('files_images')}</option><option value="video">${t('files_videos')}</option><option value="doc">${t('files_docs')}</option><option value="audio">${t('files_audio')}</option><option value="archive">${t('files_archives')}</option></select>
+<select class="input px-2.5 py-1.5 rounded-lg text-xs hidden sm:block" aria-label="${t('files_recent')}" onchange="setFileSort(this.value)"><option value="recent">${t('files_recent')}</option><option value="name">${t('files_name')}</option><option value="size">${t('files_size')}</option><option value="downloads">${t('files_downloads')}</option></select>
+<button onclick="toast(t('files_filter')+' ✓','success')" class="btn-secondary px-2.5 py-1.5 rounded-lg text-xs hidden md:inline-flex items-center gap-1"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>${t('files_filter')}</button>
 </div>
 <div class="flex flex-wrap gap-1.5 mt-2">
 <span class="tag" onclick="toast(t('files_searchSaved'),'info')">${t('files_searchTag_big')}</span>
@@ -2514,16 +2596,27 @@ ${[
 </div>`;
 renderFilesArea();
 }
-function bulkDelete(){toast(`${fmtNum(selectedFiles.size)} ${t('bulk_deleted')}`,'success');clearSelection()}
+function bulkDelete(){
+  const ids=new Set(selectedFiles);
+  const removed=FILES.filter(f=>ids.has(f.id));
+  removed.forEach(f=>TRASH.unshift({...f,deleted:new Date().toISOString()}));
+  for(let i=FILES.length-1;i>=0;i--)if(ids.has(FILES[i].id))FILES.splice(i,1);
+  persistLibrary();
+  toast(`${fmtNum(removed.length)} ${t('bulk_deleted')}`,'success');clearSelection();renderFilesArea(document.getElementById('fsearch')?.value||'');
+}
 function clearSelection(){selectedFiles.clear();updateBulkBar();renderFilesArea(document.getElementById('fsearch')?.value||'')}
 function toggleSel(id,ev){ev.stopPropagation();if(selectedFiles.has(id))selectedFiles.delete(id);else selectedFiles.add(id);updateBulkBar()}
 function updateBulkBar(){const bar=document.getElementById('bulk-bar');if(!bar)return;if(selectedFiles.size>0){bar.classList.remove('hidden');document.getElementById('bulk-count').textContent=fmtNum(selectedFiles.size)}else bar.classList.add('hidden')}
 function setView(m){viewMode=m;renderFilesArea(document.getElementById('fsearch')?.value||'');const g=document.getElementById('vb-grid');const l=document.getElementById('vb-list');if(g&&l){g.classList.toggle('bg-white/[.06]',m==='grid');l.classList.toggle('bg-white/[.06]',m==='list')}}
+function setFileType(value){fileTypeFilter=value;renderFilesArea(document.getElementById('fsearch')?.value||'')}
+function setFileSort(value){fileSort=value;renderFilesArea(document.getElementById('fsearch')?.value||'')}
 
 function renderFilesArea(q=''){
 const area=document.getElementById('files-area');if(!area)return;
-let files=FILES;
+let files=FILES.slice();
 if(q){const lq=q.toLowerCase();files=files.filter(f=>f.name.toLowerCase().includes(lq)||f.tags.some(t=>t.toLowerCase().includes(lq)))}
+if(fileTypeFilter!=='all')files=files.filter(f=>f.type===fileTypeFilter);
+files.sort((a,b)=>fileSort==='name'?a.name.localeCompare(b.name):fileSort==='size'?b.size-a.size:fileSort==='downloads'?b.downloads-a.downloads:new Date(b.uploaded)-new Date(a.uploaded));
 if(!files.length){area.innerHTML=`<div class="surface rounded-xl border border-white/[.06] p-10 text-center"><div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-white/[.03] flex items-center justify-center"><svg class="w-7 h-7 text-s-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><div class="text-sm font-medium mb-1">${t('files_notFound')}</div><div class="text-xs text-s-500">${t('files_notFound_desc')}</div></div>`;return}
 if(viewMode==='grid'){
 area.innerHTML=`<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">${files.map(f=>`
@@ -2561,15 +2654,33 @@ ${[
 {t:t('ctx_preview'),i:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>',a:()=>showPreview(id)},
 {t:t('ctx_download'),i:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',a:()=>toast(t('download_started'),'success')},
 {t:t('ctx_share'),i:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>',a:()=>openShareModal(id)},
-{t:t('ctx_rename'),i:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>',a:()=>toast(t('ctx_rename'),'info')},
+{t:t('ctx_rename'),i:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>',a:()=>renameFile(id)},
 {t:t('ctx_copyLink'),i:'<rect x="9" y="9" width="13" height="13" rx="2"/>',a:()=>copy('https://nexus.app/s/'+id)},
 {t:t('ctx_favorite'),i:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77"/>',a:()=>toast(t('favorite_added'),'success')},
 {t:t('ctx_delete'),i:'<polyline points="3 6 5 6 21 6"/>',a:()=>toast(t('file_to_trashed'),'warning'),danger:true}
 ].map((m,i)=>`<button onclick="ctxAction(${i});document.getElementById('ctx-root').innerHTML=''" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-[11px] text-start hover:bg-white/[.04] ${m.danger?'text-rose-400':''}"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${m.i}</svg>${m.t}</button>`).join('')}
 </div>
 </div>`;
-window.ctxMenuActions=[()=>showPreview(id),()=>toast(t('download_started'),'success'),()=>openShareModal(id),()=>toast(t('ctx_rename'),'info'),()=>copy('https://nexus.app/s/'+id),()=>toast(t('favorite_added'),'success'),()=>toast(t('file_to_trashed'),'warning')];
+window.ctxMenuActions=[()=>showPreview(id),()=>toast(t('download_started'),'success'),()=>openShareModal(id),()=>renameFile(id),()=>copy('https://nexus.app/s/'+id),()=>toggleFavorite(id),()=>deleteFile(id)];
 window.ctxAction=(i)=>window.ctxMenuActions[i]();
+}
+
+function renameFile(id){
+  const file=FILES.find(item=>item.id===id);if(!file)return;
+  const next=prompt(t('ctx_rename'),file.name);if(!next||next.trim()===file.name)return;
+  file.name=next.trim();persistLibrary();toast(t('ctx_rename')+' ✓','success');
+  if(document.getElementById('files-area'))renderFilesArea(document.getElementById('fsearch')?.value||'');
+}
+function toggleFavorite(id){
+  const file=FILES.find(item=>item.id===id);if(!file)return;
+  file.fav=!file.fav;persistLibrary();toast(t('favorite_added'),'success');
+  if(document.getElementById('files-area'))renderFilesArea(document.getElementById('fsearch')?.value||'');
+}
+function deleteFile(id){
+  const index=FILES.findIndex(item=>item.id===id);if(index<0)return;
+  const [file]=FILES.splice(index,1);TRASH.unshift({...file,deleted:new Date().toISOString()});persistLibrary();
+  toast(t('file_to_trashed'),'warning');
+  if(document.getElementById('files-area'))renderFilesArea(document.getElementById('fsearch')?.value||'');
 }
 
 function showPreview(id){
@@ -2744,10 +2855,13 @@ progress+=Math.random()*4+1;
 const speed=(Math.random()*3+2).toFixed(1);
 if(progress>=100){
 progress=100;clearInterval(iv);
+const uploadedFile={id:'up-'+Date.now()+'-'+uploadId,name:f.name,type:guessType(f.name),size:f.size,mime:'application/octet-stream',uploaded:new Date().toISOString(),downloads:0,folder:'/',fav:false,shared:false,tags:[],versions:1};
+FILES.unshift(uploadedFile);persistLibrary();
 el.querySelector('.up-percent').innerHTML=`<span class="text-emerald-400">${t('upload_complete')}</span>`;
 el.querySelector('.up-chunks').textContent=`${fmtNum(totalChunks)} ${t('upload_of')} ${fmtNum(totalChunks)} ${currentLang==='fa'?'چانک':'chunks'}`;
 el.classList.add('border-emerald-500/20');
 setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>{el.remove();checkQueueDone()},300)},1500);
+if(window.location.hash==='#/dashboard/files')renderFilesArea(document.getElementById('fsearch')?.value||'');
 }else{
 const eta=Math.ceil((100-progress)/8);
 el.querySelector('.up-percent').textContent=Math.round(progress)+'%';
@@ -2817,6 +2931,7 @@ const iv=setInterval(()=>{
 stage++;
 if(stage>=stages.length){
 clearInterval(iv);
+addLibraryFile({name,size:Math.floor(Math.random()*100e6+1e6),type:guessType(name),mime:'application/octet-stream'});
 div.classList.add('border-emerald-500/20');
 div.querySelector('.imp-status').innerHTML=`<span class="text-emerald-400">${t('import_completed')}</span>`;
 div.querySelector('.imp-speed').textContent=fmtSize(Math.random()*100e6+1e6);
@@ -2836,7 +2951,7 @@ toast(t('import_started'),'info');
 function renderShared(el){
 const shared=FILES.filter(f=>f.shared);
 el.innerHTML=`<div style="animation:fadeIn .3s">
-<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('shared_title')}</h1><p class="text-xs text-s-400 mt-0.5">${fmtNum(shared.length)} ${t('shared_active')}</p></div><button onclick="toast(t('link_shared'),'success')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('shared_newLink')}</button></div>
+<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('shared_title')}</h1><p class="text-xs text-s-400 mt-0.5">${fmtNum(shared.length)} ${t('shared_active')}</p></div><button onclick="createShareLink()" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('shared_newLink')}</button></div>
 <div class="surface rounded-xl border border-white/[.06] overflow-hidden overflow-x-auto">
 <table class="w-full min-w-[700px]">
 <thead class="bg-white/[.02] border-b border-white/[.04]"><tr class="text-${currentLang==='fa'?'right':'left'} text-[10px] text-s-500"><th class="p-2.5 font-medium">${t('shared_file')}</th><th class="p-2.5 font-medium">${t('shared_link')}</th><th class="p-2.5 font-medium">${t('shared_downloads')}</th><th class="p-2.5 font-medium">${t('shared_expiry')}</th><th class="p-2.5 font-medium">${t('shared_status')}</th><th class="p-2.5 font-medium w-8"></th></tr></thead>
@@ -2884,9 +2999,15 @@ document.getElementById('modal-root').innerHTML=`
 <div><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('requests_modal_message')}</label><textarea rows="2" class="input w-full px-3 py-2 rounded-lg text-xs" placeholder="${t('requests_modal_message_ph')}"></textarea></div>
 <div><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('requests_modal_expiry')}</label><select class="input w-full px-3 py-2 rounded-lg text-xs"><option>${t('requests_modal_noExpiry')}</option><option>${t('requests_modal_1d')}</option><option selected>${t('requests_modal_7d')}</option><option>${t('requests_modal_30d')}</option></select></div>
 </div>
-<div class="flex gap-2 mt-4"><button onclick="closeModal();toast(t('requests_created'),'success')" class="btn-primary flex-1 py-2 rounded-lg text-xs font-semibold text-white">${t('requests_modal_create')}</button><button onclick="closeModal()" class="btn-secondary flex-1 py-2 rounded-lg text-xs font-medium">${t('requests_modal_cancel')}</button></div>
+<div class="flex gap-2 mt-4"><button onclick="createRequestFromModal()" class="btn-primary flex-1 py-2 rounded-lg text-xs font-semibold text-white">${t('requests_modal_create')}</button><button onclick="closeModal()" class="btn-secondary flex-1 py-2 rounded-lg text-xs font-medium">${t('requests_modal_cancel')}</button></div>
 </div>
 </div>`;
+}
+function createRequestFromModal(){
+  const inputs=[...document.querySelectorAll('#modal-root input, #modal-root textarea')];
+  const title=inputs[0]?.value.trim();
+  if(!title){toast(t('requests_modal_title_ph'),'warning');return}
+  closeModal();toast(t('requests_created'),'success');navigate('#/dashboard/requests');
 }
 
 function simulateRequestUpload(){
@@ -2913,18 +3034,32 @@ ${f.preview?`<img src="${f.preview}" class="w-full h-full object-cover"/>`:`<div
 </div>`).join('')}</div></div>`;
 }
 
+function restoreTrashFile(id){
+  const index=TRASH.findIndex(file=>file.id===id);if(index<0)return;
+  const [file]=TRASH.splice(index,1);delete file.deleted;addLibraryFile(file);toast(t('trash_restored'),'success');renderTrash(document.getElementById('dash-main'));
+}
+function permanentlyDeleteFile(id){
+  const index=TRASH.findIndex(file=>file.id===id);if(index<0)return;
+  TRASH.splice(index,1);persistLibrary();toast(t('trash_permanentDeleted'),'error');renderTrash(document.getElementById('dash-main'));
+}
+function emptyTrash(){TRASH.splice(0,TRASH.length);persistLibrary();toast(t('trash_empty_done'),'warning');renderTrash(document.getElementById('dash-main'))}
+
 function renderTrash(el){
 el.innerHTML=`<div style="animation:fadeIn .3s">
-<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('trash_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('trash_desc')}</p></div><button onclick="toast(t('trash_empty_done'),'warning')" class="btn-danger px-3 py-1.5 rounded-lg text-xs font-medium">${t('trash_empty')}</button></div>
+<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('trash_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('trash_desc')}</p></div><button onclick="emptyTrash()" class="btn-danger px-3 py-1.5 rounded-lg text-xs font-medium">${t('trash_empty')}</button></div>
 <div class="surface rounded-xl border border-white/[.06] overflow-hidden">
 ${TRASH.map(f=>`
 <div class="p-3 flex items-center gap-3 border-b border-white/[.04] last:border-0 hover:bg-white/[.02]">
 <div class="w-9 h-9 rounded ft-${f.type} flex items-center justify-center shrink-0"><div class="w-4 h-4 text-white">${fIcon(f.type)}</div></div>
 <div class="flex-1 min-w-0"><div class="text-xs font-medium truncate" dir="ltr">${f.name}</div><div class="text-[10px] text-s-500">${fmtSize(f.size)} · ${t('trash_deleted')} ${fmtDate(f.deleted)} · ${t('trash_autoDelete')}</div></div>
-<button onclick="toast(t('trash_restored'),'success');this.closest('div').remove()" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px]">${t('trash_restore')}</button>
-<button onclick="toast(t('trash_permanentDeleted'),'error');this.closest('div').remove()" class="btn-danger px-2.5 py-1 rounded-lg text-[10px]">${t('trash_permanent')}</button>
+<button onclick="restoreTrashFile('${f.id}')" class="btn-secondary px-2.5 py-1 rounded-lg text-[10px]">${t('trash_restore')}</button>
+<button onclick="permanentlyDeleteFile('${f.id}')" class="btn-danger px-2.5 py-1 rounded-lg text-[10px]">${t('trash_permanent')}</button>
 </div>`).join('')}
 </div></div>`;
+}
+function createShareLink(){
+  const file=FILES.find(item=>item.shared)||FILES[0];
+  if(file)openShareModal(file.id);else toast(t('files_notFound'),'warning');
 }
 
 function renderAnalytics(el){
@@ -3024,6 +3159,14 @@ document.getElementById('modal-root').innerHTML=`
 </div></div>`;
 }
 
+function inviteTeamMember(){
+  document.getElementById('modal-root').innerHTML=`<div class="fixed inset-0 z-[100] flex items-center justify-center p-4"><div class="absolute inset-0 bg-s-950/80 backdrop-blur-sm" onclick="closeModal()"></div><div class="relative surface-overlay rounded-2xl border border-v-500/20 max-w-sm w-full p-5"><h3 class="text-sm font-semibold mb-4">${t('team_invite')}</h3><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('register_email')}</label><input id="team-invite-email" type="email" class="input w-full px-3 py-2 rounded-lg text-xs" placeholder="name@example.com"/><div class="flex gap-2 mt-4"><button onclick="sendTeamInvite()" class="btn-primary flex-1 py-2 rounded-lg text-xs font-semibold text-white">${t('team_invite')}</button><button onclick="closeModal()" class="btn-secondary flex-1 py-2 rounded-lg text-xs">${t('requests_modal_cancel')}</button></div></div></div>`;
+}
+function sendTeamInvite(){
+  const email=document.getElementById('team-invite-email')?.value.trim();
+  if(!email){toast(t('register_email'),'warning');return}
+  closeModal();toast(t('team_invited'),'success');
+}
 function renderTeam(el){
 const members=[
 {n:'John Doe',e:'john@nexus.app',r:'owner',c:'v',s:'active'},
@@ -3032,7 +3175,7 @@ const members=[
 {n:'Maryam Ahmadi',e:'maryam@nexus.app',r:'viewer',c:'blue',s:'pending'}
 ];
 el.innerHTML=`<div style="animation:fadeIn .3s">
-<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('team_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('team_subtitle')}</p></div><button onclick="toast(t('team_invited'),'success')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('team_invite')}</button></div>
+<div class="flex items-center justify-between mb-5"><div><h1 class="text-xl font-bold">${t('team_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('team_subtitle')}</p></div><button onclick="inviteTeamMember()" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('team_invite')}</button></div>
 <div class="surface rounded-xl border border-white/[.06] overflow-hidden">
 ${members.map(m=>`
 <div class="p-3 flex items-center gap-3 border-b border-white/[.04] last:border-0 hover:bg-white/[.02]"><div class="w-9 h-9 rounded-full bg-gradient-to-br from-${m.c}-500 to-${m.c}-700 flex items-center justify-center text-xs font-bold text-white shrink-0">${m.n[0]}</div><div class="flex-1 min-w-0"><div class="text-xs font-medium">${m.n}</div><div class="text-[10px] text-s-500" dir="ltr">${m.e}</div></div><select class="input px-2 py-1 rounded text-[10px]" ${m.r==='owner'?'disabled':''}><option value="owner" ${m.r==='owner'?'selected':''}>${t('team_owner')}</option><option value="admin" ${m.r==='admin'?'selected':''}>${t('team_admin')}</option><option value="editor" ${m.r==='editor'?'selected':''}>${t('team_editor')}</option><option value="viewer" ${m.r==='viewer'?'selected':''}>${t('team_viewer')}</option></select><span class="badge ${m.s==='active'?'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20':'bg-amber-500/10 text-amber-300 border border-amber-500/20'} text-[8px]">${m.s==='active'?t('team_active'):t('team_pending')}</span>${m.r!=='owner'?`<button onclick="toast(t('team_removed'),'warning')" class="p-1 rounded hover:bg-white/[.06]"><svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/></svg></button>`:''}</div>`).join('')}
@@ -3058,7 +3201,7 @@ el.innerHTML=`<div style="animation:fadeIn .3s">
 <div class="mb-5"><h1 class="text-xl font-bold">${t('billing_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('billing_subtitle')}</p></div>
 <div class="grid lg:grid-cols-3 gap-4 mb-5">
 <div class="lg:col-span-2 surface rounded-xl border border-v-500/20 glow-ring p-5">
-<div class="flex items-center justify-between mb-4"><div><div class="text-sm font-semibold flex items-center gap-2">${t('billing_proPlan')} <span class="badge bg-v-500/10 text-v-300 border border-v-500/20">${t('billing_active')}</span></div><div class="text-[10px] text-s-500 mt-1">${t('billing_renewal')}</div></div><div class="flex gap-2"><button class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('billing_upgrade')}</button><button class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium">${t('billing_cancel')}</button></div></div>
+<div class="flex items-center justify-between mb-4"><div><div class="text-sm font-semibold flex items-center gap-2">${t('billing_proPlan')} <span class="badge bg-v-500/10 text-v-300 border border-v-500/20">${t('billing_active')}</span></div><div class="text-[10px] text-s-500 mt-1">${t('billing_renewal')}</div></div><div class="flex gap-2"><button onclick="toast(t('billing_upgrade'),'success')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white">${t('billing_upgrade')}</button><button onclick="toast(t('billing_cancel'),'warning')" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium">${t('billing_cancel')}</button></div></div>
 <div class="grid grid-cols-2 gap-3">
 ${[
 {l:t('billing_storage'),v:'2.4 / 100 GB',p:48},
@@ -3070,8 +3213,8 @@ ${[
 </div>
 <div class="surface rounded-xl border border-white/[.06] p-4">
 <div class="text-sm font-semibold mb-3">${t('billing_payment')}</div>
-<div class="flex items-center gap-3 p-3 rounded-lg bg-white/[.02] border border-white/[.04] mb-3"><div class="w-10 h-7 rounded bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-[8px] font-bold text-white">VISA</div><div class="flex-1"><div class="text-xs font-medium" dir="ltr">•••• •••• •••• 4242</div><div class="text-[9px] text-s-500">Exp: 12/27</div></div><button class="btn-secondary px-2 py-1 rounded text-[9px]">${t('billing_edit')}</button></div>
-<button class="btn-secondary w-full py-1.5 rounded-lg text-[10px] font-medium">${t('billing_addPayment')}</button>
+<div class="flex items-center gap-3 p-3 rounded-lg bg-white/[.02] border border-white/[.04] mb-3"><div class="w-10 h-7 rounded bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-[8px] font-bold text-white">VISA</div><div class="flex-1"><div class="text-xs font-medium" dir="ltr">•••• •••• •••• 4242</div><div class="text-[9px] text-s-500">Exp: 12/27</div></div><button onclick="toast(t('billing_edit'),'info')" class="btn-secondary px-2 py-1 rounded text-[9px]">${t('billing_edit')}</button></div>
+<button onclick="toast(t('billing_addPayment'),'info')" class="btn-secondary w-full py-1.5 rounded-lg text-[10px] font-medium">${t('billing_addPayment')}</button>
 </div>
 </div>
 <div class="surface rounded-xl border border-white/[.06]">
@@ -3126,14 +3269,31 @@ ${[
 </div></div></div>`;
 }
 
+function settingsPanelMarkup(index){
+  const panels=[
+    `<div class="surface rounded-xl border border-white/[.06] p-4"><div class="text-sm font-semibold mb-3">${t('settings_profile')}</div><div class="flex items-center gap-3 mb-4"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-v-500 to-fuchsia-600 flex items-center justify-center text-lg font-bold">JD</div><div><button class="btn-secondary px-2.5 py-1 rounded-lg text-[10px]">${t('settings_changeAvatar')}</button><div class="text-[9px] text-s-500 mt-1">${t('settings_avatarNote')}</div></div></div><div class="grid sm:grid-cols-2 gap-3"><div><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('settings_firstName')}</label><input type="text" value="John" class="input w-full px-3 py-2 rounded-lg text-xs"/></div><div><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('settings_lastName')}</label><input type="text" value="Doe" class="input w-full px-3 py-2 rounded-lg text-xs"/></div><div class="sm:col-span-2"><label class="text-[10px] font-medium text-s-400 mb-1 block">${t('settings_email')}</label><input type="email" value="john@nexus.app" class="input w-full px-3 py-2 rounded-lg text-xs" dir="ltr"/></div></div><button onclick="toast(t('settings_saved'),'success')" class="btn-primary px-4 py-1.5 rounded-lg text-xs font-semibold text-white mt-3">${t('settings_save')}</button></div><div class="surface rounded-xl border border-white/[.06] p-4"><div class="text-sm font-semibold mb-3">${t('settings_prefs')}</div><div class="space-y-3"><div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_emailNotif')}</div><div class="text-[10px] text-s-500">${t('settings_emailNotif_desc')}</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_webhookNotif')}</div><div class="text-[10px] text-s-500">${t('settings_webhookNotif_desc')}</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div></div></div>`,
+    `<div class="surface rounded-xl border border-white/[.06] p-4"><div class="text-sm font-semibold mb-3">${t('settings_tab_account')}</div><div class="space-y-3"><div><label class="text-xs font-medium mb-1 block">${t('settings_language')}</label><select class="input w-full px-3 py-2 rounded-lg text-xs" onchange="setLang(this.value)"><option value="fa" ${currentLang==='fa'?'selected':''}>${t('settings_lang_fa')}</option><option value="en" ${currentLang==='en'?'selected':''}>${t('settings_lang_en')}</option></select></div><div><label class="text-xs font-medium mb-1 block">${t('settings_timezone')}</label><select class="input w-full px-3 py-2 rounded-lg text-xs"><option>${t('settings_tz_tehran')}</option><option>${t('settings_tz_utc')}</option></select></div><button onclick="toast(t('settings_saved'),'success')" class="btn-primary px-4 py-2 rounded-lg text-xs font-semibold text-white">${t('settings_save')}</button></div></div>`,
+    `<div class="surface rounded-xl border border-white/[.06] p-4"><div class="text-sm font-semibold mb-3">${t('settings_tab_appearance')}</div><div class="space-y-3"><div class="flex items-center justify-between"><div><div class="text-xs font-medium">${currentLang==='fa'?'حالت تاریک':'Dark mode'}</div><div class="text-[10px] text-s-500">${currentLang==='fa'?'ظاهر محیط کار را تغییر دهید':'Adjust the workspace appearance'}</div></div><div class="toggle ${document.documentElement.classList.contains('dark')?'on':''}" onclick="toggleTheme();this.classList.toggle('on')"></div></div><div><label class="text-xs font-medium mb-1 block">${currentLang==='fa'?'تراکم رابط':'Interface density'}</label><select class="input w-full px-3 py-2 rounded-lg text-xs"><option>${currentLang==='fa'?'استاندارد':'Comfortable'}</option><option>${currentLang==='fa'?'فشرده':'Compact'}</option></select></div></div></div>`,
+    `<div class="surface rounded-xl border border-white/[.06] p-4"><div class="text-sm font-semibold mb-3">${t('settings_tab_notifications')}</div><div class="space-y-3"><div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_emailNotif')}</div><div class="text-[10px] text-s-500">${t('settings_emailNotif_desc')}</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_webhookNotif')}</div><div class="text-[10px] text-s-500">${t('settings_webhookNotif_desc')}</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div><button onclick="toast(t('settings_saved'),'success')" class="btn-primary px-4 py-2 rounded-lg text-xs font-semibold text-white">${t('settings_save')}</button></div></div>`,
+    `<div class="surface rounded-xl border border-rose-500/15 p-4"><div class="text-sm font-semibold text-rose-400 mb-2">${t('settings_danger')}</div><p class="text-xs text-s-400 mb-4">${t('settings_deleteWarning')}</p><div class="flex flex-wrap gap-2"><button onclick="toast(t('settings_exported'),'success')" class="btn-secondary px-4 py-2 rounded-lg text-xs font-medium">${t('settings_exportData')}</button><button onclick="toast(t('settings_deleteWarning'),'warning')" class="btn-danger px-4 py-2 rounded-lg text-xs font-medium">${t('settings_deleteAccount')}</button></div></div>`
+  ];
+  return panels[index]||panels[0];
+}
+function switchSettingsTab(button,index){
+  button.parentElement.querySelectorAll('.tab').forEach(tab=>tab.classList.remove('active'));
+  button.classList.add('active');
+  const panel=document.getElementById('settings-panel');
+  if(panel){panel.innerHTML=settingsPanelMarkup(index);panel.classList.remove('route-enter');void panel.offsetWidth;panel.classList.add('route-enter')}
+}
+
 function renderSettings(el){
 el.innerHTML=`<div style="animation:fadeIn .3s">
 <div class="mb-5"><h1 class="text-xl font-bold">${t('settings_title')}</h1><p class="text-xs text-s-400 mt-0.5">${t('settings_subtitle')}</p></div>
 <div class="flex gap-0.5 mb-5 border-b border-white/[.06] overflow-x-auto no-scrollbar">
-${['settings_tab_profile','settings_tab_account','settings_tab_appearance','settings_tab_notifications','settings_tab_advanced'].map((k,i)=>`<button class="tab ${i===0?'active':''} px-3 py-2 text-xs font-medium text-s-400 whitespace-nowrap" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active')">${t(k)}</button>`).join('')}
+${['settings_tab_profile','settings_tab_account','settings_tab_appearance','settings_tab_notifications','settings_tab_advanced'].map((k,i)=>`<button class="tab ${i===0?'active':''} px-3 py-2 text-xs font-medium text-s-400 whitespace-nowrap" onclick="switchSettingsTab(this,${i})">${t(k)}</button>`).join('')}
 </div>
 <div class="grid lg:grid-cols-3 gap-5">
-<div class="lg:col-span-2 space-y-4">
+<div id="settings-panel" class="lg:col-span-2 space-y-4">
 <div class="surface rounded-xl border border-white/[.06] p-4">
 <div class="text-sm font-semibold mb-3">${t('settings_profile')}</div>
 <div class="flex items-center gap-3 mb-4"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-v-500 to-fuchsia-600 flex items-center justify-center text-lg font-bold">JD</div><div><button class="btn-secondary px-2.5 py-1 rounded-lg text-[10px]">${t('settings_changeAvatar')}</button><div class="text-[9px] text-s-500 mt-1">${t('settings_avatarNote')}</div></div></div>
@@ -3169,6 +3329,7 @@ ${['settings_tab_profile','settings_tab_account','settings_tab_appearance','sett
 // ═══════════ ADMIN ═══════════
 function renderAdmin(path){
 const el=document.getElementById('admin-main');const sub=path.replace('/admin','')||'/';
+destroyCharts(el);
 const titles={'/':t('admin_dash'),'/users':t('admin_users'),'/servers':t('admin_servers'),'/storage':t('admin_storage'),'/reports':t('admin_reports'),'/logs':t('admin_logs'),'/settings':t('admin_settings')};
 document.getElementById('a-crumb').textContent=titles[sub]||t('admin_dash');
 const routes={'/':renderAdminDash,'/users':renderAdminUsers,'/servers':renderAdminServers,'/storage':renderAdminStorage,'/reports':renderAdminReports,'/logs':renderAdminLogs,'/settings':renderAdminSettings};
@@ -3443,6 +3604,7 @@ ${[
 // ═══════════ INIT ═══════════
 function init(){
 if(localStorage.getItem('nx-theme')==='light')toggleTheme();
+enableSupportDrag();
 setLang(currentLang);
 renderLandingContent();
 route();
@@ -3486,5 +3648,6 @@ setInterval(()=>{
   if(el){el.textContent=(3+Math.random()*3).toFixed(1)}
 },2000);
 </script>
+<script src="src/pages/auth-components.js"></script>
 </body>
 </html>

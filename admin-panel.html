@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Nexus Command Center — پنل مدیریت</title>
+<link rel="stylesheet" href="styles.css"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/vazirmatn@5.0.8/index.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.6/index.css"/>
+<style>
+*{-webkit-font-smoothing:antialiased;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Vazirmatn','Inter',system-ui,sans-serif;background:#050507;color:#e2e8f0;overflow-x:hidden;transition:background .3s,color .3s}
+html:not(.dark) body{background:#fafafa;color:#0f172a}
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(139,92,246,.15);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:rgba(139,92,246,.3)}
+
+.surface{background:rgba(10,10,14,.7);backdrop-filter:blur(20px) saturate(1.4);border:1px solid rgba(139,92,246,.06)}
+html:not(.dark) .surface{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.06)}
+.surface-raised{background:rgba(15,15,20,.85);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(139,92,246,.08)}
+html:not(.dark) .surface-raised{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.08)}
+.surface-overlay{background:rgba(8,8,12,.95);backdrop-filter:blur(32px) saturate(1.6);border:1px solid rgba(139,92,246,.1)}
+
+.bg-void{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(139,92,246,.08),transparent),radial-gradient(ellipse 60% 40% at 80% 50%,rgba(59,130,246,.04),transparent),#050507}
+html:not(.dark) .bg-void{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(139,92,246,.05),transparent),#fafafa}
+
+.text-gradient{background:linear-gradient(135deg,#c4b5fd 0%,#8b5cf6 40%,#6366f1 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 0 0 1px rgba(139,92,246,.3),0 8px 24px -8px rgba(124,58,237,.4);transition:all .2s;position:relative;overflow:hidden}
+.btn-primary:hover{box-shadow:0 0 0 1px rgba(139,92,246,.5),0 12px 32px -8px rgba(124,58,237,.5);transform:translateY(-1px)}
+.btn-secondary{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.15);transition:all .2s}
+.btn-secondary:hover{background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.25)}
+.btn-ghost{transition:all .15s}
+.btn-ghost:hover{background:rgba(148,163,184,.06)}
+.btn-danger{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:#fca5a5;transition:all .2s}
+.btn-danger:hover{background:rgba(239,68,68,.15)}
+.btn-success{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#6ee7b7;transition:all .2s}
+.btn-success:hover{background:rgba(16,185,129,.15)}
+
+.input{background:rgba(15,15,20,.6);border:1px solid rgba(139,92,246,.1);transition:all .2s;color:inherit}
+.input:focus{border-color:rgba(139,92,246,.4);box-shadow:0 0 0 3px rgba(139,92,246,.08);outline:none}
+html:not(.dark) .input{background:rgba(255,255,255,.8);border-color:rgba(0,0,0,.1)}
+
+.card{transition:all .25s cubic-bezier(.16,1,.3,1)}
+.card:hover{border-color:rgba(139,92,246,.15);transform:translateY(-2px)}
+
+.nav-item{transition:all .15s;position:relative}
+.nav-item:hover{background:rgba(139,92,246,.06);color:#e2e8f0}
+.nav-item.active{background:rgba(139,92,246,.08);color:#e2e8f0}
+.nav-item.active::before{content:'';position:absolute;right:0;top:50%;transform:translateY(-50%);width:2px;height:60%;background:linear-gradient(180deg,#8b5cf6,#6366f1);border-radius:2px 0 0 2px}
+
+.progress{background:linear-gradient(90deg,#7c3aed,#6366f1,#8b5cf6);background-size:200% 100%;animation:shimmer 2s linear infinite}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+.chk{appearance:none;width:16px;height:16px;border:1.5px solid rgba(139,92,246,.25);border-radius:4px;background:rgba(15,15,20,.5);cursor:pointer;transition:all .15s;position:relative;flex-shrink:0}
+.chk:checked{background:linear-gradient(135deg,#7c3aed,#6366f1);border-color:transparent}
+.chk:checked::after{content:'';position:absolute;inset:2px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E") center/contain no-repeat}
+
+.toggle{width:38px;height:21px;background:rgba(148,163,184,.15);border-radius:9999px;position:relative;cursor:pointer;transition:all .2s;flex-shrink:0}
+.toggle::after{content:'';position:absolute;top:2.5px;inset-inline-start:2.5px;width:16px;height:16px;background:white;border-radius:50%;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.toggle.on{background:linear-gradient(135deg,#7c3aed,#6366f1)}
+.toggle.on::after{inset-inline-start:19px}
+
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:500}
+
+.iw{display:inline-flex;align-items:center;justify-content:center;border-radius:10px;background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.1)}
+
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes modalIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes drawerIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@keyframes pulse-ring{0%{transform:scale(.8);opacity:1}100%{transform:scale(2.4);opacity:0}}
+@keyframes sparkline{0%,100%{opacity:.5}50%{opacity:1}}
+@keyframes ripple{0%{transform:scale(1);opacity:.6}100%{transform:scale(4);opacity:0}}
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@keyframes wave{0%,100%{height:20%}50%{height:100%}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes rotate-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.spinner{border:2px solid rgba(139,92,246,.15);border-top-color:#8b5cf6;border-radius:50%;width:18px;height:18px;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+kbd{font-family:'JetBrains Mono',monospace;font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(148,163,184,.1);border:1px solid rgba(148,163,184,.15);color:#94a3b8}
+
+.code{background:rgba(5,5,7,.8);border:1px solid rgba(139,92,246,.08);font-family:'JetBrains Mono',monospace;direction:ltr;text-align:left}
+
+.no-scrollbar::-webkit-scrollbar{display:none}
+.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
+
+.page{display:none}.page.active{display:block;animation:fadeIn .3s}
+
+.grid-bg{background-image:linear-gradient(rgba(139,92,246,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.04) 1px,transparent 1px);background-size:48px 48px}
+
+.glow-ring{box-shadow:0 0 0 1px rgba(139,92,246,.15),0 0 24px -4px rgba(139,92,246,.15)}
+
+.aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+.aurora::before,.aurora::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(100px);opacity:.3;animation:float 15s ease-in-out infinite}
+.aurora::before{background:radial-gradient(circle,#8b5cf6,transparent);top:-200px;right:-200px}
+.aurora::after{background:radial-gradient(circle,#ec4899,transparent);bottom:-200px;left:-200px;animation-delay:-7s}
+
+.confetti{position:fixed;pointer-events:none;z-index:9999;animation:confettiFall 3s ease-in forwards}
+
+.metric-sparkline{animation:sparkline 2s ease-in-out infinite}
+
+.live-dot{position:relative}
+.live-dot::before{content:'';position:absolute;inset:0;border-radius:50%;background:inherit;animation:pulse-ring 1.5s ease-out infinite}
+
+.terminal-line:hover{background:rgba(139,92,246,.04)}
+
+.heatmap-cell{transition:all .2s;cursor:pointer}
+.heatmap-cell:hover{transform:scale(1.2);z-index:10}
+
+.server-ring{animation:rotate-slow 20s linear infinite}
+
+.tab{transition:all .15s;position:relative}
+.tab.active{color:#e2e8f0}
+.tab.active::after{content:'';position:absolute;bottom:-1px;inset-inline:0;height:2px;background:linear-gradient(90deg,#8b5cf6,#6366f1);border-radius:1px}
+
+.gradient-border{position:relative;background:rgba(15,15,20,.85)}
+.gradient-border::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(168,85,247,.3),rgba(236,72,153,.3));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+@media(max-width:1023px){.desk-sidebar{position:fixed!important;z-index:50;height:100vh;top:0;transform:translateX(100%)}.desk-sidebar.open{transform:translateX(0)!important}}
+
+.ripple-effect{position:absolute;border-radius:50%;background:rgba(139,92,246,.3);animation:ripple .6s ease-out forwards;pointer-events:none}
+
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:left 10px center;padding-left:28px!important}
+[dir="ltr"] select{background-position:right 10px center;padding-right:28px!important;padding-left:12px!important}
+
+.stat-card-glow{position:relative;overflow:hidden}
+.stat-card-glow::after{content:'';position:absolute;inset:-50%;background:conic-gradient(from 0deg,transparent,rgba(139,92,246,.1),transparent 30%);animation:rotate-slow 8s linear infinite;opacity:0;transition:opacity .3s}
+.stat-card-glow:hover::after{opacity:1}
+.stat-card-glow>*{position:relative;z-index:1}
+
+.live-feed-item{animation:slideUp .3s ease-out}
+
+.scroll-shadows{background:linear-gradient(rgba(10,10,14,.7) 30%,rgba(10,10,14,0)),linear-gradient(rgba(10,10,14,0),rgba(10,10,14,.7) 70%) 0 100%,radial-gradient(farthest-side at 50% 0,rgba(139,92,246,.15),rgba(0,0,0,0)),radial-gradient(farthest-side at 50% 100%,rgba(139,92,246,.15),rgba(0,0,0,0)) 0 100%;background-color:rgba(10,10,14,.7);background-size:100% 40px,100% 40px,100% 14px,100% 14px;background-repeat:no-repeat;background-attachment:local,local,scroll,scroll}
+</style>
+</head>
+<body class="bg-void text-s-200">
+
+<!-- Containers -->
+<div id="toasts" class="fixed top-4 start-4 z-[200] flex flex-col gap-2 pointer-events-none max-w-sm"></div>
+<div id="modal-root"></div>
+<div id="drawer-root"></div>
+<div id="cmd-root"></div>
+
+<div class="min-h-screen flex">
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside id="sidebar" class="desk-sidebar w-64 surface-raised border-s border-white/[.04] flex-shrink-0 flex flex-col lg:sticky top-0 h-screen transition-transform duration-300 z-50">
+<div class="p-4 border-b border-white/[.04]">
+<div class="flex items-center justify-between">
+<a href="#/" class="flex items-center gap-2.5">
+<div class="relative w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center shadow-lg shadow-rose-500/25">
+<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+<div class="absolute -top-1 -end-1 w-3 h-3 rounded-full bg-emerald-400 live-dot"></div>
+</div>
+<div>
+<div class="text-sm font-bold">Nexus</div>
+<div class="text-[9px] text-s-500 font-mono" dir="ltr">Command Center</div>
+</div>
+</a>
+<button id="sidebar-close" onclick="document.getElementById('sidebar').classList.remove('open')" class="lg:hidden p-1 rounded btn-ghost" aria-label="بستن منو"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+</div>
+
+<!-- System Health -->
+<div class="px-3 py-3 border-b border-white/[.04]">
+<div class="surface rounded-xl p-3 border border-emerald-500/15 bg-emerald-500/[.03]">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400 live-dot"></span>
+<span class="text-[11px] font-semibold text-emerald-400">همه سیستم‌ها فعال</span>
+</div>
+<div class="flex items-center justify-between text-[10px]">
+<span class="text-s-500">آپتایم</span>
+<span class="text-emerald-400 font-mono font-semibold" dir="ltr">99.98%</span>
+</div>
+<div class="flex gap-0.5 mt-1.5">
+${Array.from({length:30},(_,i)=>`<div class="flex-1 h-4 rounded-sm ${Math.random()>.97?'bg-amber-500':'bg-emerald-500'}" title="روز ${30-i}"></div>`).join('')}
+</div>
+</div>
+</div>
+
+<nav class="flex-1 p-2 overflow-y-auto no-scrollbar">
+<div class="text-[9px] font-semibold text-s-600 uppercase tracking-[.15em] px-2 mb-1.5 mt-1">نمای کلی</div>
+<a href="#" class="nav-item active flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="overview">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+داشبورد
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="analytics">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+تحلیل پیشرفته
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="activity">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+فعالیت زنده
+<span class="ms-auto flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+<span class="text-[9px] text-emerald-400">زنده</span>
+</span>
+</a>
+
+<div class="text-[9px] font-semibold text-s-600 uppercase tracking-[.15em] px-2 mb-1.5 mt-4">مدیریت</div>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="users">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+کاربران
+<span class="ms-auto text-[9px] text-s-500 bg-white/[.04] px-1.5 py-0.5 rounded">50.2K</span>
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="files">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+فایل‌ها
+<span class="ms-auto text-[9px] text-s-500 bg-white/[.04] px-1.5 py-0.5 rounded">2.4M</span>
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="storage">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+فضای ذخیره
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="billing">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+صورتحساب و درآمد
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="reports">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+گزارش‌ها و تخلفات
+<span class="ms-auto flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-rose-400"></span><span class="text-[9px] text-rose-400">23</span></span>
+</a>
+
+<div class="text-[9px] font-semibold text-s-600 uppercase tracking-[.15em] px-2 mb-1.5 mt-4">زیرساخت</div>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="servers">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+سرورها
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="queues">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+صف‌ها و Workerها
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="logs">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+لاگ‌های سیستم
+<span class="ms-auto text-[9px] text-s-500 font-mono" dir="ltr">tail -f</span>
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="integrations">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m11-7h-6m-6 0H1m16.7-7.7l-4.2 4.2m-4.2 4.2L5.3 19.7m14.4 0l-4.2-4.2M9.3 9.3L5.3 5.3"/></svg>
+یکپارچه‌سازی‌ها
+</a>
+
+<div class="text-[9px] font-semibold text-s-600 uppercase tracking-[.15em] px-2 mb-1.5 mt-4">امنیت و سیستم</div>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="security">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+مرکز امنیت
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="announcements">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+اطلاعیه‌ها
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="settings">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+تنظیمات سیستم
+</a>
+<a href="#" class="nav-item flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[13px] text-s-400 mb-0.5" data-nav="audit">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+ممیزی
+</a>
+</nav>
+
+<div class="p-3 border-t border-white/[.04]">
+<a href="#/" class="btn-secondary w-full py-1.5 rounded-lg text-[10px] font-medium text-center flex items-center justify-center gap-1.5 mb-2">
+<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+بازگشت به پنل کاربری
+</a>
+<div class="flex items-center gap-2 p-1.5 rounded-lg hover:bg-white/[.03] cursor-pointer">
+<div class="relative w-8 h-8 rounded-full bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center text-[10px] font-bold text-white">A</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px] font-medium truncate">مدیر ارشد</div>
+<div class="text-[9px] text-rose-400 flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-rose-400"></span>Super Admin</div>
+</div>
+<svg class="w-3.5 h-3.5 text-s-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+</div>
+</div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="flex-1 min-w-0 flex flex-col">
+<!-- Topbar -->
+<header class="surface-raised border-b border-white/[.04] sticky top-0 z-30">
+<div class="flex items-center gap-3 px-4 lg:px-6 h-14">
+<button id="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')" class="lg:hidden p-1.5 rounded-lg btn-ghost" aria-label="باز کردن منو"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+<button onclick="openCmd()" class="flex-1 max-w-xl flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[.02] border border-white/[.06] hover:border-v-500/30 transition-colors text-start group">
+<svg class="w-3.5 h-3.5 text-s-500 group-hover:text-v-400 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<span class="text-xs text-s-500 flex-1">جستجو در همه‌چیز... کاربران، فایل‌ها، لاگ‌ها</span>
+<div class="flex items-center gap-1">
+<kbd>⌘</kbd>
+<kbd>K</kbd>
+</div>
+</button>
+<div class="flex items-center gap-1 ms-auto">
+<button onclick="openBroadcast()" class="p-1.5 rounded-lg btn-ghost hidden sm:block" title="ارسال اطلاعیه">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+</button>
+<button onclick="showQuickActions()" class="p-1.5 rounded-lg btn-ghost hidden sm:block" title="اقدامات سریع">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+</button>
+<button onclick="toggleNotif()" class="p-1.5 rounded-lg btn-ghost relative" aria-label="Notifications">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+<span class="absolute top-1 end-1 flex items-center justify-center">
+<span class="absolute w-3 h-3 rounded-full bg-rose-500 live-dot"></span>
+<span class="relative w-3 h-3 rounded-full bg-rose-500 flex items-center justify-center text-[7px] text-white font-bold">5</span>
+</span>
+</button>
+<button onclick="showKeyboardHelp()" class="p-1.5 rounded-lg btn-ghost hidden md:block" title="میانبرها">
+<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M6 8h.01M10 8h.01M14 8h.01M18 8h.01M8 12h.01M12 12h.01M16 12h.01M7 16h10"/></svg>
+</button>
+<div class="w-px h-5 bg-white/[.06] mx-1 hidden sm:block"></div>
+<div class="hidden sm:flex items-center gap-1.5 px-2 py-1 rounded-lg bg-emerald-500/[.06] border border-emerald-500/15">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
+<span class="text-[10px] text-emerald-400 font-medium">همه سیستم‌ها فعال</span>
+</div>
+</div>
+</div>
+</header>
+
+<!-- Content -->
+<main id="main-content" class="flex-1 p-4 lg:p-6 overflow-x-hidden relative">
+<div class="aurora"></div>
+
+<!-- ═══ OVERVIEW PAGE ═══ -->
+<div id="page-overview" class="page-content relative z-10" style="animation:fadeIn .4s">
+
+<!-- Header -->
+<div class="flex items-start justify-between mb-6 flex-wrap gap-3">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<span class="text-2xl">👋</span>
+<h1 class="text-xl lg:text-2xl font-bold">سلام، مدیر عزیز</h1>
+</div>
+<p class="text-xs text-s-400">آخرین ورود: امروز ۰۸:۱۴ از تهران، ایران · IP: <span class="font-mono" dir="ltr">185.120.10.5</span></p>
+</div>
+<div class="flex gap-2 flex-wrap">
+<button onclick="showQuickActions()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+اقدامات سریع
+</button>
+<button onclick="exportReport()" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+خروجی گزارش
+</button>
+<select class="input px-3 py-1.5 rounded-lg text-xs">
+<option>۷ روز گذشته</option>
+<option>۳۰ روز گذشته</option>
+<option>۹۰ روز گذشته</option>
+<option>۱ سال گذشته</option>
+<option>سفارشی</option>
+</select>
+</div>
+</div>
+
+<!-- AI Insight Banner -->
+<div class="surface rounded-xl p-4 border border-v-500/15 bg-gradient-to-l from-v-500/[.06] via-fuchsia-500/[.04] to-transparent mb-6 relative overflow-hidden">
+<div class="absolute top-0 end-0 w-64 h-64 bg-v-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative flex items-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-v-500 to-fuchsia-600 flex items-center justify-center shrink-0 shadow-lg shadow-v-500/30">
+<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v3a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/><path d="M2 12a10 10 0 0 0 8 9.8"/><path d="M22 12a10 10 0 0 1-8 9.8"/></svg>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-xs font-bold">بینش هوش مصنوعی</span>
+<span class="badge bg-v-500/20 text-v-300 border border-v-500/30">جدید</span>
+</div>
+<div class="text-xs text-s-300 leading-relaxed mb-2">ترافیک دانلود در ۲۴ ساعت گذشته <span class="text-emerald-400 font-semibold">٪۲۴ افزایش</span> داشته است. فایل <span class="font-mono text-v-300" dir="ltr">product-demo.mp4</span> بیشترین دانلود را داشته (۸۹ دانلود). همچنین ۴ فایل قدیمی بیش از ۱۸۰ روز بدون استفاده مانده‌اند.</div>
+<div class="flex gap-2">
+<button class="text-[10px] text-v-400 hover:text-v-300 font-medium">مشاهده تحلیل کامل ←</button>
+<button class="text-[10px] text-s-500 hover:text-s-300">نادیده گرفتن</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card relative overflow-hidden">
+<div class="flex items-center justify-between mb-3">
+<div class="iw w-9 h-9" style="background:rgba(139,92,246,.1);border-color:rgba(139,92,246,.15)"><svg class="w-4 h-4 text-v-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></div>
+<span class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+۲.۴٪
+</span>
+</div>
+<div class="text-2xl font-bold mb-0.5 counter" data-target="50247">0</div>
+<div class="text-[10px] text-s-500 mb-2">کل کاربران</div>
+<canvas class="sparkline w-full h-8" data-values="12,15,18,22,19,25,28,32,35,38,42,45"></canvas>
+</div>
+
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card relative overflow-hidden">
+<div class="flex items-center justify-between mb-3">
+<div class="iw w-9 h-9" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.15)"><svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+<span class="flex items-center items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
+زنده
+</span>
+</div>
+<div class="text-2xl font-bold mb-0.5 counter" data-target="1247">0</div>
+<div class="text-[10px] text-s-500 mb-2">کاربران آنلاین</div>
+<canvas class="sparkline w-full h-8" data-values="1200,1215,1180,1245,1220,1250,1265,1248,1240,1247"></canvas>
+</div>
+
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card relative overflow-hidden">
+<div class="flex items-center justify-between mb-3">
+<div class="iw w-9 h-9" style="background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.15)"><svg class="w-4 h-4 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+<span class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+۸.۱٪
+</span>
+</div>
+<div class="text-2xl font-bold mb-0.5">2.4M</div>
+<div class="text-[10px] text-s-500 mb-2">کل فایل‌ها</div>
+<canvas class="sparkline w-full h-8" data-values="2.0,2.05,2.1,2.15,2.18,2.22,2.28,2.32,2.38,2.4"></canvas>
+</div>
+
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card relative overflow-hidden">
+<div class="flex items-center justify-between mb-3">
+<div class="iw w-9 h-9" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.15)"><svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+<span class="flex items-center gap-1 text-[10px] text-emerald-400 font-semibold">
+<svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="18 15 12 9 6 15"/></svg>
+۱۲.۵٪
+</span>
+</div>
+<div class="text-2xl font-bold mb-0.5">$42.8K</div>
+<div class="text-[10px] text-s-500 mb-2">MRR ماهانه</div>
+<canvas class="sparkline w-full h-8" data-values="32,34,36,38,37,39,40,41,42,43"></canvas>
+</div>
+</div>
+
+<!-- Secondary Stats -->
+<div class="grid grid-cols-2 lg:grid-cols-6 gap-3 mb-6">
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-v-500 to-v-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+</div>
+<span class="text-[9px] text-s-500">آپلودها / دقیقه</span>
+</div>
+<div class="text-lg font-bold counter" data-target="84">0</div>
+</div>
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+</div>
+<span class="text-[9px] text-s-500">دانلودها / دقیقه</span>
+</div>
+<div class="text-lg font-bold counter" data-target="423">0</div>
+</div>
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-fuchsia-500 to-fuchsia-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+</div>
+<span class="text-[9px] text-s-500">پهنای باند</span>
+</div>
+<div class="text-lg font-bold">18.4 <span class="text-xs text-s-500 font-normal">TB</span></div>
+</div>
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/></svg>
+</div>
+<span class="text-[9px] text-s-500">فضا استفاده شده</span>
+</div>
+<div class="text-lg font-bold">2.4 <span class="text-xs text-s-500 font-normal">PB</span></div>
+</div>
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-cyan-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+</div>
+<span class="text-[9px] text-s-500">درخواست‌های API</span>
+</div>
+<div class="text-lg font-bold">128.4K</div>
+</div>
+<div class="surface rounded-xl p-3 border border-white/[.06]">
+<div class="flex items-center gap-2 mb-2">
+<div class="w-7 h-7 rounded-lg bg-gradient-to-br from-rose-500 to-rose-700 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+</div>
+<span class="text-[9px] text-s-500">خطاها (۲۴ ساعته)</span>
+</div>
+<div class="text-lg font-bold counter" data-target="12">0</div>
+</div>
+</div>
+
+<!-- Main Charts Grid -->
+<div class="grid lg:grid-cols-3 gap-4 mb-6">
+<!-- Main Chart -->
+<div class="lg:col-span-2 surface rounded-xl p-4 border border-white/[.06]">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">نمای کلی فعالیت</div>
+<div class="text-[10px] text-s-500">آپلودها، دانلودها و درخواست‌های API</div>
+</div>
+<div class="flex gap-1">
+<button class="px-2 py-0.5 text-[10px] rounded bg-white/[.04] text-s-300">۲۴ ساعته</button>
+<button class="px-2 py-0.5 text-[10px] rounded bg-v-500/15 text-v-300 border border-v-500/20">۷ روز</button>
+<button class="px-2 py-0.5 text-[10px] rounded text-s-500">۳۰ روز</button>
+<button class="px-2 py-0.5 text-[10px] rounded text-s-500">۹۰ روز</button>
+</div>
+</div>
+<div style="height:280px"><canvas id="ch-main"></canvas></div>
+</div>
+
+<!-- Geographic -->
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">توزیع جغرافیایی</div>
+<div class="text-[10px] text-s-500">بر اساس IP کاربران</div>
+</div>
+<button class="text-[10px] text-v-400 hover:text-v-300">جزئیات</button>
+</div>
+<div class="space-y-2.5">
+${[
+{c:'🇮🇷',n:'ایران',p:45,w:90,v:'۲۳.۱K'},
+{c:'🇺🇸',n:'ایالات متحده',p:18,w:36,v:'۹.۲K'},
+{c:'🇩🇪',n:'آلمان',p:11,w:22,v:'۵.۶K'},
+{c:'🇬🇧',n:'بریتانیا',p:8,w:16,v:'۴.۱K'},
+{c:'🇹🇷',n:'ترکیه',p:6,w:12,v:'۳.۱K'},
+{c:'🇦🇪',n:'امارات',p:5,w:10,v:'۲.۵K'},
+].map(({c,n,p,w,v})=>`
+<div class="flex items-center gap-2.5">
+<span class="text-base">${c}</span>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between mb-1">
+<span class="text-[11px] font-medium">${n}</span>
+<div class="flex items-center gap-2">
+<span class="text-[10px] text-s-500">${v}</span>
+<span class="text-[10px] text-v-400 font-semibold">${p}%</span>
+</div>
+</div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-l from-v-500 to-fuchsia-500 rounded-full rtl:bg-gradient-to-r" style="width:${w}%"></div></div>
+</div>
+</div>`).join('')}
+</div>
+</div>
+</div>
+
+<!-- Secondary Grid -->
+<div class="grid lg:grid-cols-3 gap-4 mb-6">
+<!-- Revenue Chart -->
+<div class="lg:col-span-2 surface rounded-xl p-4 border border-white/[.06]">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">درآمد و MRR</div>
+<div class="text-[10px] text-s-500">درآمد ماهانه تکرارشونده</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-v-500"></span><span class="text-[10px] text-s-400">MRR</span></div>
+<div class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span><span class="text-[10px] text-s-400">ARR</span></div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-3 mb-4">
+<div><div class="text-[9px] text-s-500 mb-0.5">MRR</div><div class="text-lg font-bold">$42.8K</div><div class="text-[9px] text-emerald-400">↑ ۱۲.۵٪</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">ARR</div><div class="text-lg font-bold">$513K</div><div class="text-[9px] text-emerald-400">↑ ۱۸.۲٪</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">ARPU</div><div class="text-lg font-bold">$24.5</div><div class="text-[9px] text-emerald-400">↑ ۴.۱٪</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">Churn</div><div class="text-lg font-bold">2.1%</div><div class="text-[9px] text-rose-400">↓ ۰.۳٪</div></div>
+</div>
+<div style="height:200px"><canvas id="ch-revenue"></canvas></div>
+</div>
+
+<!-- Real-time Activity -->
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>
+<span class="text-sm font-semibold">فعالیت زنده</span>
+</div>
+<span class="text-[9px] text-s-500 font-mono" dir="ltr">streaming...</span>
+</div>
+<div id="live-feed" class="h-[300px] overflow-y-auto divide-y divide-white/[.04] no-scrollbar">
+${[
+{c:'emerald',icon:'upload',n:'سارا احمدی',a:'۲۴ فایل آپلود کرد',t:'۲ ثانیه پیش'},
+{c:'v',icon:'user',n:'محمد رضایی',a:'به پلن پرو ارتقا یافت',t:'۱۵ ثانیه پیش'},
+{c:'blue',icon:'download',n:'کاربر مهمان',a:'فایل Q4-report.pdf دانلود شد',t:'۳۲ ثانیه پیش'},
+{c:'amber',icon:'warning',n:'سیستم',a:'هشدار ظرفیت سرور us-west-2',t:'۱ دقیقه پیش'},
+{c:'fuchsia',icon:'share',n:'الهام کریمی',a:'۱۲ فایل به اشتراک گذاشت',t:'۲ دقیقه پیش'},
+{c:'rose',icon:'security',n:'امنیت',a:'۳ تلاش ورود ناموفق مسدود شد',t:'۳ دقیقه پیش'},
+{c:'cyan',icon:'api',n:'API',a:'وبهوک file.completed فراخوانی شد',t:'۴ دقیقه پیش'},
+{c:'emerald',icon:'register',n:'کاربر جدید',a:'ali@tech.dev ثبت‌نام کرد',t:'۵ دقیقه پیش'},
+{c:'rose',icon:'ban',n:'جواد محمدی',a:'به دلیل تخلف معلق شد',t:'۸ دقیقه پیش'},
+{c:'v',icon:'upload',n:'مریم حسینی',a:'فایل ۲.۱ گیگابایتی آپلود شد',t:'۱۰ دقیقه پیش'},
+].map((a,i)=>`
+<div class="p-2.5 flex items-start gap-2 live-feed-item" style="animation-delay:${i*0.05}s">
+<div class="w-7 h-7 rounded-lg bg-${a.c}-500/15 flex items-center justify-center shrink-0">
+${a.icon==='upload'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/></svg>':a.icon==='download'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>':a.icon==='user'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>':a.icon==='share'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/></svg>':a.icon==='warning'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>':a.icon==='security'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>':a.icon==='api'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>':a.icon==='register'?'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>':'<svg class="w-3.5 h-3.5 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>'}
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px] leading-tight"><b class="text-s-200">${a.n}</b> <span class="text-s-400">${a.a}</span></div>
+<div class="text-[9px] text-s-600 mt-0.5">${a.t}</div>
+</div>
+</div>`).join('')}
+</div>
+</div>
+</div>
+
+<!-- Server Health + Queues -->
+<div class="grid lg:grid-cols-2 gap-4 mb-6">
+<!-- Server Health -->
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">سلامت سرورها</div>
+<div class="text-[10px] text-s-500">۴ ریجن فعال</div>
+</div>
+<button class="text-[10px] text-v-400 hover:text-v-300">همه سرورها</button>
+</div>
+<div class="space-y-3">
+${[
+{name:'us-east-1',loc:'Virginia, USA',cpu:45,ram:62,disk:78,net:320,status:'healthy',icon:'🇺🇸'},
+{name:'eu-west-1',loc:'Dublin, IE',cpu:38,ram:54,disk:65,net:280,status:'healthy',icon:'🇮🇪'},
+{name:'ap-south-1',loc:'Mumbai, IN',cpu:72,ram:81,disk:54,net:190,status:'warning',icon:'🇮🇳'},
+{name:'ir-central-1',loc:'Tehran, IR',cpu:28,ram:42,disk:88,net:450,status:'healthy',icon:'🇮🇷'}
+].map(s=>`
+<div class="p-3 rounded-lg bg-white/[.02] border border-white/[.04] hover:border-v-500/20 transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-2.5">
+<div class="flex items-center gap-2">
+<span class="text-lg">${s.icon}</span>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-xs font-semibold" dir="ltr">${s.name}</span>
+<span class="w-1.5 h-1.5 rounded-full ${s.status==='healthy'?'bg-emerald-400':'bg-amber-400'} ${s.status==='healthy'?'live-dot':''}"></span>
+</div>
+<div class="text-[9px] text-s-500">${s.loc}</div>
+</div>
+</div>
+<span class="badge ${s.status==='healthy'?'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20':'bg-amber-500/10 text-amber-300 border border-amber-500/20'}">${s.status==='healthy'?'سالم':'هشدار'}</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<div>
+<div class="flex items-center justify-between mb-1"><span class="text-[9px] text-s-500">CPU</span><span class="text-[9px] font-mono ${s.cpu>70?'text-amber-400':'text-s-300'}" dir="ltr">${s.cpu}%</span></div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full ${s.cpu>70?'bg-amber-500':'bg-emerald-500'} rounded-full" style="width:${s.cpu}%"></div></div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1"><span class="text-[9px] text-s-500">RAM</span><span class="text-[9px] font-mono ${s.ram>70?'text-amber-400':'text-s-300'}" dir="ltr">${s.ram}%</span></div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full ${s.ram>70?'bg-amber-500':'bg-emerald-500'} rounded-full" style="width:${s.ram}%"></div></div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1"><span class="text-[9px] text-s-500">Disk</span><span class="text-[9px] font-mono ${s.disk>85?'text-rose-400':s.disk>70?'text-amber-400':'text-s-300'}" dir="ltr">${s.disk}%</span></div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full ${s.disk>85?'bg-rose-500':s.disk>70?'bg-amber-500':'bg-emerald-500'} rounded-full" style="width:${s.disk}%"></div></div>
+</div>
+<div>
+<div class="flex items-center justify-between mb-1"><span class="text-[9px] text-s-500">Net</span><span class="text-[9px] font-mono text-s-300" dir="ltr">${s.net}</span></div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 rounded-full" style="width:${s.net/5}%"></div></div>
+</div>
+</div>
+</div>`).join('')}
+</div>
+</div>
+
+<!-- Queue Status -->
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">وضعیت صف‌ها</div>
+<div class="text-[10px] text-s-500">۵ صف فعال</div>
+</div>
+<button class="text-[10px] text-v-400 hover:text-v-300">جزئیات</button>
+</div>
+<div class="space-y-2.5">
+${[
+{n:'صف آپلود',w:12,p:45,c:890,f:0,col:'v'},
+{n:'صف پردازش تصویر',w:23,p:67,c:2340,f:2,col:'fuchsia'},
+{n:'صف اسکن ویروس',w:3,p:12,c:5600,f:0,col:'emerald'},
+{n:'صف تولید پیش‌نمایش',w:8,p:34,c:1200,f:0,col:'amber'},
+{n:'صف ایمیل',w:2,p:5,c:340,f:0,col:'blue'},
+{n:'صف وبهوک',w:5,p:18,c:890,f:1,col:'cyan'}
+].map(q=>`
+<div class="p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
+<div class="flex items-center justify-between mb-1.5">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-md bg-${q.col}-500/15 flex items-center justify-center">
+<svg class="w-3 h-3 text-${q.col}-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
+</div>
+<span class="text-xs font-medium">${q.n}</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-[9px] text-s-500 font-mono" dir="ltr">${q.w}</span>
+<span class="w-1 h-1 rounded-full bg-s-600"></span>
+<span class="text-[9px] text-v-400 font-mono" dir="ltr">${q.p}</span>
+<span class="w-1 h-1 rounded-full bg-s-600"></span>
+<span class="text-[9px] text-emerald-400 font-mono" dir="ltr">${q.c}</span>
+${q.f?`<span class="w-1 h-1 rounded-full bg-s-600"></span><span class="text-[9px] text-rose-400 font-mono" dir="ltr">${q.f}</span>`:''}
+</div>
+</div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-l from-${q.col}-500 to-${q.col}-700 rounded-full rtl:bg-gradient-to-r" style="width:${Math.min((q.p/(q.w+q.p+q.c))*100*5,100)}%"></div></div>
+</div>`).join('')}
+</div>
+</div>
+</div>
+
+<!-- Activity Heatmap -->
+<div class="surface rounded-xl p-4 border border-white/[.06] mb-6">
+<div class="flex items-center justify-between mb-4">
+<div>
+<div class="text-sm font-semibold mb-0.5">نقشه حرارتی فعالیت</div>
+<div class="text-[10px] text-s-500">فعالیت کاربران در ۲۴ ساعت گذشته · ۷ روز هفته</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1">
+<div class="w-2 h-2 rounded-sm bg-s-800"></div>
+<div class="w-2 h-2 rounded-sm bg-v-900"></div>
+<div class="w-2 h-2 rounded-sm bg-v-700"></div>
+<div class="w-2 h-2 rounded-sm bg-v-500"></div>
+<div class="w-2 h-2 rounded-sm bg-v-400"></div>
+<span class="text-[9px] text-s-500">کم → زیاد</span>
+</div>
+</div>
+</div>
+<div class="overflow-x-auto">
+<div id="heatmap" class="inline-block min-w-full"></div>
+</div>
+</div>
+
+<!-- Reports + Top Files + Pending Reviews -->
+<div class="grid lg:grid-cols-3 gap-4 mb-6">
+<!-- Pending Reports -->
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-rose-500/15 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+</div>
+<div>
+<div class="text-sm font-semibold">گزارش‌های در انتظار</div>
+<div class="text-[9px] text-rose-400">۲۳ گزارش فعال</div>
+</div>
+</div>
+<button class="text-[10px] text-v-400">همه</button>
+</div>
+<div class="divide-y divide-white/[.04] max-h-[280px] overflow-y-auto">
+${[
+{t:'حق نشر',f:'movie-cam.mp4',s:'critical',time:'۱۰ دقیقه'},
+{t:'بدافزار',f:'setup.exe',s:'critical',time:'۱ ساعت'},
+{t:'محتوای غیرقانونی',f:'document.pdf',s:'high',time:'۳ ساعت'},
+{t:'اسپم',f:'promo.zip',s:'medium',time:'۵ ساعت'},
+{t:'فیشینگ',f:'login.html',s:'high',time:'۸ ساعت'}
+].map(r=>`
+<div class="p-2.5 hover:bg-white/[.02] cursor-pointer flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg ${r.s==='critical'?'bg-rose-500/15':'bg-amber-500/15'} flex items-center justify-center shrink-0">
+<svg class="w-4 h-4 ${r.s==='critical'?'text-rose-400':'text-amber-400'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-1.5 mb-0.5"><span class="text-[11px] font-medium">${r.t}</span><span class="badge ${r.s==='critical'?'bg-rose-500/10 text-rose-300 border border-rose-500/20':'bg-amber-500/10 text-amber-300 border border-amber-500/20'} text-[8px]">${r.s==='critical'?'بحرانی':r.s==='high'?'بالا':'متوسط'}</span></div>
+<div class="text-[9px] text-s-500 truncate font-mono" dir="ltr">${r.f}</div>
+</div>
+<div class="text-[9px] text-s-600">${r.time}</div>
+</div>`).join('')}
+</div>
+</div>
+
+<!-- Top Files -->
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-v-500/15 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-v-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+</div>
+<div>
+<div class="text-sm font-semibold">فایل‌های برتر</div>
+<div class="text-[9px] text-s-500">بر اساس دانلود</div>
+</div>
+</div>
+<button class="text-[10px] text-v-400">همه</button>
+</div>
+<div class="divide-y divide-white/[.04] max-h-[280px] overflow-y-auto">
+${[
+{n:'product-demo.mp4',s:130023424,t:'video',d:1247},
+{n:'hero-banner.png',s:2457600,t:'image',d:892},
+{n:'Q4-report.pdf',s:8388608,t:'doc',d:523},
+{n:'podcast-ep12.mp3',s:45088768,t:'audio',d:456},
+{n:'project-assets.zip',s:262144000,t:'archive',d:342}
+].map((f,i)=>`
+<div class="p-2.5 hover:bg-white/[.02] cursor-pointer flex items-center gap-2">
+<div class="w-5 text-center font-mono text-[10px] text-s-500">${i+1}</div>
+<div class="w-8 h-8 rounded-lg ft-${f.t} flex items-center justify-center shrink-0">
+${f.t==='video'?'<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>':f.t==='image'?'<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>':f.t==='audio'?'<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>':f.t==='doc'?'<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>':'<svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/></svg>'}
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px] font-medium truncate" dir="ltr">${f.n}</div>
+<div class="text-[9px] text-s-500">${fmtSize(f.s)}</div>
+</div>
+<div class="text-[10px] font-semibold">${fmtNum(f.d)}</div>
+</div>`).join('')}
+</div>
+</div>
+
+<!-- Recent Users -->
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-emerald-500/15 flex items-center justify-center">
+<svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+</div>
+<div>
+<div class="text-sm font-semibold">کاربران جدید</div>
+<div class="text-[9px] text-emerald-400">۱۲۴ در ۲۴ ساعت</div>
+</div>
+</div>
+<button class="text-[10px] text-v-400">همه</button>
+</div>
+<div class="divide-y divide-white/[.04] max-h-[280px] overflow-y-auto">
+${[
+{n:'سارا احمدی',e:'sara@acme.com',p:'Pro',c:'v',time:'۵ دقیقه'},
+{n:'محمد رضایی',e:'mohammad@startup.io',p:'Free',c:'blue',time:'۱۲ دقیقه'},
+{n:'الهام کریمی',e:'elham@design.co',p:'Business',c:'fuchsia',time:'۲۴ دقیقه'},
+{n:'جواد محمدی',e:'javad@tech.dev',p:'Free',c:'amber',time:'۴۵ دقیقه'},
+{n:'مریم حسینی',e:'maryam@corp.com',p:'Pro',c:'rose',time:'۱ ساعت'}
+].map(u=>`
+<div class="p-2.5 hover:bg-white/[.02] cursor-pointer flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-gradient-to-br from-${u.c}-500 to-${u.c}-700 flex items-center justify-center text-[10px] font-bold text-white shrink-0">${u.n[0]}</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px] font-medium truncate">${u.n}</div>
+<div class="text-[9px] text-s-500 truncate font-mono" dir="ltr">${u.e}</div>
+</div>
+<div class="flex flex-col items-end gap-0.5">
+<span class="badge bg-v-500/10 text-v-300 border border-v-500/20 text-[8px]">${u.p}</span>
+<span class="text-[9px] text-s-600">${u.time}</span>
+</div>
+</div>`).join('')}
+</div>
+</div>
+</div>
+
+<!-- Terminal Logs -->
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between bg-s-950/50">
+<div class="flex items-center gap-2">
+<div class="flex gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-rose-500/70"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500/70"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500/70"></span>
+</div>
+<div class="text-xs font-mono text-s-400" dir="ltr">nexus@admin:~$ tail -f /var/log/nexus/app.log</div>
+</div>
+<div class="flex items-center gap-2">
+<span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span><span class="text-[10px] text-emerald-400 font-mono" dir="ltr">streaming</span></span>
+<button class="text-[10px] text-s-400 hover:text-v-400 font-mono" dir="ltr">export</button>
+</div>
+</div>
+<div class="bg-s-950/80 p-3 font-mono text-[10px] max-h-[300px] overflow-y-auto no-scrollbar" dir="ltr" style="text-align:left">
+${[
+{t:'14:23:45.234',l:'INFO',s:'API',m:'POST /v1/files/upload 200 OK 142ms ip=192.168.1.42',c:'emerald'},
+{t:'14:23:44.891',l:'INFO',s:'AUTH',m:'user.login user=sara@acme.com ip=85.120.10.5',c:'emerald'},
+{t:'14:23:42.123',l:'INFO',s:'UPLOAD',m:'file.completed id=f_x9k2m size=2.4MB hash=a3f8e92c',c:'emerald'},
+{t:'14:23:40.456',l:'WARN',s:'STORAGE',m:'capacity.warning region=ap-south-1 used=91%',c:'amber'},
+{t:'14:23:38.789',l:'INFO',s:'API',m:'GET /v1/files/list 200 OK 89ms',c:'emerald'},
+{t:'14:23:35.234',l:'ERROR',s:'UPLOAD',m:'upload.failed reason=invalid_mime file=temp.bin',c:'rose'},
+{t:'14:23:32.567',l:'INFO',s:'SHARE',m:'link.created file=f_12 url=nexus.app/s/x7k9',c:'emerald'},
+{t:'14:23:28.891',l:'INFO',s:'DOWNLOAD',m:'file.downloaded id=f_2 user=u_3',c:'emerald'},
+{t:'14:23:25.123',l:'CRIT',s:'SECURITY',m:'login.suspicious ip=45.33.22.11 attempts=5 blocked',c:'rose'},
+{t:'14:23:22.456',l:'INFO',s:'SCAN',m:'virus.scan.completed threats=0 files=1000',c:'emerald'},
+{t:'14:23:20.789',l:'INFO',s:'AUDIT',m:'admin.action user=admin action=role_change target=u_4',c:'blue'},
+{t:'14:23:18.234',l:'INFO',s:'API',m:'DELETE /v1/files/f_8 200 OK 45ms',c:'emerald'}
+].map(l=>`
+<div class="terminal-line flex gap-2 py-0.5 px-1.5 rounded"><span class="text-s-600">${l.t}</span><span class="w-12 text-${l.c}-400 font-bold">[${l.l}]</span><span class="text-v-400 w-16">${l.s}</span><span class="text-s-300 flex-1">${l.m}</span></div>`).join('')}
+</div>
+</div>
+
+</div>
+
+<!-- ═══ OTHER PAGES (placeholders with content) ═══ -->
+<div id="page-users" class="page-content" style="display:none">
+<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+<div><h1 class="text-xl lg:text-2xl font-bold">مدیریت کاربران</h1><p class="text-xs text-s-400 mt-1">۵۰٬۲۴۷ کاربر · ۱۲٬۸۴۷ فعال</p></div>
+<div class="flex gap-2">
+<button class="btn-secondary px-3 py-1.5 rounded-lg text-xs inline-flex items-center gap-1.5"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/></svg>خروجی CSV</button>
+<button onclick="toast('فرم کاربر جدید باز شد','info')" class="btn-primary px-3 py-1.5 rounded-lg text-xs font-semibold text-white inline-flex items-center gap-1.5"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>کاربر جدید</button>
+</div>
+</div>
+
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden mb-4">
+<div class="p-3 border-b border-white/[.04] flex items-center gap-2 flex-wrap">
+<div class="flex-1 min-w-[160px] relative"><svg class="w-3.5 h-3.5 absolute right-2.5 top-1/2 -translate-y-1/2 text-s-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="جستجوی کاربر..." class="input w-full pr-8 pl-3 py-1.5 rounded-lg text-xs"/></div>
+<select class="input px-2.5 py-1.5 rounded-lg text-xs"><option>همه نقش‌ها</option><option>Super Admin</option><option>Admin</option><option>Moderator</option><option>User</option></select>
+<select class="input px-2.5 py-1.5 rounded-lg text-xs"><option>همه وضعیت‌ها</option><option>فعال</option><option>معلق</option><option>مسدود</option></select>
+<select class="input px-2.5 py-1.5 rounded-lg text-xs"><option>همه پلن‌ها</option><option>Free</option><option>Pro</option><option>Business</option><option>Enterprise</option></select>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full min-w-[900px]">
+<thead class="bg-white/[.02] border-b border-white/[.04]">
+<tr class="text-right text-[10px] text-s-500">
+<th class="p-2.5 font-medium w-8"><input type="checkbox" class="chk"/></th>
+<th class="p-2.5 font-medium">کاربر</th>
+<th class="p-2.5 font-medium">نقش</th>
+<th class="p-2.5 font-medium">پلن</th>
+<th class="p-2.5 font-medium">وضعیت</th>
+<th class="p-2.5 font-medium">فضا</th>
+<th class="p-2.5 font-medium">فایل‌ها</th>
+<th class="p-2.5 font-medium">آخرین فعالیت</th>
+<th class="p-2.5 font-medium">ثبت‌نام</th>
+<th class="p-2.5 font-medium w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/[.04]">
+${[
+{n:'سارا احمدی',e:'sara@acme.com',r:'Admin',p:'Enterprise',s:'active',st:4.2,fi:1247,la:'۵ دقیقه پیش',j:'۱۴۰۳/۰۱/۲۵',c:'rose'},
+{n:'محمد رضایی',e:'mohammad@startup.io',r:'User',p:'Pro',s:'active',st:1.8,fi:523,la:'۱ ساعت پیش',j:'۱۴۰۳/۰۳/۰۱',c:'blue'},
+{n:'الهام کریمی',e:'elham@design.co',r:'Moderator',p:'Business',s:'active',st:3.1,fi:892,la:'۲ ساعت پیش',j:'۱۴۰۲/۱۱/۲۰',c:'fuchsia'},
+{n:'جواد محمدی',e:'javad@tech.dev',r:'User',p:'Free',s:'suspended',st:0.5,fi:34,la:'۳ روز پیش',j:'۱۴۰۳/۰۴/۱۰',c:'amber'},
+{n:'مریم حسینی',e:'maryam@corp.com',r:'User',p:'Pro',s:'active',st:2.7,fi:678,la:'۱۰ دقیقه پیش',j:'۱۴۰۳/۰۲/۰۸',c:'emerald'},
+{n:'علی نوری',e:'ali@agency.io',r:'User',p:'Business',s:'active',st:1.2,fi:245,la:'۱ روز پیش',j:'۱۴۰۳/۰۴/۰۹',c:'v'}
+].map(u=>`
+<tr class="hover:bg-white/[.02]">
+<td class="p-2.5"><input type="checkbox" class="chk"/></td>
+<td class="p-2.5"><div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full bg-gradient-to-br from-${u.c}-500 to-${u.c}-700 flex items-center justify-center text-[10px] font-bold text-white">${u.n[0]}</div><div class="min-w-0"><div class="text-[11px] font-medium">${u.n}</div><div class="text-[9px] text-s-500 font-mono" dir="ltr">${u.e}</div></div></div></td>
+<td class="p-2.5"><span class="badge ${u.r==='Admin'?'bg-rose-500/10 text-rose-300 border border-rose-500/20':u.r==='Moderator'?'bg-amber-500/10 text-amber-300 border border-amber-500/20':'surface border border-white/[.06]'}">${u.r}</span></td>
+<td class="p-2.5"><span class="badge bg-v-500/10 text-v-300 border border-v-500/20">${u.p}</span></td>
+<td class="p-2.5"><span class="badge ${u.s==='active'?'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20':'bg-rose-500/10 text-rose-300 border border-rose-500/20'}"><span class="w-1 h-1 rounded-full ${u.s==='active'?'bg-emerald-400':'bg-rose-400'}"></span>${u.s==='active'?'فعال':'معلق'}</span></td>
+<td class="p-2.5 text-[11px] text-s-400">${fmtNum(u.st)} GB</td>
+<td class="p-2.5 text-[11px] text-s-400">${fmtNum(u.fi)}</td>
+<td class="p-2.5 text-[11px] text-s-400">${u.la}</td>
+<td class="p-2.5 text-[11px] text-s-400 font-mono" dir="ltr">${u.j}</td>
+<td class="p-2.5"><button class="p-1 rounded hover:bg-white/[.06]" onclick="toast('منو کاربر باز شد','info')"><svg class="w-3.5 h-3.5 text-s-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg></button></td>
+</tr>`).join('')}
+</tbody>
+</table>
+</div>
+<div class="p-3 border-t border-white/[.04] flex items-center justify-between">
+<div class="text-[10px] text-s-500">نمایش ۱-۶ از ۵۰٬۲۴۷</div>
+<div class="flex gap-1">
+<button class="px-2 py-0.5 rounded bg-white/[.04] text-s-500">قبلی</button>
+<button class="px-2 py-0.5 rounded bg-v-500/15 text-v-300">۱</button>
+<button class="px-2 py-0.5 rounded hover:bg-white/[.04]">۲</button>
+<button class="px-2 py-0.5 rounded hover:bg-white/[.04]">۳</button>
+<button class="px-2 py-0.5 rounded hover:bg-white/[.04]">بعدی</button>
+</div>
+</div>
+</div>
+</div>
+
+<div id="page-files" class="page-content" style="display:none">
+<div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+<div><h1 class="text-xl lg:text-2xl font-bold">مدیریت فایل‌ها</h1><p class="text-xs text-s-400 mt-1">۲.۴ میلیون فایل · ۲.۴ پتابایت</p></div>
+<div class="flex gap-2">
+<button class="btn-danger px-3 py-1.5 rounded-lg text-xs inline-flex items-center gap-1.5"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>پاکسازی</button>
+<button class="btn-secondary px-3 py-1.5 rounded-lg text-xs">اسکن همه</button>
+</div>
+</div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[9px] text-s-500 mb-1">فایل‌های علامت‌دار</div><div class="text-lg font-bold text-rose-400">۴۵</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[9px] text-s-500 mb-1">تکراری شناسایی‌شده</div><div class="text-lg font-bold text-amber-400">۱٬۲۳۴</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[9px] text-s-500 mb-1">آلوده (ویروس)</div><div class="text-lg font-bold text-rose-400">۳</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[9px] text-s-500 mb-1">قابل آزادسازی</div><div class="text-lg font-bold text-emerald-400">۵۲۰ GB</div></div>
+</div>
+<div class="surface rounded-xl p-6 border border-white/[.06] text-center">
+<div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-v-500 to-fuchsia-600 flex items-center justify-center"><svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+<div class="text-sm font-semibold mb-1">مدیریت کامل فایل‌ها</div>
+<div class="text-xs text-s-400 mb-4">فهرست کامل ۲.۴ میلیون فایل با قابلیت جستجو، فیلتر و عملیات گروهی در این بخش نمایش داده می‌شود.</div>
+<button class="btn-secondary px-4 py-2 rounded-lg text-xs">باز کردن File Manager</button>
+</div>
+</div>
+
+<div id="page-storage" class="page-content" style="display:none">
+<div class="flex items-center justify-between mb-6"><div><h1 class="text-xl lg:text-2xl font-bold">مدیریت فضای ذخیره</h1><p class="text-xs text-s-400 mt-1">۵ پتابایت کل · ۲.۴ استفاده شده</p></div></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">کل فضا</div><div class="text-2xl font-bold">5 PB</div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">استفاده شده</div><div class="text-2xl font-bold">2.4 PB</div><div class="text-[10px] text-v-400">۴۸٪</div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">آزاد</div><div class="text-2xl font-bold">2.6 PB</div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">رشد ماهانه</div><div class="text-2xl font-bold">+12.3%</div></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-4">
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">رشد فضا در ۶ ماه</div><div style="height:200px"><canvas id="ch-storage-growth"></canvas></div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">توزیع بر اساس نوع</div><div style="height:200px"><canvas id="ch-storage-type"></canvas></div></div>
+</div>
+</div>
+
+<div id="page-billing" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">صورتحساب و درآمد</h1><p class="text-xs text-s-400 mt-1">مدیریت اشتراک‌ها، فاکتورها و درآمد</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">MRR</div><div class="text-2xl font-bold">$42.8K</div><div class="text-[10px] text-emerald-400">↑ ۱۲.۵٪</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">ARR</div><div class="text-2xl font-bold">$513K</div><div class="text-[10px] text-emerald-400">↑ ۱۸.۲٪</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">مشترکین فعال</div><div class="text-2xl font-bold counter" data-target="8432">0</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">Churn Rate</div><div class="text-2xl font-bold">2.1%</div><div class="text-[10px] text-emerald-400">↓ ۰.۳٪</div></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-4">
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">درآمد بر اساس پلن</div><div style="height:220px"><canvas id="ch-billing-plan"></canvas></div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">روند MRR</div><div style="height:220px"><canvas id="ch-billing-mrr"></canvas></div></div>
+</div>
+</div>
+
+<div id="page-reports" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">گزارش‌ها و تخلفات</h1><p class="text-xs text-s-400 mt-1">۲۳ گزارش در انتظار بررسی</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">در انتظار</div><div class="text-xl font-bold text-amber-400">۲۳</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">در حال بررسی</div><div class="text-xl font-bold text-v-400">۸</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">حل شده</div><div class="text-xl font-bold text-emerald-400">۱۴۲</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">رد شده</div><div class="text-xl font-bold text-rose-400">۳۴</div></div>
+</div>
+<div class="surface rounded-xl border border-white/[.06]">
+${[
+{t:'حق نشر',f:'movie-cam.mp4',r:'studio@example.com',s:'critical',time:'۱۰ دقیقه پیش'},
+{t:'بدافزار',f:'setup.exe',r:'اسکنر خودکار',s:'critical',time:'۱ ساعت پیش'},
+{t:'محتوای غیرقانونی',f:'document.pdf',r:'report@example.com',s:'high',time:'۳ ساعت پیش'},
+{t:'اسپم',f:'promo.zip',r:'user@mail.com',s:'medium',time:'۵ ساعت پیش'},
+{t:'فیشینگ',f:'login.html',r:'security@bank.com',s:'high',time:'۱ روز پیش'}
+].map(r=>`
+<div class="p-4 flex items-center gap-3 hover:bg-white/[.02] border-b border-white/[.04] last:border-0">
+<div class="w-10 h-10 rounded-lg ${r.s==='critical'?'bg-rose-500/15':'bg-amber-500/15'} flex items-center justify-center shrink-0">
+<svg class="w-5 h-5 ${r.s==='critical'?'text-rose-400':'text-amber-400'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+</div>
+<div class="flex-1 min-w-0"><div class="flex items-center gap-1.5 mb-0.5 flex-wrap"><span class="text-[12px] font-semibold">${r.t}</span><span class="badge ${r.s==='critical'?'bg-rose-500/10 text-rose-300 border border-rose-500/20':r.s==='high'?'bg-amber-500/10 text-amber-300 border border-amber-500/20':'bg-s-700/30 text-s-400 border border-s-600/30'}">${r.s==='critical'?'بحرانی':r.s==='high'?'بالا':'متوسط'}</span></div><div class="text-[11px] text-s-500 truncate"><b class="text-s-300 font-mono" dir="ltr">${r.f}</b> · گزارش توسط ${r.r}</div></div>
+<div class="text-[10px] text-s-600 hidden sm:block">${r.time}</div>
+<div class="flex gap-1"><button onclick="toast('فایل مسدود شد','success')" class="btn-danger px-2 py-1 rounded text-[10px]">مسدود</button><button onclick="toast('در حال بررسی','info')" class="btn-secondary px-2 py-1 rounded text-[10px]">بررسی</button><button onclick="toast('رد شد','warning')" class="btn-secondary px-2 py-1 rounded text-[10px]">رد</button></div>
+</div>`).join('')}
+</div>
+</div>
+
+<div id="page-servers" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">مانیتورینگ سرورها</h1><p class="text-xs text-s-400 mt-1">۴ ریجن فعال · ۲۴ سرور</p></div>
+<div class="grid md:grid-cols-2 gap-3">
+${[
+{n:'us-east-1',loc:'Virginia, USA',cpu:45,ram:62,disk:78,net:320,s:'healthy',icon:'🇺🇸',nodes:8},
+{n:'eu-west-1',loc:'Dublin, IE',cpu:38,ram:54,disk:65,net:280,s:'healthy',icon:'🇮🇪',nodes:6},
+{n:'ap-south-1',loc:'Mumbai, IN',cpu:72,ram:81,disk:54,net:190,s:'warning',icon:'🇮🇳',nodes:4},
+{n:'ir-central-1',loc:'Tehran, IR',cpu:28,ram:42,disk:88,net:450,s:'healthy',icon:'🇮🇷',nodes:6}
+].map(s=>`
+<div class="surface rounded-xl p-4 border border-white/[.06] card">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2.5">
+<span class="text-2xl">${s.icon}</span>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-mono text-sm font-bold" dir="ltr">${s.name}</span>
+<span class="w-2 h-2 rounded-full ${s.s==='healthy'?'bg-emerald-400':'bg-amber-400'} live-dot"></span>
+</div>
+<div class="text-[10px] text-s-500">${s.loc} · ${s.nodes} node</div>
+</div>
+</div>
+<span class="badge ${s.s==='healthy'?'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20':'bg-amber-500/10 text-amber-300 border border-amber-500/20'}">${s.s==='healthy'?'سالم':'هشدار'}</span>
+</div>
+<div class="grid grid-cols-4 gap-2">
+${[{l:'CPU',v:s.cpu,c:s.cpu>70?'amber':'emerald'},{l:'RAM',v:s.ram,c:s.ram>70?'amber':'emerald'},{l:'Disk',v:s.disk,c:s.disk>85?'rose':s.disk>70?'amber':'emerald'},{l:'Net',v:s.net,c:'cyan',max:500}].map(m=>`
+<div>
+<div class="flex items-center justify-between mb-1"><span class="text-[9px] text-s-500">${m.l}</span><span class="text-[9px] font-mono ${m.c==='amber'?'text-amber-400':m.c==='rose'?'text-rose-400':'text-s-300'}" dir="ltr">${m.v}${m.max?' MB/s':'%'}</span></div>
+<div class="h-1.5 bg-s-800 rounded-full overflow-hidden"><div class="h-full bg-${m.c}-500 rounded-full" style="width:${m.max?(m.v/m.max*100):m.v}%"></div></div>
+</div>`).join('')}
+</div>
+</div>`).join('')}
+</div>
+</div>
+
+<div id="page-queues" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">صف‌ها و Workerها</h1><p class="text-xs text-s-400 mt-1">۶ صف فعال · ۴۸ worker</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">در انتظار کل</div><div class="text-xl font-bold text-amber-400">۵۳</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">در حال پردازش</div><div class="text-xl font-bold text-v-400">۱۸۱</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">تکمیل (۲۴ ساعته)</div><div class="text-xl font-bold text-emerald-400">۱۲.۴K</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">ناموفق</div><div class="text-xl font-bold text-rose-400">۳</div></div>
+</div>
+<div class="surface rounded-xl border border-white/[.06]">
+${[
+{n:'صف آپلود',w:12,p:45,c:890,f:0,col:'v',workers:8},
+{n:'صف پردازش تصویر',w:23,p:67,c:2340,f:2,col:'fuchsia',workers:12},
+{n:'صف اسکن ویروس',w:3,p:12,c:5600,f:0,col:'emerald',workers:8},
+{n:'صف تولید پیش‌نمایش',w:8,p:34,c:1200,f:0,col:'amber',workers:10},
+{n:'صف ایمیل',w:2,p:5,c:340,f:0,col:'blue',workers:4},
+{n:'صف وبهوک',w:5,p:18,c:890,f:1,col:'cyan',workers:6}
+].map(q=>`
+<div class="p-4 border-b border-white/[.04] last:border-0 hover:bg-white/[.02]">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-${q.col}-500/15 flex items-center justify-center">
+<svg class="w-4 h-4 text-${q.col}-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
+</div>
+<div>
+<div class="text-sm font-semibold">${q.n}</div>
+<div class="text-[10px] text-s-500">${q.workers} worker فعال</div>
+</div>
+</div>
+<button class="btn-secondary px-3 py-1.5 rounded-lg text-[10px]">جزئیات</button>
+</div>
+<div class="grid grid-cols-4 gap-3 text-center">
+<div><div class="text-[9px] text-s-500 mb-0.5">در انتظار</div><div class="text-sm font-bold text-amber-400 font-mono" dir="ltr">${q.w}</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">پردازش</div><div class="text-sm font-bold text-v-400 font-mono" dir="ltr">${q.p}</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">تکمیل</div><div class="text-sm font-bold text-emerald-400 font-mono" dir="ltr">${q.c}</div></div>
+<div><div class="text-[9px] text-s-500 mb-0.5">ناموفق</div><div class="text-sm font-bold ${q.f?'text-rose-400':'text-s-600'} font-mono" dir="ltr">${q.f}</div></div>
+</div>
+<div class="h-1 bg-s-800 rounded-full overflow-hidden mt-2"><div class="h-full bg-gradient-to-l from-${q.col}-500 to-${q.col}-700 rounded-full rtl:bg-gradient-to-r" style="width:${Math.min((q.p/(q.w+q.p+q.c))*100*5,100)}%"></div></div>
+</div>`).join('')}
+</div>
+</div>
+
+<div id="page-logs" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">لاگ‌های سیستم</h1><p class="text-xs text-s-400 mt-1">پخش زنده تمام رویدادهای سیستم</p></div>
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center gap-2 flex-wrap bg-s-950/50">
+<div class="flex gap-1">
+<span class="w-2.5 h-2.5 rounded-full bg-rose-500/70"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-amber-500/70"></span>
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-500/70"></span>
+</div>
+<div class="text-xs font-mono text-s-400" dir="ltr">nexus@admin:~$ tail -f /var/log/nexus/*.log</div>
+<div class="flex-1"></div>
+<select class="input px-2 py-1 rounded text-[10px]"><option>همه سطوح</option><option>INFO</option><option>WARN</option><option>ERROR</option><option>CRIT</option></select>
+<select class="input px-2 py-1 rounded text-[10px]"><option>همه سرویس‌ها</option><option>API</option><option>AUTH</option><option>UPLOAD</option><option>STORAGE</option><option>SECURITY</option></select>
+<button class="btn-secondary px-2 py-1 rounded text-[10px]">خروجی</button>
+<span class="flex items-center gap-1 text-[10px] text-emerald-400 font-mono" dir="ltr"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 live-dot"></span>streaming</span>
+</div>
+<div class="bg-s-950/80 p-3 font-mono text-[10px] max-h-[600px] overflow-y-auto no-scrollbar" dir="ltr" style="text-align:left">
+${[
+{t:'14:23:45.234',l:'INFO',s:'API',m:'POST /v1/files/upload 200 OK 142ms ip=192.168.1.42',c:'emerald'},
+{t:'14:23:44.891',l:'INFO',s:'AUTH',m:'user.login user=sara@acme.com ip=85.120.10.5',c:'emerald'},
+{t:'14:23:42.123',l:'INFO',s:'UPLOAD',m:'file.completed id=f_x9k2m size=2.4MB hash=a3f8e92c',c:'emerald'},
+{t:'14:23:40.456',l:'WARN',s:'STORAGE',m:'capacity.warning region=ap-south-1 used=91%',c:'amber'},
+{t:'14:23:38.789',l:'INFO',s:'API',m:'GET /v1/files/list 200 OK 89ms',c:'emerald'},
+{t:'14:23:35.234',l:'ERROR',s:'UPLOAD',m:'upload.failed reason=invalid_mime file=temp.bin',c:'rose'},
+{t:'14:23:32.567',l:'INFO',s:'SHARE',m:'link.created file=f_12 url=nexus.app/s/x7k9',c:'emerald'},
+{t:'14:23:28.891',l:'INFO',s:'DOWNLOAD',m:'file.downloaded id=f_2 user=u_3',c:'emerald'},
+{t:'14:23:25.123',l:'CRIT',s:'SECURITY',m:'login.suspicious ip=45.33.22.11 attempts=5 blocked',c:'rose'},
+{t:'14:23:22.456',l:'INFO',s:'SCAN',m:'virus.scan.completed threats=0 files=1000',c:'emerald'},
+{t:'14:23:20.789',l:'INFO',s:'AUDIT',m:'admin.action user=admin action=role_change target=u_4',c:'blue'},
+{t:'14:23:18.234',l:'INFO',s:'API',m:'DELETE /v1/files/f_8 200 OK 45ms',c:'emerald'},
+{t:'14:23:15.678',l:'INFO',s:'WEBHOOK',m:'webhook.triggered event=file.completed url=https://api.myapp.com/hook',c:'cyan'},
+{t:'14:23:12.345',l:'WARN',s:'API',m:'rate.limit.warning user=u_5 remaining=5/1000',c:'amber'},
+{t:'14:23:10.123',l:'INFO',s:'BILLING',m:'payment.success user=u_2 amount=$9 plan=Pro',c:'emerald'}
+].map(l=>`<div class="terminal-line flex gap-2 py-0.5 px-1.5 rounded"><span class="text-s-600">${l.t}</span><span class="w-12 text-${l.c}-400 font-bold">[${l.l}]</span><span class="text-v-400 w-20">${l.s}</span><span class="text-s-300 flex-1">${l.m}</span></div>`).join('')}
+</div>
+</div>
+</div>
+
+<div id="page-security" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">مرکز امنیت</h1><p class="text-xs text-s-400 mt-1">مدیریت تهدیدها و حفاظت از سیستم</p></div>
+
+<div class="surface rounded-xl p-5 border border-emerald-500/15 bg-gradient-to-l from-emerald-500/[.04] to-transparent mb-4 relative overflow-hidden">
+<div class="absolute top-0 end-0 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="relative flex items-center gap-4">
+<div class="relative w-20 h-20 shrink-0">
+<svg viewBox="0 0 100 100" class="w-full h-full">
+<circle cx="50" cy="50" r="45" fill="none" stroke="rgba(16,185,129,.15)" stroke-width="8"/>
+<circle cx="50" cy="50" r="45" fill="none" stroke="#10b981" stroke-width="8" stroke-dasharray="283" stroke-dashoffset="5" transform="rotate(-90 50 50)" stroke-linecap="round"/>
+<text x="50" y="55" text-anchor="middle" fill="#10b981" font-size="20" font-weight="bold">98</text>
+</svg>
+</div>
+<div class="flex-1">
+<div class="text-lg font-bold mb-1">امتیاز امنیت: عالی</div>
+<div class="text-xs text-s-400 mb-2">همه سیستم‌های حفاظتی فعال هستند</div>
+<div class="flex gap-2 flex-wrap">
+<span class="badge bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">AES-256</span>
+<span class="badge bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">SOC 2</span>
+<span class="badge bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">GDPR</span>
+<span class="badge bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">ISO 27001</span>
+</div>
+</div>
+</div>
+</div>
+
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">تهدیدات مسدود شده</div><div class="text-xl font-bold text-rose-400">۱٬۲۳۴</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">IPهای بلاک شده</div><div class="text-xl font-bold text-amber-400">۴۵</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">ورودهای مشکوک</div><div class="text-xl font-bold text-v-400">۱۲</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">اسکن فعال</div><div class="text-xl font-bold text-emerald-400">✓</div></div>
+</div>
+
+<div class="grid lg:grid-cols-2 gap-4">
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="text-sm font-semibold mb-3">تهدیدات اخیر</div>
+<div class="space-y-2">
+${[
+{t:'تلاش ورود ناموفق',d:'IP: 45.33.22.11 · ۵ تلاش',time:'۱ ساعت پیش',s:'rose'},
+{t:'الگوی ترافیک غیرعادی',d:'افزایش ۳۰۰٪ از IP خاص',time:'۳ ساعت پیش',s:'amber'},
+{t:'فایل آلوده شناسایی شد',d:'malware.exe · قرنطینه شد',time:'۵ ساعت پیش',s:'rose'},
+{t:'تلاش XSS',d:'در endpoint /api/upload',time:'۱ روز پیش',s:'amber'}
+].map(t=>`
+<div class="p-2.5 rounded-lg bg-white/[.02] border border-white/[.04] flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg bg-${t.s}-500/15 flex items-center justify-center">
+<svg class="w-4 h-4 text-${t.s}-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+</div>
+<div class="flex-1"><div class="text-[11px] font-medium">${t.t}</div><div class="text-[9px] text-s-500">${t.d}</div></div>
+<div class="text-[9px] text-s-600">${t.time}</div>
+</div>`).join('')}
+</div>
+</div>
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="text-sm font-semibold mb-3">تنظیمات امنیتی</div>
+<div class="space-y-3">
+${[
+{t:'احراز دومرحله‌ای اجباری',d:'برای همه مدیران',on:true},
+{t:'اسکن خودکار ویروس',d:'همه آپلودها',on:true},
+{t:'Rate Limiting',d:'۱۰۰۰ درخواست/دقیقه',on:true},
+{t:'IP Whitelist',d:'فقط IPهای مجاز',on:false},
+{t:'Maintenance Mode',d:'غیرفعال کردن موقت',on:false}
+].map(s=>`
+<div class="flex items-center justify-between"><div><div class="text-[11px] font-medium">${s.t}</div><div class="text-[9px] text-s-500">${s.d}</div></div><div class="toggle ${s.on?'on':''}" onclick="this.classList.toggle('on');toast('تنظیمات ذخیره شد','success')"></div></div>`).join('')}
+</div>
+</div>
+</div>
+</div>
+
+<div id="page-settings" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">تنظیمات سیستم</h1><p class="text-xs text-s-400 mt-1">پیکربندی سراسری پلتفرم</p></div>
+
+<div class="flex gap-0.5 mb-4 border-b border-white/[.06] overflow-x-auto no-scrollbar">
+${['عمومی','آپلود','فضا','امنیت','ایمیل','اعلان‌ها','CDN','API','پیشرفته'].map((t,i)=>`<button class="tab ${i===0?'active':''} px-3 py-2 text-xs font-medium text-s-400 whitespace-nowrap" onclick="this.parentElement.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));this.classList.add('active');toast('تب ${t} انتخاب شد','info')">${t}</button>`).join('')}
+</div>
+
+<div class="grid lg:grid-cols-3 gap-5">
+<div class="lg:col-span-2 space-y-4">
+<div class="surface rounded-xl p-5 border border-white/[.06]">
+<div class="text-sm font-semibold mb-4">تنظیمات عمومی</div>
+<div class="space-y-3">
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">نام پلتفرم</label><input type="text" value="Nexus" class="input w-full px-3 py-2 rounded-lg text-xs"/></div>
+<div class="grid grid-cols-2 gap-3">
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">ایمیل پشتیبانی</label><input type="email" value="support@nexus.app" class="input w-full px-3 py-2 rounded-lg text-xs" dir="ltr"/></div>
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">دامنه اصلی</label><input type="text" value="nexus.app" class="input w-full px-3 py-2 rounded-lg text-xs" dir="ltr"/></div>
+</div>
+<div class="grid grid-cols-2 gap-3">
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">حداکثر حجم فایل (MB)</label><input type="number" value="10240" class="input w-full px-3 py-2 rounded-lg text-xs" dir="ltr"/></div>
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">Rate Limit (درخواست/دقیقه)</label><input type="number" value="1000" class="input w-full px-3 py-2 rounded-lg text-xs" dir="ltr"/></div>
+</div>
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">پسوندهای مجاز</label><textarea rows="3" class="input w-full px-3 py-2 rounded-lg text-xs font-mono" dir="ltr">jpg,jpeg,png,gif,webp,pdf,doc,docx,xls,xlsx,ppt,pptx,mp4,mov,mp3,wav,zip,rar,7z,tar,gz</textarea></div>
+</div>
+</div>
+
+<div class="surface rounded-xl p-5 border border-white/[.06]">
+<div class="text-sm font-semibold mb-4">تنظیمات امنیتی</div>
+<div class="space-y-3">
+${[
+{t:'اسکن ویروس خودکار',d:'اسکن همه آپلودها با ClamAV',on:true},
+{t:'احراز دومرحله‌ای اجباری',d:'برای حساب‌های ادمین',on:true},
+{t:'تشخیص فایل تکراری',d:'با الگوریتم SHA-256',on:true},
+{t:'حالت تعمیر و نگهداری',d:'غیرفعال کردن موقت سرویس',on:false},
+{t:'CDN',d:'تحویل فایل از لبه شبکه',on:true},
+{t:'رمزنگاری End-to-End',d:'برای فایل‌های حساس',on:true}
+].map(s=>`
+<div class="flex items-center justify-between"><div><div class="text-[12px] font-medium">${s.t}</div><div class="text-[10px] text-s-500">${s.d}</div></div><div class="toggle ${s.on?'on':''}" onclick="this.classList.toggle('on');toast('تنظیمات ذخیره شد','success')"></div></div>`).join('')}
+</div>
+</div>
+</div>
+
+<div class="space-y-3">
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="text-[10px] text-s-500 mb-1">نسخه سیستم</div>
+<div class="text-xl font-bold font-mono" dir="ltr">v3.0.1</div>
+<div class="text-[9px] text-emerald-400 mb-3">به‌روز</div>
+<button class="btn-secondary w-full py-1.5 rounded-lg text-[10px]">بررسی آپدیت</button>
+</div>
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="text-[10px] text-s-500 mb-1">آپتایم (۳۰ روز)</div>
+<div class="text-xl font-bold">99.98%</div>
+<div class="text-[9px] text-s-500 mb-3">SLA: 99.9%</div>
+<div class="flex gap-0.5">
+${Array.from({length:30},(_,i)=>`<div class="flex-1 h-6 rounded-sm ${Math.random()>.97?'bg-amber-500':'bg-emerald-500'}"></div>`).join('')}
+</div>
+</div>
+<div class="surface rounded-xl p-4 border border-white/[.06]">
+<div class="text-[10px] text-s-500 mb-1">آخرین پشتیبان</div>
+<div class="text-sm font-semibold">۲ ساعت پیش</div>
+<div class="text-[9px] text-s-500 mb-3">بعدی: ۲۲ ساعت دیگر</div>
+<button class="btn-secondary w-full py-1.5 rounded-lg text-[10px]">پشتیبان‌گیری فوری</button>
+</div>
+<button onclick="toast('همه تنظیمات ذخیره شد','success');confetti()" class="btn-primary w-full py-2.5 rounded-lg text-xs font-semibold text-white">ذخیره همه تنظیمات</button>
+</div>
+</div>
+</div>
+
+<div id="page-activity" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">فعالیت زنده</h1><p class="text-xs text-s-400 mt-1">پخش زنده همه رویدادهای سیستم</p></div>
+<div class="surface rounded-xl border border-white/[.06] overflow-hidden">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between bg-gradient-to-l from-emerald-500/[.04] to-transparent">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-emerald-400 live-dot"></span>
+<span class="text-sm font-semibold text-emerald-400">پخش زنده</span>
+<span class="badge bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">real-time</span>
+</div>
+<button onclick="toast('فیلترها','info')" class="btn-secondary px-3 py-1.5 rounded-lg text-[10px]">فیلتر</button>
+</div>
+<div id="live-feed-full" class="divide-y divide-white/[.04] max-h-[700px] overflow-y-auto">
+${Array.from({length:30},(_,i)=>{
+const acts=[
+{c:'emerald',icon:'upload',n:'سارا احمدی',a:'۲۴ فایل آپلود کرد',t:'همین الان'},
+{c:'v',icon:'user',n:'محمد رضایی',a:'به پلن پرو ارتقا یافت',t:'۱۵ ثانیه پیش'},
+{c:'blue',icon:'download',n:'کاربر مهمان',a:'فایل Q4-report.pdf دانلود شد',t:'۳۲ ثانیه پیش'},
+{c:'amber',icon:'warning',n:'سیستم',a:'هشدار ظرفیت سرور us-west-2',t:'۱ دقیقه پیش'},
+{c:'fuchsia',icon:'share',n:'الهام کریمی',a:'۱۲ فایل به اشتراک گذاشت',t:'۲ دقیقه پیش'},
+{c:'rose',icon:'security',n:'امنیت',a:'۳ تلاش ورود ناموفق مسدود شد',t:'۳ دقیقه پیش'},
+{c:'cyan',icon:'api',n:'API',a:'وبهوک file.completed فراخوانی شد',t:'۴ دقیقه پیش'},
+{c:'emerald',icon:'register',n:'کاربر جدید',a:'ali@tech.dev ثبت‌نام کرد',t:'۵ دقیقه پیش'}
+];
+const a=acts[i%acts.length];
+return `<div class="p-3 flex items-start gap-3 live-feed-item">
+<div class="w-9 h-9 rounded-lg bg-${a.c}-500/15 flex items-center justify-center shrink-0">
+${a.icon==='upload'?'<svg class="w-4 h-4 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/></svg>':'<svg class="w-4 h-4 text-'+a.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>'}
+</div>
+<div class="flex-1 min-w-0"><div class="text-[12px]"><b>${a.n}</b> <span class="text-s-400">${a.a}</span></div><div class="text-[10px] text-s-600 mt-0.5">${a.t}</div></div>
+</div>`;}).join('')}
+</div>
+</div>
+</div>
+
+<div id="page-analytics" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">تحلیل پیشرفته</h1><p class="text-xs text-s-400 mt-1">بینش‌های عمیق درباره پلتفرم</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">بازدیدها (۲۴ ساعته)</div><div class="text-2xl font-bold">۲۳۴.۵K</div><div class="text-[10px] text-emerald-400">↑ ۱۲.۱٪</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">دانلودها</div><div class="text-2xl font-bold">۸۹.۲K</div><div class="text-[10px] text-emerald-400">↑ ۸.۳٪</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">پهنای باند</div><div class="text-2xl font-bold">۱۸.۴ TB</div><div class="text-[10px] text-emerald-400">↑ ۱۵.۲٪</div></div>
+<div class="stat-card-glow surface rounded-xl p-4 border border-white/[.06] card"><div class="text-[10px] text-s-500 mb-1">کاربران یکتا</div><div class="text-2xl font-bold">۴۵.۲K</div><div class="text-[10px] text-emerald-400">↑ ۶.۷٪</div></div>
+</div>
+<div class="grid lg:grid-cols-2 gap-4">
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">ترافیک در طول زمان</div><div style="height:260px"><canvas id="ch-analytics"></canvas></div></div>
+<div class="surface rounded-xl p-4 border border-white/[.06]"><div class="text-sm font-semibold mb-3">منابع ترافیک</div><div style="height:260px"><canvas id="ch-analytics-source"></canvas></div></div>
+</div>
+</div>
+
+<div id="page-integrations" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">یکپارچه‌سازی‌ها</h1><p class="text-xs text-s-400 mt-1">اتصال به سرویس‌های خارجی</p></div>
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+${[
+{n:'AWS S3',d:'ذخیره‌سازی ابری',a:true,icon:'🪣',col:'amber'},
+{n:'Stripe',d:'پرداخت آنلاین',a:true,icon:'💳',col:'v'},
+{n:'SendGrid',d:'ارسال ایمیل',a:true,icon:'📧',col:'blue'},
+{n:'Slack',d:'اعلان‌های تیمی',a:true,icon:'💬',col:'fuchsia'},
+{n:'Zapier',d:'اتوماسیون',a:false,icon:'⚡',col:'amber'},
+{n:'Cloudflare',d:'CDN و محافظت',a:true,icon:'☁️',col:'blue'},
+{n:'GitHub',d:'ادغام با مخازن',a:false,icon:'🐙',col:'s'},
+{n:'Discord',d:'اعلان‌ها',a:true,icon:'🎮',col:'v'},
+{n:'Telegram',d:'ربات اطلاع‌رسانی',a:true,icon:'✈️',col:'blue'}
+].map(i=>`
+<div class="surface rounded-xl p-4 border border-white/[.06] card">
+<div class="flex items-start justify-between mb-3">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-${i.col}-500/15 flex items-center justify-center text-xl">${i.icon}</div>
+<div><div class="text-sm font-semibold">${i.n}</div><div class="text-[10px] text-s-500">${i.d}</div></div>
+</div>
+<div class="toggle ${i.a?'on':''}" onclick="this.classList.toggle('on');toast('وضعیت تغییر کرد','success')"></div>
+</div>
+<button class="btn-secondary w-full py-1.5 rounded-lg text-[10px]">پیکربندی</button>
+</div>`).join('')}
+</div>
+</div>
+
+<div id="page-announcements" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">اطلاعیه‌ها</h1><p class="text-xs text-s-400 mt-1">ارسال پیام به کاربران</p></div>
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">ارسال‌شده</div><div id="announcement-sent" class="text-xl font-bold text-emerald-400">۱۲۴</div><div class="text-[9px] text-s-600">۳۰ روز اخیر</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">نرخ مشاهده</div><div class="text-xl font-bold text-v-400">۸۷٪</div><div class="text-[9px] text-emerald-400">↑ ۴.۲٪</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">در صف ارسال</div><div id="announcement-queued" class="text-xl font-bold text-amber-400">۳</div><div class="text-[9px] text-s-600">زمان‌بندی‌شده</div></div>
+<div class="surface rounded-xl p-3 border border-white/[.06]"><div class="text-[10px] text-s-500 mb-1">مخاطبان فعال</div><div class="text-xl font-bold">۵۰٬۲۴۷</div><div class="text-[9px] text-s-600">همه کاربران</div></div>
+</div>
+<div class="surface rounded-xl p-5 border border-white/[.06] mb-4">
+<div class="text-sm font-semibold mb-4">ایجاد اطلاعیه جدید</div>
+<div class="space-y-3">
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">عنوان</label><input id="announcement-title" type="text" placeholder="عنوان اطلاعیه" class="input w-full px-3 py-2 rounded-lg text-xs"/></div>
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">پیام</label><textarea id="announcement-message" rows="4" placeholder="متن اطلاعیه..." class="input w-full px-3 py-2 rounded-lg text-xs"></textarea><div id="announcement-preview" class="hidden mt-2 rounded-lg border border-v-500/15 bg-v-500/[.04] p-3 text-xs text-s-300"></div></div>
+<div class="grid grid-cols-2 gap-3">
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">نوع</label><select id="announcement-type" class="input w-full px-3 py-2 rounded-lg text-xs"><option>عمومی</option><option>تعمیرات</option><option>امنیتی</option><option>ویژگی جدید</option></select></div>
+<div><label class="text-[11px] font-medium text-s-400 mb-1 block">اولویت</label><select id="announcement-priority" class="input w-full px-3 py-2 rounded-lg text-xs"><option>عادی</option><option>مهم</option><option>فوری</option></select></div>
+</div>
+<div class="grid grid-cols-2 gap-3"><div><label class="text-[11px] font-medium text-s-400 mb-1 block">مخاطبان</label><select id="announcement-audience" class="input w-full px-3 py-2 rounded-lg text-xs"><option>همه کاربران</option><option>کاربران Pro</option><option>مدیران</option><option>کاربران جدید</option></select></div><div><label class="text-[11px] font-medium text-s-400 mb-1 block">زمان ارسال</label><select id="announcement-schedule" class="input w-full px-3 py-2 rounded-lg text-xs"><option value="now">همین حالا</option><option value="1h">یک ساعت دیگر</option><option value="tomorrow">فردا ساعت ۹</option></select></div></div>
+<div class="space-y-2">
+<div class="flex items-center justify-between"><div class="text-[11px] font-medium">ارسال ایمیل</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between"><div class="text-[11px] font-medium">نمایش در داشبورد</div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between"><div class="text-[11px] font-medium">ارسال پوش نوتیفیکیشن</div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+</div>
+<div class="flex gap-2"><button onclick="previewAnnouncement()" class="btn-secondary flex-1 py-2.5 rounded-lg text-xs font-semibold">پیش‌نمایش</button><button onclick="publishAnnouncement()" class="btn-primary flex-1 py-2.5 rounded-lg text-xs font-semibold text-white">ارسال اطلاعیه</button></div>
+</div>
+</div>
+<div class="surface rounded-xl border border-white/[.06]">
+<div class="p-3 border-b border-white/[.04] flex items-center justify-between"><div class="text-sm font-semibold">اطلاعیه‌های اخیر</div><select class="input px-2 py-1 rounded text-[10px]" onchange="filterAnnouncements(this.value)"><option value="all">همه وضعیت‌ها</option><option value="sent">ارسال‌شده</option><option value="scheduled">زمان‌بندی‌شده</option></select></div>
+<div id="announcement-list">
+${[
+{t:'بروزرسانی سیستم',m:'نسخه ۳.۰ با قابلیت‌های هوش مصنوعی منتشر شد',type:'ویژگی جدید',time:'۲ روز پیش'},
+{t:'تعمیرات برنامه‌ریزی شده',m:'۱۴ شهریور ساعت ۲ تا ۴ بامداد',type:'تعمیرات',time:'۵ روز پیش'},
+{t:'سیاست‌های جدید حریم خصوصی',m:'به‌روزرسانی مطابق با GDPR',type:'امنیتی',time:'۱ هفته پیش'}
+].map(a=>`
+<div class="p-3 border-b border-white/[.04] last:border-0 flex items-center gap-3 hover:bg-white/[.02]">
+<div class="w-9 h-9 rounded-lg bg-v-500/15 flex items-center justify-center">
+<svg class="w-4 h-4 text-v-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg>
+</div>
+<div class="flex-1"><div class="text-[12px] font-semibold">${a.t}</div><div class="text-[10px] text-s-500 mt-0.5">${a.m}</div></div>
+<div class="text-center"><span class="badge bg-v-500/10 text-v-300 border border-v-500/20 text-[9px]">${a.type}</span><div class="text-[9px] text-s-600 mt-1">${a.time}</div></div>
+</div>`).join('')}
+</div>
+</div>
+</div>
+
+<div id="page-audit" class="page-content" style="display:none">
+<div class="mb-6"><h1 class="text-xl lg:text-2xl font-bold">گزارش ممیزی</h1><p class="text-xs text-s-400 mt-1">همه اقدامات مدیریتی و سیستمی</p></div>
+<div class="surface rounded-xl border border-white/[.06]">
+${[
+{u:'مدیر ارشد',a:'نقش کاربر u_4 به معلق تغییر یافت',t:'۱ ساعت پیش',ip:'185.120.10.5',c:'amber'},
+{u:'مدیر ارشد',a:'تنظیمات CDN تغییر کرد',t:'۲ ساعت پیش',ip:'185.120.10.5',c:'v'},
+{u:'سیستم',a:'پشتیبان‌گیری خودکار انجام شد',t:'۳ ساعت پیش',ip:'-',c:'emerald'},
+{u:'مدیر احمدی',a:'کاربر جدید u_125 ایجاد شد',t:'۵ ساعت پیش',ip:'85.120.10.5',c:'blue'},
+{u:'مدیر ارشد',a:'Rate Limit به ۱۰۰۰ تغییر یافت',t:'۸ ساعت پیش',ip:'185.120.10.5',c:'v'},
+{u:'سیستم',a:'اسکن امنیتی روزانه کامل شد',t:'۱ روز پیش',ip:'-',c:'emerald'},
+{u:'مدیر کریمی',a:'فایل f_x9k2m مسدود شد',t:'۱ روز پیش',ip:'92.120.10.5',c:'rose'}
+].map(a=>`
+<div class="p-3 border-b border-white/[.04] last:border-0 flex items-center gap-3 hover:bg-white/[.02]">
+<div class="w-9 h-9 rounded-full bg-${a.c}-500/15 flex items-center justify-center text-${a.c}-400 text-[10px] font-bold shrink-0">${a.u[0]}</div>
+<div class="flex-1"><div class="text-[11px]"><b>${a.u}</b> <span class="text-s-400">${a.a}</span></div><div class="text-[9px] text-s-500 mt-0.5 flex items-center gap-2"><span>${a.t}</span><span class="w-1 h-1 rounded-full bg-s-600"></span><span class="font-mono" dir="ltr">${a.ip}</span></div></div>
+</div>`).join('')}
+</div>
+</div>
+
+</main>
+</div>
+</div>
+
+<script>
+// ═══════════ UTILS ═══════════
+function toFa(n){return String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}
+function fmtNum(n){return toFa(n.toLocaleString())}
+function fmtSize(b){if(!b)return'۰ بایت';const k=1024,s=['بایت','کیلوبایت','مگابایت','گیگابایت','ترابایت'];const i=Math.floor(Math.log(b)/Math.log(k));return toFa(parseFloat((b/Math.pow(k,i)).toFixed(1)))+' '+s[i]}
+
+function toast(msg,type='info'){
+const c=document.getElementById('toasts');
+const colors={success:'border-emerald-500/20',error:'border-rose-500/20',info:'border-v-500/20',warning:'border-amber-500/20'};
+const icons={success:'<svg class="w-4 h-4 text-emerald-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',error:'<svg class="w-4 h-4 text-rose-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/></svg>',info:'<svg class="w-4 h-4 text-v-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/></svg>',warning:'<svg class="w-4 h-4 text-amber-400 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/></svg>'};
+const t=document.createElement('div');
+t.className=`pointer-events-auto surface-raised rounded-xl p-3 ps-4 border ${colors[type]} flex items-center gap-2.5 min-w-[260px] shadow-2xl`;
+t.style.animation='toastIn .25s cubic-bezier(.16,1,.3,1)';
+t.innerHTML=`${icons[type]}<span class="text-xs font-medium flex-1">${msg}</span>`;
+c.appendChild(t);
+setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-8px)';t.style.transition='all .2s';setTimeout(()=>t.remove(),200)},3500);
+}
+
+function confetti(){
+for(let i=0;i<40;i++){
+const el=document.createElement('div');
+el.className='confetti';
+el.style.left=Math.random()*100+'vw';
+el.style.background=`hsl(${Math.random()*360},80%,60%)`;
+el.style.width='8px';el.style.height='8px';
+el.style.animationDelay=Math.random()*0.5+'s';
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),3500);
+}
+}
+
+// ═══════════ NAVIGATION ═══════════
+document.querySelectorAll('.nav-item').forEach(item=>{
+item.addEventListener('click',e=>{
+e.preventDefault();
+document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+item.classList.add('active');
+const nav=item.getAttribute('data-nav');
+document.querySelectorAll('.page-content').forEach(p=>p.style.display='none');
+const page=document.getElementById('page-'+nav);
+if(page){
+page.style.display='block';
+page.style.animation='fadeIn .3s';
+// Initialize charts for specific pages
+setTimeout(()=>{
+if(nav==='storage')initStorageCharts();
+if(nav==='billing')initBillingCharts();
+if(nav==='analytics')initAnalyticsCharts();
+},50);
+}
+if(window.innerWidth<1024)document.getElementById('sidebar').classList.remove('open');
+});
+});
+
+// ═══════════ COMMAND PALETTE ═══════════
+function openCmd(){
+const commands=[
+{i:'<rect x="3" y="3" width="7" height="7"/>',l:'داشبورد',a:()=>document.querySelector('[data-nav="overview"]').click()},
+{i:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',l:'مدیریت کاربران',a:()=>document.querySelector('[data-nav="users"]').click()},
+{i:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',l:'مدیریت فایل‌ها',a:()=>document.querySelector('[data-nav="files"]').click()},
+{i:'<ellipse cx="12" cy="5" rx="9" ry="3"/>',l:'فضای ذخیره',a:()=>document.querySelector('[data-nav="storage"]').click()},
+{i:'<rect x="1" y="4" width="22" height="16" rx="2"/>',l:'صورتحساب',a:()=>document.querySelector('[data-nav="billing"]').click()},
+{i:'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94"/>',l:'گزارش‌ها',a:()=>document.querySelector('[data-nav="reports"]').click()},
+{i:'<rect x="2" y="2" width="20" height="8" rx="2"/>',l:'سرورها',a:()=>document.querySelector('[data-nav="servers"]').click()},
+{i:'<line x1="8" y1="6" x2="21" y2="6"/>',l:'صف‌ها',a:()=>document.querySelector('[data-nav="queues"]').click()},
+{i:'<polyline points="4 17 10 11 4 5"/>',l:'لاگ‌های سیستم',a:()=>document.querySelector('[data-nav="logs"]').click()},
+{i:'<rect x="3" y="11" width="18" height="11" rx="2"/>',l:'مرکز امنیت',a:()=>document.querySelector('[data-nav="security"]').click()},
+{i:'<path d="M3 11l18-5v12L3 14v-3z"/>',l:'ارسال اطلاعیه',a:()=>{document.querySelector('[data-nav="announcements"]').click();closeCmd()}},
+{i:'<circle cx="12" cy="12" r="3"/>',l:'تنظیمات',a:()=>document.querySelector('[data-nav="settings"]').click()}
+];
+document.getElementById('cmd-root').innerHTML=`
+<div class="fixed inset-0 z-[150] flex items-start justify-center pt-[10vh] px-4">
+<div class="absolute inset-0 bg-s-950/70 backdrop-blur-sm" style="animation:fadeIn .15s" onclick="closeCmd()"></div>
+<div class="relative surface-overlay rounded-2xl border border-v-500/15 w-full max-w-lg shadow-2xl overflow-hidden" style="animation:modalIn .2s cubic-bezier(.16,1,.3,1)">
+<div class="flex items-center gap-2 p-3 border-b border-white/[.04]">
+<svg class="w-4 h-4 text-s-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" placeholder="جستجوی سریع..." class="flex-1 bg-transparent text-sm outline-none placeholder:text-s-600" id="cmd-input"/>
+<kbd>ESC</kbd>
+</div>
+<div class="max-h-[400px] overflow-y-auto p-1.5" id="cmd-list">
+<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1">دستورات و صفحات</div>
+${commands.map((c,i)=>`<button data-cmd="${i}" onclick="window.cmdActions[${i}]();closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] transition-colors text-start">
+<div class="w-5 h-5 text-s-500 shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${c.i}</svg></div>
+<span class="flex-1">${c.l}</span>
+</button>`).join('')}
+</div>
+</div>
+</div>`;
+window.cmdActions=commands.map(c=>c.a);
+const input=document.getElementById('cmd-input');
+setTimeout(()=>input.focus(),50);
+input.addEventListener('input',e=>{
+const q=e.target.value.toLowerCase();
+const list=document.getElementById('cmd-list');
+const matched=commands.filter(c=>c.l.toLowerCase().includes(q));
+if(!matched.length){list.innerHTML=`<div class="p-8 text-center text-xs text-s-500">نتیجه‌ای یافت نشد</div>`;return}
+list.innerHTML=`<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1">دستورات و صفحات</div>`+matched.map((c,i)=>`<button data-cmd="${i}" onclick="window.cmdActions[${i}]();closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] text-start"><div class="w-5 h-5 text-s-500 shrink-0 flex items-center justify-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${c.i}</svg></div><span class="flex-1">${c.l}</span></button>`).join('');
+window.cmdActions=matched.map(c=>c.a);
+});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'){const first=document.querySelector('[data-cmd]');if(first)first.click()}});
+}
+function closeCmd(){document.getElementById('cmd-root').innerHTML=''}
+
+// ═══════════ NOTIFICATIONS ═══════════
+function toggleNotif(){
+const root=document.getElementById('drawer-root');
+if(root.innerHTML){root.innerHTML='';return}
+const notifs=[
+{t:'گزارش جدید',d:'یک گزارش تخلف بحرانی ثبت شد',time:'۲ دقیقه پیش',c:'rose',icon:'alert'},
+{t:'هشدار ظرفیت',d:'سرور ap-south-1 به ۹۱٪ ظرفیت رسید',time:'۱ ساعت پیش',c:'amber',icon:'warning'},
+{t:'اسکن کامل شد',d:'۱۰۰۰ فایل اسکن و پاک شدند',time:'۲ ساعت پیش',c:'emerald',icon:'check'},
+{t:'ثبت‌نام جدید',d:'۱۲۴ کاربر جدید در ۲۴ ساعت',time:'۳ ساعت پیش',c:'v',icon:'user'},
+{t:'پرداخت موفق',d:'$۴۲۸ از اشتراک‌های جدید دریافت شد',time:'۵ ساعت پیش',c:'emerald',icon:'dollar'}
+];
+root.innerHTML=`
+<div class="fixed inset-0 z-50 flex">
+<div class="flex-1 bg-s-950/70 backdrop-blur-sm" onclick="document.getElementById('drawer-root').innerHTML=''" style="animation:fadeIn .2s"></div>
+<div class="w-full max-w-sm surface-overlay border-s border-white/[.06] overflow-y-auto" style="animation:drawerIn .3s cubic-bezier(.16,1,.3,1)">
+<div class="sticky top-0 surface-overlay border-b border-white/[.04] p-3 flex items-center justify-between z-10">
+<div class="text-sm font-semibold">اعلان‌ها</div>
+<button onclick="toast('همه خوانده شدند','success')" class="text-[10px] text-v-400">خواندن همه</button>
+</div>
+<div class="divide-y divide-white/[.04]">
+${notifs.map(n=>`
+<div class="p-3 hover:bg-white/[.02] cursor-pointer flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-${n.c}-500/15 flex items-center justify-center shrink-0">
+${n.icon==='alert'?'<svg class="w-4 h-4 text-'+n.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94"/></svg>':n.icon==='warning'?'<svg class="w-4 h-4 text-'+n.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94"/><line x1="12" y1="9" x2="12" y2="13"/></svg>':n.icon==='check'?'<svg class="w-4 h-4 text-'+n.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>':n.icon==='user'?'<svg class="w-4 h-4 text-'+n.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>':'<svg class="w-4 h-4 text-'+n.c+'-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'}
+</div>
+<div class="flex-1 min-w-0"><div class="text-[11px] font-semibold">${n.t}</div><div class="text-[10px] text-s-400 mt-0.5">${n.d}</div><div class="text-[9px] text-s-600 mt-1">${n.time}</div></div>
+</div>`).join('')}
+</div>
+</div>
+</div>`;
+}
+
+// ═══════════ BROADCAST MODAL ═══════════
+function previewAnnouncement(){
+const title=document.getElementById('announcement-title')?.value.trim();
+const message=document.getElementById('announcement-message')?.value.trim();
+const preview=document.getElementById('announcement-preview');
+if(!preview)return;
+if(!title&&!message){toast('عنوان یا پیام را وارد کنید','warning');return}
+preview.innerHTML=`<div class="text-[10px] text-v-300 mb-1">پیش‌نمایش اطلاعیه</div><div class="font-semibold mb-1">${title||'بدون عنوان'}</div><div class="whitespace-pre-line">${message||'بدون پیام'}</div>`;
+preview.classList.remove('hidden');
+}
+function publishAnnouncement(){
+const title=document.getElementById('announcement-title')?.value.trim();
+const message=document.getElementById('announcement-message')?.value.trim();
+const schedule=document.getElementById('announcement-schedule')?.value||'now';
+if(!title||!message){toast('عنوان و پیام الزامی است','warning');return}
+const list=document.getElementById('announcement-list');
+const scheduled=schedule!=='now';
+if(list){const row=document.createElement('div');row.className='p-3 border-b border-white/[.04] flex items-center gap-3 hover:bg-white/[.02]';row.dataset.status=scheduled?'scheduled':'sent';row.innerHTML=`<div class="w-9 h-9 rounded-lg bg-v-500/15 flex items-center justify-center"><svg class="w-4 h-4 text-v-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l18-5v12L3 14v-3z"/></svg></div><div class="flex-1 min-w-0"><div class="text-[12px] font-semibold truncate">${title}</div><div class="text-[10px] text-s-500 truncate">${message}</div></div><div class="text-center"><span class="badge ${scheduled?'bg-amber-500/10 text-amber-300 border border-amber-500/20':'bg-emerald-500/10 text-emerald-300 border border-emerald-500/20'} text-[9px]">${scheduled?'زمان‌بندی‌شده':'ارسال‌شده'}</span><div class="text-[9px] text-s-600 mt-1">همین الان</div></div>`;list.prepend(row)}
+const toLatin=value=>String(value||0).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d));const sent=document.getElementById('announcement-sent');const queued=document.getElementById('announcement-queued');if(scheduled){if(queued)queued.textContent=toFa(Number(toLatin(queued.textContent))+1)}else if(sent)sent.textContent=toFa(Number(toLatin(sent.textContent))+1);
+toast(scheduled?'اطلاعیه زمان‌بندی شد':'اطلاعیه ارسال شد','success');if(!scheduled)confetti();document.getElementById('announcement-title').value='';document.getElementById('announcement-message').value='';document.getElementById('announcement-preview')?.classList.add('hidden');
+}
+function filterAnnouncements(status){document.querySelectorAll('#announcement-list>[data-status]').forEach(row=>{row.hidden=status!=='all'&&row.dataset.status!==status})}
+function openBroadcast(){
+document.getElementById('modal-root').innerHTML=`
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-s-950/80 backdrop-blur-sm" onclick="closeModal()" style="animation:fadeIn .15s"></div>
+<div class="relative surface-overlay rounded-2xl border border-v-500/20 max-w-md w-full p-5" style="animation:modalIn .2s">
+<div class="flex items-center justify-between mb-4">
+<div class="text-sm font-semibold">ارسال اطلاعیه سراسری</div>
+<button onclick="closeModal()" class="p-1 rounded btn-ghost"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+</div>
+<div class="space-y-3">
+<div><label class="text-[10px] font-medium text-s-400 mb-1 block">عنوان</label><input type="text" class="input w-full px-3 py-2 rounded-lg text-xs" placeholder="عنوان اطلاعیه"/></div>
+<div><label class="text-[10px] font-medium text-s-400 mb-1 block">پیام</label><textarea rows="4" class="input w-full px-3 py-2 rounded-lg text-xs" placeholder="متن اطلاعیه..."></textarea></div>
+<div><label class="text-[10px] font-medium text-s-400 mb-1 block">گیرندگان</label><select class="input w-full px-3 py-2 rounded-lg text-xs"><option>همه کاربران (۵۰٬۲۴۷)</option><option>کاربران Pro (۸٬۴۳۲)</option><option>کاربران Business (۲٬۱۴۵)</option><option>مدیران (۲۴)</option></select></div>
+</div>
+<div class="flex gap-2 mt-4"><button onclick="closeModal();toast('اطلاعیه ارسال شد','success');confetti()" class="btn-primary flex-1 py-2 rounded-lg text-xs font-semibold text-white">ارسال</button><button onclick="closeModal()" class="btn-secondary flex-1 py-2 rounded-lg text-xs">لغو</button></div>
+</div>
+</div>`;
+}
+function closeModal(){document.getElementById('modal-root').innerHTML=''}
+
+// ═══════════ QUICK ACTIONS ═══════════
+function showQuickActions(){
+document.getElementById('modal-root').innerHTML=`
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-s-950/80 backdrop-blur-sm" onclick="closeModal()" style="animation:fadeIn .15s"></div>
+<div class="relative surface-overlay rounded-2xl border border-v-500/20 max-w-md w-full p-5" style="animation:modalIn .2s">
+<div class="text-sm font-semibold mb-4">اقدامات سریع</div>
+<div class="grid grid-cols-2 gap-2">
+${[
+{t:'اسکن سیستم',i:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',c:'emerald'},
+{t:'پشتیبان‌گیری',i:'<ellipse cx="12" cy="5" rx="9" ry="3"/>',c:'blue'},
+{t:'پاکسازی کش',i:'<polyline points="3 6 5 6 21 6"/>',c:'amber'},
+{t:'ارسال اطلاعیه',i:'<path d="M3 11l18-5v12L3 14v-3z"/>',c:'v'},
+{t:'خروجی گزارش',i:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',c:'fuchsia'},
+{t:'بروزرسانی سیستم',i:'<polyline points="23 4 23 10 17 10"/>',c:'cyan'}
+].map(a=>`
+<button onclick="closeModal();toast('${a.t} انجام شد','success')" class="surface rounded-xl p-3 border border-white/[.06] hover:border-${a.c}-500/30 transition-colors text-start">
+<div class="w-8 h-8 rounded-lg bg-${a.c}-500/15 flex items-center justify-center mb-2"><svg class="w-4 h-4 text-${a.c}-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${a.i}</svg></div>
+<div class="text-[11px] font-medium">${a.t}</div>
+</button>`).join('')}
+</div>
+</div>
+</div>`;
+}
+
+function exportReport(){toast('گزارش در حال تولید...','info');setTimeout(()=>toast('گزارش آماده دانلود است','success'),1500)}
+
+// ═══════════ KEYBOARD HELP ═══════════
+function showKeyboardHelp(){
+document.getElementById('modal-root').innerHTML=`
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-s-950/80 backdrop-blur-sm" onclick="closeModal()" style="animation:fadeIn .15s"></div>
+<div class="relative surface-overlay rounded-2xl border border-v-500/20 max-w-lg w-full p-5" style="animation:modalIn .2s">
+<div class="flex items-center justify-between mb-4"><div class="text-sm font-semibold">میانبرهای صفحه‌کلید</div><button onclick="closeModal()" class="p-1 rounded btn-ghost"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/></svg></button></div>
+<div class="grid md:grid-cols-2 gap-4">
+<div>
+<div class="text-[10px] font-semibold text-s-400 mb-2">عمومی</div>
+<div class="space-y-2">
+${[['⌘K','جستجوی سریع'],['?','نمایش میانبرها'],['Esc','بستن']].map(([k,v])=>`<div class="flex items-center justify-between"><span class="text-xs">${v}</span><kbd>${k}</kbd></div>`).join('')}
+</div>
+</div>
+<div>
+<div class="text-[10px] font-semibold text-s-400 mb-2">ناوبری</div>
+<div class="space-y-2">
+${[['1','داشبورد'],['2','کاربران'],['3','فایل‌ها'],['4','سرورها'],['5','امنیت']].map(([k,v])=>`<div class="flex items-center justify-between"><span class="text-xs">${v}</span><kbd>${k}</kbd></div>`).join('')}
+</div>
+</div>
+</div>
+</div>
+</div>`;
+}
+
+// ═══════════ COUNTERS ═══════════
+function animateCounters(){
+document.querySelectorAll('.counter').forEach(el=>{
+const target=parseInt(el.dataset.target);let current=0;const step=target/60;
+const timer=setInterval(()=>{current+=step;if(current>=target){current=target;clearInterval(timer)}
+el.textContent=fmtNum(Math.floor(current));},25);
+});
+}
+
+// ═══════════ SPARKLINES ═══════════
+function initSparklines(){
+document.querySelectorAll('.sparkline').forEach(canvas=>{
+const values=canvas.dataset.values.split(',').map(Number);
+const ctx=canvas.getContext('2d');
+const w=canvas.width=canvas.offsetWidth*2;
+const h=canvas.height=canvas.offsetHeight*2;
+ctx.scale(2,2);
+const W=canvas.offsetWidth,H=canvas.offsetHeight;
+const max=Math.max(...values),min=Math.min(...values);
+const range=max-min||1;
+const step=W/(values.length-1);
+ctx.strokeStyle='rgba(139,92,246,.6)';
+ctx.lineWidth=1.5;
+ctx.beginPath();
+values.forEach((v,i)=>{
+const x=i*step;
+const y=H-(v-min)/range*H*0.8-H*0.1;
+if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+});
+ctx.stroke();
+const grad=ctx.createLinearGradient(0,0,0,H);
+grad.addColorStop(0,'rgba(139,92,246,.3)');
+grad.addColorStop(1,'rgba(139,92,246,0)');
+ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();
+ctx.fillStyle=grad;ctx.fill();
+});
+}
+
+// ═══════════ HEATMAP ═══════════
+function initHeatmap(){
+const container=document.getElementById('heatmap');
+if(!container)return;
+const days=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنج‌شنبه','جمعه'];
+let html='<div class="flex gap-1"><div class="w-16 shrink-0"></div><div class="flex-1 grid grid-cols-24 gap-1">';
+for(let h=0;h<24;h++)html+=`<div class="text-[8px] text-s-500 text-center">${toFa(h)}</div>`;
+html+='</div></div>';
+days.forEach((d,di)=>{
+html+=`<div class="flex gap-1 mb-1"><div class="w-16 shrink-0 text-[10px] text-s-500 flex items-center">${d}</div><div class="flex-1 grid grid-cols-24 gap-1">`;
+for(let h=0;h<24;h++){
+const v=Math.random();
+const color=v>.8?'bg-v-400':v>.6?'bg-v-500':v>.4?'bg-v-700':v>.2?'bg-v-900':'bg-s-800';
+html+=`<div class="heatmap-cell h-5 rounded-sm ${color}" title="${d} ساعت ${toFa(h)}: ${fmtNum(Math.floor(v*500))} فعالیت"></div>`;
+}
+html+='</div></div>';
+});
+container.innerHTML=html;
+}
+
+// ═══════════ CHARTS ═══════════
+function initCharts(){
+Chart.defaults.font.family='Vazirmatn,Inter,sans-serif';
+Chart.defaults.color='#94a3b8';
+
+// Main Chart
+const c1=document.getElementById('ch-main');
+if(c1)new Chart(c1,{type:'line',data:{labels:['۰۰','۰۴','۰۸','۱۲','۱۶','۲۰','۲۴'],datasets:[
+{label:'آپلودها',data:[120,89,145,234,312,289,198],borderColor:'#8b5cf6',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,280);g.addColorStop(0,'rgba(139,92,246,.3)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0},
+{label:'دانلودها',data:[340,280,420,589,678,612,423],borderColor:'#3b82f6',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,280);g.addColorStop(0,'rgba(59,130,246,.2)');g.addColorStop(1,'rgba(59,130,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0},
+{label:'API',data:[89,67,120,234,289,256,128],borderColor:'#ec4899',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,280);g.addColorStop(0,'rgba(236,72,153,.15)');g.addColorStop(1,'rgba(236,72,153,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:10}}},tooltip:{backgroundColor:'rgba(10,10,14,.95)',borderColor:'rgba(139,92,246,.15)',borderWidth:1,padding:10,rtl:true}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{font:{size:9}}}},interaction:{mode:'index',intersect:false}}});
+
+// Revenue Chart
+const c2=document.getElementById('ch-revenue');
+if(c2)new Chart(c2,{type:'bar',data:{labels:['فرو','ارد','خرد','تیر','مرد','شهر','مهر','آبان'],datasets:[
+{label:'MRR',data:[32000,34000,36000,38000,37000,39000,41000,42800],backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(139,92,246,.7)');g.addColorStop(1,'rgba(139,92,246,.2)');return g},borderRadius:4},
+{label:'ARR',data:[384000,408000,432000,456000,444000,468000,492000,513600],type:'line',borderColor:'#10b981',borderWidth:2,pointRadius:0,tension:.4,yAxisID:'y1'}
+]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'top',align:'end',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:10}}}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{font:{size:9},callback:v=>'$'+v/1000+'K'}},y1:{position:'right',grid:{display:false},ticks:{font:{size:9},callback:v=>'$'+v/1000+'K'}}}}});
+}
+
+function initStorageCharts(){
+const c1=document.getElementById('ch-storage-growth');
+if(c1&&!c1.__init){c1.__init=true;new Chart(c1,{type:'line',data:{labels:['فرو','ارد','خرد','تیر','مرد','شهر'],datasets:[{label:'PB',data:[1.2,1.4,1.6,1.8,2.1,2.4],borderColor:'#8b5cf6',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,200);g.addColorStop(0,'rgba(139,92,246,.3)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#8b5cf6'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{font:{size:9},callback:v=>v+' PB'}}}}});}
+const c2=document.getElementById('ch-storage-type');
+if(c2&&!c2.__init){c2.__init=true;new Chart(c2,{type:'doughnut',data:{labels:['تصاویر','ویدیوها','اسناد','صداها','سایر'],datasets:[{data:[42,28,15,8,7],backgroundColor:['#8b5cf6','#ec4899','#3b82f6','#f59e0b','#64748b'],borderWidth:0,cutout:'65%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:8,boxHeight:8,font:{size:10},padding:8,rtl:true}}}}});}
+}
+
+function initBillingCharts(){
+const c1=document.getElementById('ch-billing-plan');
+if(c1&&!c1.__init){c1.__init=true;new Chart(c1,{type:'doughnut',data:{labels:['Free','Pro','Business','Enterprise'],datasets:[{data:[42000,8432,2145,670],backgroundColor:['#64748b','#8b5cf6','#ec4899','#f59e0b'],borderWidth:0,cutout:'65%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:8,boxHeight:8,font:{size:10},padding:8,rtl:true}}}}});}
+const c2=document.getElementById('ch-billing-mrr');
+if(c2&&!c2.__init){c2.__init=true;new Chart(c2,{type:'line',data:{labels:['فرو','ارد','خرد','تیر','مرد','شهر','مهر','آبان'],datasets:[{label:'MRR',data:[32000,34000,36000,38000,37000,39000,41000,42800],borderColor:'#8b5cf6',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,220);g.addColorStop(0,'rgba(139,92,246,.3)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{font:{size:9},callback:v=>'$'+v/1000+'K'}}}}});}
+}
+
+function initAnalyticsCharts(){
+const c1=document.getElementById('ch-analytics');
+if(c1&&!c1.__init){c1.__init=true;new Chart(c1,{type:'line',data:{labels:['۰۰','۰۴','۰۸','۱۲','۱۶','۲۰','۲۴'],datasets:[{label:'ترافیک',data:[120,89,145,234,312,289,234],borderColor:'#8b5cf6',backgroundColor:c=>{const g=c.chart.ctx.createLinearGradient(0,0,0,260);g.addColorStop(0,'rgba(139,92,246,.3)');g.addColorStop(1,'rgba(139,92,246,0)');return g},fill:true,tension:.4,borderWidth:2,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:9}}},y:{grid:{color:'rgba(148,163,184,.06)'},ticks:{font:{size:9}}}}}});}
+const c2=document.getElementById('ch-analytics-source');
+if(c2&&!c2.__init){c2.__init=true;new Chart(c2,{type:'doughnut',data:{labels:['مستقیم','جستجو','ارجاعی','API','شبکه‌های اجتماعی'],datasets:[{data:[45,25,15,10,5],backgroundColor:['#8b5cf6','#3b82f6','#ec4899','#f59e0b','#64748b'],borderWidth:0,cutout:'65%'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{boxWidth:8,boxHeight:8,font:{size:10},padding:8,rtl:true}}}}});}
+}
+
+// ═══════════ LIVE FEED SIMULATION ═══════════
+function simulateLiveFeed(){
+const acts=[
+{c:'emerald',icon:'upload',n:'سارا احمدی',a:'فایل جدیدی آپلود کرد'},
+{c:'v',icon:'user',n:'محمد رضایی',a:'به پلن پرو ارتقا یافت'},
+{c:'blue',icon:'download',n:'کاربر مهمان',a:'فایل دانلود کرد'},
+{c:'fuchsia',icon:'share',n:'الهام کریمی',a:'فایل به اشتراک گذاشت'},
+{c:'cyan',icon:'api',n:'API',a:'وبهوک فراخوانی شد'},
+{c:'emerald',icon:'register',n:'کاربر جدید',a:'ثبت‌نام کرد'}
+];
+setInterval(()=>{
+const feed=document.getElementById('live-feed');
+if(!feed||!document.getElementById('page-overview').style.display||document.getElementById('page-overview').style.display==='none')return;
+const a=acts[Math.floor(Math.random()*acts.length)];
+const item=document.createElement('div');
+item.className='p-2.5 flex items-start gap-2 live-feed-item border-b border-white/[.04]';
+item.innerHTML=`<div class="w-7 h-7 rounded-lg bg-${a.c}-500/15 flex items-center justify-center shrink-0">
+<svg class="w-3.5 h-3.5 text-${a.c}-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px] leading-tight"><b class="text-s-200">${a.n}</b> <span class="text-s-400">${a.a}</span></div>
+<div class="text-[9px] text-s-600 mt-0.5">همین الان</div>
+</div>`;
+feed.insertBefore(item,feed.firstChild);
+if(feed.children.length>20)feed.removeChild(feed.lastChild);
+// Update existing timestamps
+Array.from(feed.children).slice(1).forEach((el,i)=>{
+const timeEl=el.querySelector('.text-s-600');
+if(timeEl){
+if(i<3)timeEl.textContent='چند ثانیه پیش';
+else if(i<8)timeEl.textContent='۱ دقیقه پیش';
+else timeEl.textContent=(i-5)+' دقیقه پیش';
+}
+});
+},4000);
+}
+
+// ═══════════ LIVE SERVER METRICS ═══════════
+function simulateServerMetrics(){
+setInterval(()=>{
+const el=document.getElementById('hero-speed');
+if(el)el.textContent=(3+Math.random()*3).toFixed(1);
+// Update online users
+const online=document.querySelectorAll('.counter')[1];
+if(online){
+const base=1247;
+const variation=Math.floor(Math.random()*30-15);
+online.textContent=fmtNum(base+variation);
+}
+},3000);
+}
+
+// ═══════════ KEYBOARD SHORTCUTS ═══════════
+document.addEventListener('keydown',e=>{
+if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmd()}
+if(e.key==='Escape'){closeCmd();closeModal();document.getElementById('drawer-root').innerHTML=''}
+if(e.key==='?'){e.preventDefault();showKeyboardHelp()}
+if(e.target.matches('input,textarea,select'))return;
+if(e.key==='1')document.querySelector('[data-nav="overview"]')?.click();
+if(e.key==='2')document.querySelector('[data-nav="users"]')?.click();
+if(e.key==='3')document.querySelector('[data-nav="files"]')?.click();
+if(e.key==='4')document.querySelector('[data-nav="servers"]')?.click();
+if(e.key==='5')document.querySelector('[data-nav="security"]')?.click();
+});
+
+// ═══════════ INIT ═══════════
+window.addEventListener('DOMContentLoaded',()=>{
+document.querySelectorAll('#announcement-list > div').forEach((row,i)=>row.dataset.status=i===1?'scheduled':'sent');
+animateCounters();
+initSparklines();
+initHeatmap();
+initCharts();
+simulateLiveFeed();
+simulateServerMetrics();
+// Welcome toast
+setTimeout(()=>toast('به پنل مدیریت خوش آمدید 👋','success'),500);
+});
+</script>
+<script src="src/admin/file-fallback.js"></script>
+<script type="module" src="src/admin/app.js"></script>
+</body>
+</html>

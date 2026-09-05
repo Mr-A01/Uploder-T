@@ -1,0 +1,25 @@
+(() => {
+  const icon = '<svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>';
+  const brand = `<a href="#/" class="auth-brand"><span class="auth-brand-mark">${icon}</span><span>Nexus</span></a>`;
+  const card = content => `<div class="auth-page-shell bg-void"><div class="auth-orb auth-orb-one"></div><div class="auth-orb auth-orb-two"></div><div class="auth-page-content">${brand}${content}</div></div>`;
+
+  function register() {
+    const content = `<div class="surface-raised auth-card border border-white/[.06]"><h1 class="text-xl font-bold mb-1" data-t="register_title">Create your account</h1><p class="text-xs text-s-400 mb-6" data-t="register_subtitle">14-day free trial, no card required</p><form onsubmit="handleRegister(event)" class="space-y-3"><div class="grid grid-cols-2 gap-2"><div><label class="text-[11px] font-medium text-s-400 mb-1 block" data-t="register_first">First name</label><input type="text" required class="input w-full px-3 py-2 rounded-lg text-sm" placeholder="John"/></div><div><label class="text-[11px] font-medium text-s-400 mb-1 block" data-t="register_last">Last name</label><input type="text" required class="input w-full px-3 py-2 rounded-lg text-sm" placeholder="Doe"/></div></div><div><label class="text-[11px] font-medium text-s-400 mb-1 block" data-t="register_email">Email</label><input type="email" required class="input w-full px-3 py-2 rounded-lg text-sm" placeholder="you@example.com"/></div><div><label class="text-[11px] font-medium text-s-400 mb-1 block" data-t="register_password">Password</label><input type="password" minlength="8" required class="input w-full px-3 py-2 rounded-lg text-sm" placeholder="Minimum 8 characters"/><div class="password-meter" aria-hidden="true"><span></span><span></span><span></span><span></span></div></div><label class="flex items-start gap-2 text-[11px] text-s-400"><input type="checkbox" class="chk mt-0.5" required/><span data-t="register_agree">I agree to the <a href="#/terms" class="text-v-400">Terms</a> and <a href="#/privacy" class="text-v-400">Privacy Policy</a></span></label><button type="submit" class="btn-primary w-full py-2.5 rounded-lg text-sm font-semibold text-white" data-t="register_button">Create account</button></form><p class="text-[11px] text-s-500 text-center mt-5"><span data-t="register_haveAccount">Have an account?</span> <a href="#/login" class="text-v-400 font-medium" data-t="register_signIn">Sign in</a></p></div>`;
+    document.getElementById('p-register').innerHTML = card(content);
+  }
+
+  function login() {
+    const content = `<div class="surface-raised auth-card border border-white/[.06]"><h1 class="text-xl font-bold mb-1" data-t="login_title">Welcome back</h1><p class="text-xs text-s-400 mb-6" data-t="login_subtitle">Sign in to continue to your workspace</p><div class="grid grid-cols-2 gap-2 mb-5"><button class="btn-secondary py-2 rounded-lg text-xs font-medium">Google</button><button class="btn-secondary py-2 rounded-lg text-xs font-medium">GitHub</button></div><div class="relative mb-5"><div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/[.06]"></div></div><div class="relative flex justify-center text-[10px]"><span class="px-2 bg-s-950 text-s-500" data-t="login_or">or continue with email</span></div></div><form onsubmit="handleLogin(event)" class="space-y-3"><div><label class="text-[11px] font-medium text-s-400 mb-1 block" data-t="login_email">Email</label><input type="email" required value="demo@nexus.app" class="input w-full px-3 py-2 rounded-lg text-sm"/></div><div><div class="flex items-center justify-between mb-1"><label class="text-[11px] font-medium text-s-400" data-t="login_password">Password</label><a href="#" onclick="toast(t('forgot_sent'),'success');return false" class="text-[11px] text-v-400" data-t="login_forgot">Forgot?</a></div><input type="password" required value="demo1234" class="input w-full px-3 py-2 rounded-lg text-sm"/></div><label class="flex items-center gap-2 text-[11px] text-s-400"><input type="checkbox" class="chk"/><span data-t="login_remember">Remember me</span></label><button type="submit" class="btn-primary w-full py-2.5 rounded-lg text-sm font-semibold text-white" data-t="login_button">Sign in</button></form><p class="text-[11px] text-s-500 text-center mt-5"><span data-t="login_noAccount">No account?</span> <a href="#/register" class="text-v-400 font-medium" data-t="login_signUp">Sign up</a></p></div><button onclick="navigate('#/admin')" class="auth-admin-link text-[10px] text-s-600 hover:text-v-400" data-t="login_admin">Open Admin Panel →</button>`;
+    document.getElementById('p-login').innerHTML = card(content);
+  }
+
+  function mount() {
+    register();
+    login();
+    document.documentElement.classList.add('auth-components-ready');
+    if (window.updateTranslations) window.updateTranslations();
+  }
+
+  window.NexusAuthComponents = { mount };
+  mount();
+})();
