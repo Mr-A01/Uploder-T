@@ -3,18 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Nexus — Intelligent File Infrastructure</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>Nexus — زیرساخت هوشمند فایل</title>
+<link rel="stylesheet" href="styles.css"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/vazirmatn@5.0.8/index.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.8/index.css"/>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.6/index.css"/>
-<script>
-tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['Vazirmatn','Inter','system-ui','sans-serif'],mono:['JetBrains Mono','monospace']},colors:{
-v:{50:'#f5f3ff',100:'#ede9fe',200:'#ddd6fe',300:'#c4b5fd',400:'#a78bfa',500:'#8b5cf6',600:'#7c3aed',700:'#6d28d9',800:'#5b21b6',900:'#4c1d95',950:'#2e1065'},
-s:{50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a',950:'#020617'}
-}}}}
-</script>
 <style>
 *{-webkit-font-smoothing:antialiased;box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -30,14 +24,14 @@ html:not(.dark) .surface{background:rgba(255,255,255,.8);border-color:rgba(0,0,0
 .surface-raised{background:rgba(15,15,20,.85);backdrop-filter:blur(24px) saturate(1.5);border:1px solid rgba(139,92,246,.08)}
 html:not(.dark) .surface-raised{background:rgba(255,255,255,.92);border-color:rgba(0,0,0,.08)}
 .surface-overlay{background:rgba(8,8,12,.95);backdrop-filter:blur(32px) saturate(1.6);border:1px solid rgba(139,92,246,.1)}
+html:not(.dark) .surface-overlay{background:rgba(255,255,255,.96);border-color:rgba(0,0,0,.08)}
 
 .bg-void{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(139,92,246,.08),transparent),radial-gradient(ellipse 60% 40% at 80% 50%,rgba(59,130,246,.04),transparent),#050507}
 html:not(.dark) .bg-void{background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(139,92,246,.05),transparent),#fafafa}
 
 .text-gradient{background:linear-gradient(135deg,#c4b5fd 0%,#8b5cf6 40%,#6366f1 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.text-gradient-warm{background:linear-gradient(135deg,#f0abfc 0%,#c084fc 50%,#818cf8 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 
-.btn-primary{background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 0 0 1px rgba(139,92,246,.3),0 8px 24px -8px rgba(124,58,237,.4);transition:all .2s}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#6366f1);box-shadow:0 0 0 1px rgba(139,92,246,.3),0 8px 24px -8px rgba(124,58,237,.4);transition:all .2s;position:relative;overflow:hidden}
 .btn-primary:hover{box-shadow:0 0 0 1px rgba(139,92,246,.5),0 12px 32px -8px rgba(124,58,237,.5);transform:translateY(-1px)}
 .btn-primary:active{transform:translateY(0)}
 .btn-secondary{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.15);transition:all .2s}
@@ -76,8 +70,7 @@ html:not(.dark) .nav-item.active{color:#0f172a}
 .toggle{width:38px;height:21px;background:rgba(148,163,184,.15);border-radius:9999px;position:relative;cursor:pointer;transition:all .2s;flex-shrink:0}
 .toggle::after{content:'';position:absolute;top:2.5px;inset-inline-start:2.5px;width:16px;height:16px;background:white;border-radius:50%;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle.on{background:linear-gradient(135deg,#7c3aed,#6366f1)}
-[dir="rtl"] .toggle.on::after{inset-inline-start:19px}
-[dir="ltr"] .toggle.on::after{inset-inline-start:19px}
+.toggle.on::after{inset-inline-start:19px}
 
 .badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:9999px;font-size:10px;font-weight:500}
 
@@ -157,8 +150,10 @@ details summary::-webkit-details-marker{display:none}
 .floating-btn{position:fixed;bottom:80px;left:20px;z-index:85;animation:floatIn .3s cubic-bezier(.16,1,.3,1)}
 @keyframes floatIn{from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-.ripple{position:absolute;border-radius:50%;background:rgba(139,92,246,.4);animation:rippleAnim .6s ease-out forwards;pointer-events:none}
-@keyframes rippleAnim{from{width:0;height:0;opacity:1}to{width:200px;height:200px;opacity:0;margin:-100px}}
+.confetti{position:fixed;pointer-events:none;z-index:9999;animation:confettiFall 3s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-100vh) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+[dir="ltr"] .flip-icon{transform:scaleX(-1)}
 
 .skeleton{background:linear-gradient(90deg,rgba(139,92,246,.03) 0%,rgba(139,92,246,.08) 50%,rgba(139,92,246,.03) 100%);background-size:1000px 100%;animation:shimmer 2s linear infinite;border-radius:4px}
 
@@ -166,7 +161,19 @@ details summary::-webkit-details-marker{display:none}
 .lang-switch button{padding:4px 10px;border-radius:6px;font-size:11px;font-weight:500;color:#94a3b8;transition:all .2s}
 .lang-switch button.active{background:linear-gradient(135deg,#7c3aed,#6366f1);color:white;box-shadow:0 2px 8px -2px rgba(124,58,237,.4)}
 
-[dir="ltr"] .flip-icon{transform:scaleX(-1)}
+.preview-area{background:repeating-conic-gradient(rgba(148,163,184,.08) 0% 25%,transparent 0% 50%) 50%/20px 20px}
+
+.mini-player{position:fixed;bottom:20px;right:20px;z-index:80;animation:slideIn .3s cubic-bezier(.16,1,.3,1)}
+@keyframes slideIn{from{transform:translateY(100px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+.gradient-border{position:relative;background:rgba(15,15,20,.85)}
+.gradient-border::before{content:'';position:absolute;inset:0;border-radius:inherit;padding:1px;background:linear-gradient(135deg,rgba(139,92,246,.3),rgba(168,85,247,.3),rgba(236,72,153,.3));-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
+
+.aurora{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.aurora::before,.aurora::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;filter:blur(100px);opacity:.3;animation:auroraMove 15s ease-in-out infinite}
+.aurora::before{background:radial-gradient(circle,#8b5cf6,transparent);top:-200px;right:-200px}
+.aurora::after{background:radial-gradient(circle,#ec4899,transparent);bottom:-200px;left:-200px;animation-delay:-7s}
+@keyframes auroraMove{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(100px,100px) scale(1.2)}}
 </style>
 </head>
 <body class="bg-void text-s-200">
@@ -179,6 +186,7 @@ details summary::-webkit-details-marker{display:none}
 <div id="upload-widget" class="fixed bottom-20 md:bottom-4 start-4 z-[90] hidden"></div>
 <div id="notif-root"></div>
 <div id="ctx-root"></div>
+<div id="mini-player-root"></div>
 <button id="ai-fab" class="floating-btn hidden md:flex w-12 h-12 rounded-full btn-primary items-center justify-center shadow-xl shadow-v-500/30" onclick="toggleAI()" title="AI Assistant">
 <svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 0 1 5 5v3a5 5 0 0 1-10 0V7a5 5 0 0 1 5-5z"/><path d="M2 12a10 10 0 0 0 8 9.8"/><path d="M22 12a10 10 0 0 1-8 9.8"/><circle cx="12" cy="7" r="1"/></svg>
 </button>
@@ -220,6 +228,7 @@ details summary::-webkit-details-marker{display:none}
 
 <section class="relative min-h-screen flex items-center pt-20 pb-12 overflow-hidden bg-void">
 <div class="absolute inset-0 grid-bg opacity-40"></div>
+<div class="aurora"></div>
 <div class="orb w-[500px] h-[500px] bg-v-600/20 -top-40 start-1/4"></div>
 <div class="orb w-[400px] h-[400px] bg-blue-600/10 top-1/3 -end-20"></div>
 <div class="orb w-[300px] h-[300px] bg-fuchsia-600/10 bottom-0 start-10"></div>
@@ -276,18 +285,18 @@ nexus.app/dashboard
 <div class="rounded-lg p-2.5 bg-white/[.02] border border-white/[.04]">
 <div class="text-[9px] text-s-500 mb-0.5" data-t="dashboard_files">Files</div>
 <div class="text-xs font-bold" id="hero-stat-2">12,847</div>
-<div class="text-[8px] text-emerald-400 mt-0.5">↑ <span id="hero-stat-2-pct">12.5</span>%</div>
+<div class="text-[8px] text-emerald-400 mt-0.5">↑ 12.5%</div>
 </div>
 <div class="rounded-lg p-2.5 bg-white/[.02] border border-white/[.04]">
 <div class="text-[9px] text-s-500 mb-0.5" data-t="dashboard_downloads">Downloads</div>
 <div class="text-xs font-bold" id="hero-stat-3">89.2K</div>
-<div class="text-[8px] text-emerald-400 mt-0.5">↑ <span id="hero-stat-3-pct">8.3</span>%</div>
+<div class="text-[8px] text-emerald-400 mt-0.5">↑ 8.3%</div>
 </div>
 </div>
 <div class="rounded-lg p-2.5 bg-white/[.02] border border-white/[.04]">
 <div class="flex items-center justify-between mb-2">
 <div class="text-[10px] font-semibold" data-t="dashboard_activeUploads">Active Uploads</div>
-<div class="text-[9px] text-v-400"><span id="hero-stat-4">3</span> <span data-t="unit_files">files</span></div>
+<div class="text-[9px] text-v-400"><span>3</span> <span data-t="unit_files">files</span></div>
 </div>
 <div class="space-y-1.5">
 <div class="flex items-center gap-2">
@@ -364,7 +373,7 @@ nexus.app/dashboard
 <div class="grid lg:grid-cols-2 gap-12 items-center mb-28">
 <div>
 <div class="text-[11px] font-semibold text-v-400 tracking-[.2em] uppercase mb-3" data-t="feature_01_badge">01 — ADVANCED UPLOAD</div>
-<h3 class="text-2xl sm:text-3xl font-bold mb-4" data-t="feature_01_title">Upload anything,<br/>any way you want.</h3>
+<h3 class="text-2xl sm:text-3xl font-bold mb-4" data-t="feature_01_title">Upload anything, any way you want.</h3>
 <p class="text-s-400 mb-6 leading-relaxed" data-t="feature_01_desc">Chunked uploads with resume, pause, cancel, and retry. Files up to 10 GB with real-time speed monitoring and ETA.</p>
 <div class="flex flex-wrap gap-2">
 <span class="badge surface border border-white/[.06]" data-t="feature_01_tag_1">Chunked Upload</span>
@@ -385,10 +394,6 @@ nexus.app/dashboard
 <div class="flex items-center gap-2 mb-1.5">
 <div class="w-7 h-7 rounded ft-archive flex items-center justify-center shrink-0"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8v13H3V8"/></svg></div>
 <div class="flex-1 min-w-0"><div class="text-[11px] font-medium truncate" dir="ltr">project-assets.zip</div><div class="text-[9px] text-s-500">250 MB · 4.2 MB/s</div></div>
-<div class="flex gap-1">
-<button class="p-1 rounded hover:bg-white/[.06]" title="Pause"><svg class="w-3 h-3 text-s-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
-<button class="p-1 rounded hover:bg-white/[.06]" title="Cancel"><svg class="w-3 h-3 text-rose-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-</div>
 </div>
 <div class="h-1 bg-s-800 rounded-full overflow-hidden"><div class="progress h-full w-3/4 rounded-full"></div></div>
 <div class="flex justify-between text-[8px] text-s-500 mt-1"><span>75% · ETA: 12s</span><span>Chunk 6 of 8</span></div>
@@ -405,7 +410,7 @@ nexus.app/dashboard
 <div class="order-2 lg:order-1 surface rounded-2xl p-5 border border-white/[.06]">
 <div class="text-[10px] font-semibold text-s-400 mb-4" data-t="feature_02_pipeline">INTELLIGENT PIPELINE</div>
 <div class="flex items-start justify-between relative mb-6">
-<div class="absolute top-4 inset-x-6 h-0.5 bg-gradient-to-l from-emerald-500/50 via-v-500/50 to-s-700 rtl:bg-gradient-to-r"></div>
+<div class="absolute top-4 inset-x-6 h-0.5 bg-gradient-to-l rtl:bg-gradient-to-r from-emerald-500/50 via-v-500/50 to-s-700"></div>
 <div class="pipeline-step done flex flex-col items-center gap-1.5 relative z-10"><div class="step-circle w-8 h-8 rounded-full border border-s-700 bg-s-900 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div><div class="text-[9px] text-s-400" data-t="pipeline_upload">Upload</div></div>
 <div class="pipeline-step done flex flex-col items-center gap-1.5 relative z-10"><div class="step-circle w-8 h-8 rounded-full border border-s-700 bg-s-900 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div><div class="text-[9px] text-s-400" data-t="pipeline_validate">Validate</div></div>
 <div class="pipeline-step done flex flex-col items-center gap-1.5 relative z-10"><div class="step-circle w-8 h-8 rounded-full border border-s-700 bg-s-900 flex items-center justify-center"><svg class="w-3.5 h-3.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="text-[9px] text-s-400" data-t="pipeline_scan">Scan</div></div>
@@ -465,26 +470,11 @@ nexus.app/dashboard
 <div class="order-2 lg:order-1 surface rounded-2xl p-5 border border-white/[.06]">
 <div class="text-[10px] font-semibold text-s-400 mb-3" data-t="feature_04_title">SHARE CENTER</div>
 <div class="space-y-2">
-<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
-<div><div class="text-xs font-medium" data-t="share_public">Public Link</div><div class="text-[9px] font-mono text-s-500 mt-0.5" dir="ltr">nexus.app/s/x7k9p2m</div></div>
-<div class="toggle on" onclick="this.classList.toggle('on')"></div>
-</div>
-<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
-<div><div class="text-xs font-medium" data-t="share_password">Password Protection</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_password_desc">Required for access</div></div>
-<div class="toggle on" onclick="this.classList.toggle('on')"></div>
-</div>
-<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
-<div><div class="text-xs font-medium" data-t="share_expiry">Expiration</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_7d">7 days</div></div>
-<div class="toggle on" onclick="this.classList.toggle('on')"></div>
-</div>
-<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
-<div><div class="text-xs font-medium" data-t="share_limit">Download Limit</div><div class="text-[9px] text-s-500 mt-0.5">1,000 downloads</div></div>
-<div class="toggle" onclick="this.classList.toggle('on')"></div>
-</div>
-<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]">
-<div><div class="text-xs font-medium" data-t="share_viewOnly">View Only</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_viewOnly_desc">Disable download</div></div>
-<div class="toggle" onclick="this.classList.toggle('on')"></div>
-</div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]"><div><div class="text-xs font-medium" data-t="share_public">Public Link</div><div class="text-[9px] font-mono text-s-500 mt-0.5" dir="ltr">nexus.app/s/x7k9p2m</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]"><div><div class="text-xs font-medium" data-t="share_password">Password Protection</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_password_desc">Required for access</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]"><div><div class="text-xs font-medium" data-t="share_expiry">Expiration</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_7d">7 days</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]"><div><div class="text-xs font-medium" data-t="share_limit">Download Limit</div><div class="text-[9px] text-s-500 mt-0.5">1,000 downloads</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
+<div class="flex items-center justify-between p-2.5 rounded-lg bg-white/[.02] border border-white/[.04]"><div><div class="text-xs font-medium" data-t="share_viewOnly">View Only</div><div class="text-[9px] text-s-500 mt-0.5" data-t="share_viewOnly_desc">Disable download</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
 </div>
 <div class="flex gap-2 mt-3">
 <button class="btn-primary flex-1 py-2 rounded-lg text-xs font-semibold text-white" data-t="share_copy">Copy Link</button>
@@ -562,7 +552,7 @@ nexus.app/dashboard
 <div>
 <div class="text-[11px] font-semibold text-v-400 tracking-[.2em] uppercase mb-3" data-t="feature_07_badge">07 — POWERFUL API</div>
 <h3 class="text-2xl sm:text-3xl font-bold mb-4"><span data-t="feature_07_title_1">Built for</span> <span class="text-gradient" data-t="feature_07_title_2">developers.</span></h3>
-<p class="text-s-400 mb-6 leading-relaxed" data-t="feature_07_desc">Complete REST API with webhooks, chunked uploads, secure keys, and interactive documentation. Get started with a few lines of code.</p>
+<p class="text-s-400 mb-6 leading-relaxed" data-t="feature_07_desc">Complete REST API with webhooks, chunked uploads, secure keys, and interactive documentation.</p>
 <div class="flex flex-wrap gap-2">
 <span class="badge surface border border-white/[.06]">REST API</span>
 <span class="badge surface border border-white/[.06]">Webhooks</span>
@@ -605,7 +595,7 @@ nx.webhooks.<span class="text-amber-300">on</span>(<span class="text-emerald-400
 <h2 class="text-3xl sm:text-4xl font-bold mb-4"><span data-t="hiw_title_1">From upload to share</span> <span class="text-gradient" data-t="hiw_title_2">in seconds.</span></h2>
 </div>
 <div class="grid md:grid-cols-4 gap-4 relative">
-<div class="hidden md:block absolute top-10 inset-x-[12%] h-px bg-gradient-to-l from-transparent via-v-500/20 to-transparent rtl:bg-gradient-to-r"></div>
+<div class="hidden md:block absolute top-10 inset-x-[12%] h-px bg-gradient-to-l rtl:bg-gradient-to-r from-transparent via-v-500/20 to-transparent"></div>
 <div class="surface rounded-2xl p-5 border border-white/[.06] card relative"><div class="w-10 h-10 rounded-xl bg-gradient-to-br from-v-500 to-v-700 flex items-center justify-center mb-4 shadow-lg text-sm font-bold">01</div><h3 class="font-semibold mb-1" data-t="hiw_step_1_t">Upload</h3><p class="text-xs text-s-400 leading-relaxed" data-t="hiw_step_1_d">Drag, drop, or import from URL. Files up to 10 GB.</p></div>
 <div class="surface rounded-2xl p-5 border border-white/[.06] card relative"><div class="w-10 h-10 rounded-xl bg-gradient-to-br from-v-500 to-fuchsia-600 flex items-center justify-center mb-4 shadow-lg text-sm font-bold">02</div><h3 class="font-semibold mb-1" data-t="hiw_step_2_t">Process</h3><p class="text-xs text-s-400 leading-relaxed" data-t="hiw_step_2_d">Virus scan, optimize, extract metadata automatically.</p></div>
 <div class="surface rounded-2xl p-5 border border-white/[.06] card relative"><div class="w-10 h-10 rounded-xl bg-gradient-to-br from-fuchsia-500 to-pink-600 flex items-center justify-center mb-4 shadow-lg text-sm font-bold">03</div><h3 class="font-semibold mb-1" data-t="hiw_step_3_t">Manage</h3><p class="text-xs text-s-400 leading-relaxed" data-t="hiw_step_3_d">Organize in folders, tags, and smart search.</p></div>
@@ -994,7 +984,7 @@ nx.webhooks.<span class="text-amber-300">on</span>(<span class="text-emerald-400
 <div class="surface rounded-2xl p-5 border border-white/[.06] mb-6">
 <div class="flex items-center justify-between mb-4"><div class="text-sm font-semibold" data-t="status_uptime">Uptime (Last 90 Days)</div><div class="text-sm font-bold text-emerald-400">99.98%</div></div>
 <div class="flex gap-0.5 h-8">
-${Array.from({length:90},(_,i)=>`<div class="flex-1 rounded-sm ${Math.random()>0.97?'bg-amber-500':Math.random()>0.99?'bg-rose-500':'bg-emerald-500'}" title="Day ${i+1}"></div>`).join('')}
+${Array.from({length:90},(_,i)=>{const r=Math.random();return `<div class="flex-1 rounded-sm ${r>.97?'bg-amber-500':r>.99?'bg-rose-500':'bg-emerald-500'}" title="Day ${i+1}"></div>`}).join('')}
 </div>
 <div class="flex justify-between mt-2 text-[9px] text-s-500"><span>90 days ago</span><span>Today</span></div>
 </div>
@@ -1059,34 +1049,24 @@ ${[{n:'API',s:'operational',c:'emerald'},{n:'Upload Service',s:'operational',c:'
 // ═══════════ I18N ═══════════
 const I18N = {
   fa: {
-    // Nav
     nav_features: 'قابلیت‌ها', nav_pricing: 'قیمت‌گذاری', nav_developers: 'توسعه‌دهندگان', nav_status: 'وضعیت',
     nav_blog: 'وبلاگ', nav_login: 'ورود', nav_getStarted: 'شروع رایگان',
-    
-    // Hero
     hero_badge: 'نسخه ۳.۰ — سازماندهی فایل با هوش مصنوعی',
     hero_title_1: 'فایل‌های شما.', hero_title_2: 'زیرساخت شما.', hero_title_3: 'کنترل کامل شما.',
     hero_subtitle: 'پلتفرم هوشمند فایل برای تیم‌هایی که سرعت، امنیت و کنترل کامل بر دارایی‌های دیجیتال خود را می‌خواهند.',
     hero_cta_primary: 'شروع آپلود', hero_cta_secondary: 'مشاهده پلتفرم',
     hero_feat_1: 'بدون کارت اعتباری', hero_feat_2: '۵ گیگابایت رایگان', hero_feat_3: 'لغو در هر زمان',
     hero_float_upload: 'آپلود کامل شد', hero_float_security: 'امنیت', hero_float_allClear: 'همه‌چیز امن', hero_float_speed: 'سرعت آپلود',
-    
-    // Trust
     trust_title: 'مورد اعتماد تیم‌ها، خالقان و توسعه‌دهندگان',
     trust_users: 'کاربر فعال', trust_files: 'فایل میزبانی‌شده', trust_storage: 'پتابایت داده', trust_downloads: 'دانلود ارائه‌شده',
-    
-    // Features
-    features_badge: 'قابلیت‌ها',
-    features_title_1: 'ساخته‌شده برای شیوه‌ای که', features_title_2: 'شما کار می‌کنید.',
+    features_badge: 'قابلیت‌ها', features_title_1: 'ساخته‌شده برای شیوه‌ای که', features_title_2: 'شما کار می‌کنید.',
     features_subtitle: 'هر قابلیت برای کنترل کامل بر فایل‌ها بدون هیچ مصالحه‌ای طراحی شده است.',
-    
     feature_01_badge: '۰۱ — آپلود پیشرفته', feature_01_title: 'هر چیزی را، به هر شکلی آپلود کنید.',
     feature_01_desc: 'آپلود چانک‌شده با قابلیت ازسرگیری، توقف، لغو و تلاش مجدد. فایل‌های تا ۱۰ گیگابایت با نظارت بر سرعت در لحظه و زمان تخمینی.',
     feature_01_tag_1: 'آپلود چانک‌شده', feature_01_tag_2: 'ازسرگیری', feature_01_tag_3: 'صف آپلود',
     feature_01_tag_4: 'آپلود موازی', feature_01_tag_5: 'آپلود پس‌زمینه',
     feature_01_drop_title: 'فایل‌ها را بکشید یا کلیک کنید', feature_01_drop_desc: 'تا ۱۰ گیگابایت در هر فایل',
     feature_01_done: 'کامل شد',
-    
     feature_02_badge: '۰۲ — پردازش هوشمند', feature_02_pipeline: 'خط پردازش هوشمند',
     feature_02_title_1: 'هر فایل به‌صورت', feature_02_title_2: 'خودکار پردازش می‌شود.',
     feature_02_desc: 'پس از آپلود، فایل‌ها به‌صورت خودکار اعتبارسنجی، اسکن ویروس و استخراج متادیتا می‌شوند. تشخیص تکراری با هش، فضای ذخیره را حفظ می‌کند.',
@@ -1094,13 +1074,11 @@ const I18N = {
     feature_02_tag_4: 'نسخه‌بندی', feature_02_tag_5: 'پیش‌نمایش خودکار',
     pipeline_upload: 'آپلود', pipeline_validate: 'اعتبارسنجی', pipeline_scan: 'اسکن', pipeline_process: 'پردازش', pipeline_ready: 'آماده',
     pipeline_mime: 'نوع MIME', pipeline_hash: 'SHA-256', pipeline_dims: 'ابعاد', pipeline_dup: 'فایل تکراری', pipeline_reuse: 'استفاده مجدد',
-    
     feature_03_badge: '۰۳ — جستجوی هوشمند', feature_03_title_1: 'با زبان طبیعی', feature_03_title_2: 'جستجو کنید.',
     feature_03_desc: 'موتور جستجوی پیشرفته با درک زبان طبیعی. بر اساس نام، نوع، اندازه، تاریخ، تگ و وضعیت اشتراک جستجو کنید.',
     feature_03_tag_1: 'زبان طبیعی', feature_03_tag_2: 'فیلتر پیشرفته', feature_03_tag_3: 'جستجوی ذخیره‌شده', feature_03_tag_4: 'نتایج فوری',
     feature_03_query: 'ویدیوهای بزرگ‌تر از ۵۰۰ مگابایت این هفته',
     feature_03_2d: '۲ روز پیش', feature_03_5d: '۵ روز پیش',
-    
     feature_04_badge: '۰۴ — اشتراک‌گذاری', feature_04_title: 'مرکز اشتراک‌گذاری',
     feature_04_title_1: 'هرجا اشتراک بگذارید،', feature_04_title_2: 'همه‌چیز را کنترل کنید.',
     feature_04_desc: 'لینک‌های امن با رمز عبور، تاریخ انقضا، محدودیت دانلود، حالت فقط مشاهده و کد QR بسازید. دامنه سفارشی پشتیبانی می‌شود.',
@@ -1109,59 +1087,42 @@ const I18N = {
     share_public: 'لینک عمومی', share_password: 'محافظت با رمز', share_password_desc: 'الزامی برای دسترسی',
     share_expiry: 'انقضا', share_7d: '۷ روز', share_limit: 'محدودیت دانلود',
     share_viewOnly: 'فقط مشاهده', share_viewOnly_desc: 'دانلود غیرفعال', share_copy: 'کپی لینک', share_qr: 'کد QR',
-    
     feature_05_badge: '۰۵ — درخواست فایل', feature_05_title_1: 'فایل دریافت کنید', feature_05_title_2: 'بدون حساب.',
     feature_05_desc: 'یک لینک درخواست بسازید و با دیگران به اشتراک بگذارید. آن‌ها بدون ثبت‌نام، فایل‌هایشان را مستقیم به فضای شما آپلود می‌کنند.',
     feature_05_tag_1: 'بدون ثبت‌نام', feature_05_tag_2: 'پیام سفارشی', feature_05_tag_3: 'انقضا', feature_05_tag_4: 'اعلان فوری',
     feature_05_link: 'لینک درخواست شما', feature_05_drop: 'مدارک خود را اینجا بکشید', feature_05_from: 'از شرکت نکسوس',
     feature_05_stats: '۱۲ فایل دریافت شد · بدون نیاز به ثبت‌نام',
-    
     feature_06_badge: '۰۶ — تحلیل‌های پیشرفته', feature_06_title: 'تحلیل پیشرفته',
     feature_06_title_1: 'بینش‌هایی که', feature_06_title_2: 'تصمیم‌ساز هستند.',
     feature_06_desc: 'دانلودها، پهنای باند، موقعیت جغرافیایی و انواع دستگاه را در لحظه دنبال کنید. فایل‌های محبوب را شناسایی کنید.',
     feature_06_tag_1: 'لحظه‌ای', feature_06_tag_2: 'جغرافیا', feature_06_tag_3: 'دستگاه‌ها',
     feature_06_tag_4: 'منابع ترافیک', feature_06_tag_5: 'صادرات گزارش',
     feature_06_chart: 'دانلودها در طول زمان', feature_06_stat1: 'دانلود', feature_06_stat2: 'پهنای باند', feature_06_stat3: 'کشور',
-    
     feature_07_badge: '۰۷ — API قدرتمند', feature_07_title_1: 'ساخته‌شده برای', feature_07_title_2: 'توسعه‌دهندگان.',
     feature_07_desc: 'REST API کامل با وبهوک، آپلود چانک‌شده، کلیدهای امن و مستندات تعاملی.',
     feature_07_tag_1: 'مستندات تعاملی',
-    
-    // How it works
     hiw_title_1: 'از آپلود تا اشتراک', hiw_title_2: 'در چند ثانیه.',
     hiw_step_1_t: 'آپلود', hiw_step_1_d: 'بکشید، رها کنید یا از لینک وارد کنید. تا ۱۰ گیگابایت.',
     hiw_step_2_t: 'پردازش', hiw_step_2_d: 'اسکن ویروس، بهینه‌سازی و استخراج خودکار متادیتا.',
     hiw_step_3_t: 'مدیریت', hiw_step_3_d: 'سازماندهی در پوشه‌ها، تگ‌ها و جستجوی هوشمند.',
     hiw_step_4_t: 'اشتراک', hiw_step_4_d: 'لینک امن با رمز، انقضا و محدودیت دانلود.',
-    
-    // Security
     security_badge: 'امنیت', security_title_1: 'امنیت سازمانی', security_title_2: 'به‌صورت پیش‌فرض.',
     security_desc: 'فایل‌های شما با رمزنگاری بانکی، نظارت مداوم و کنترل دسترسی دقیق محافظت می‌شوند.',
     security_1: 'رمزنگاری AES-256', security_2: 'گواهینامه SOC 2', security_3: 'مطابق GDPR',
     security_4: 'احراز دومرحله‌ای', security_5: 'اسکن ویروس', security_6: 'گزارش ممیزی',
     security_status: 'وضعیت سیستم', security_status_desc: 'همه سیستم‌ها فعال', security_score: 'امتیاز',
     security_encryption: 'رمزنگاری', security_threat: 'تشخیص تهدید', security_access: 'گزارش دسترسی', security_malware: 'اسکن بدافزار',
-    
-    // Pricing
     pricing_title_1: 'قیمت‌گذاری ساده و شفاف.', pricing_title_2: 'بدون سورپرایز.',
-    
-    // FAQ
     faq_title_1: 'سوالات', faq_title_2: 'پرتکرار.',
-    
-    // CTA
     cta_title: 'آماده کنترل کامل بر فایل‌هایتان هستید؟',
     cta_subtitle: 'به بیش از ۵۰ هزار توسعه‌دهنده و تیم بپیوندید. رایگان شروع کنید.',
     cta_button_1: 'شروع آپلود', cta_button_2: 'تماس با فروش',
-    
-    // Footer
     footer_desc: 'زیرساخت هوشمند فایل برای تیم‌هایی که سرعت، امنیت و کنترل کامل می‌خواهند.',
     footer_product: 'محصول', footer_developers: 'توسعه‌دهندگان', footer_company: 'شرکت', footer_legal: 'حقوقی',
     footer_security: 'امنیت', footer_enterprise: 'سازمانی', footer_docs: 'مستندات', footer_apiRef: 'مرجع API',
     footer_status: 'وضعیت', footer_about: 'درباره ما', footer_careers: 'فرصت‌های شغلی', footer_contact: 'تماس',
     footer_terms: 'قوانین', footer_privacy: 'حریم خصوصی', footer_cookies: 'کوکی‌ها',
     footer_copyright: '© ۲۰۲۶ نکسوس. تمامی حقوق محفوظ است.',
-    
-    // Auth
     login_title: 'خوش برگشتید', login_subtitle: 'برای ادامه وارد حساب کاربری شوید',
     login_or: 'یا با ایمیل ادامه دهید', login_email: 'ایمیل', login_password: 'رمز عبور',
     login_forgot: 'فراموشی رمز؟', login_remember: 'مرا به خاطر بسپار', login_button: 'ورود',
@@ -1172,8 +1133,6 @@ const I18N = {
     register_agree: 'با <a href="#/terms" class="text-v-400">قوانین</a> و <a href="#/privacy" class="text-v-400">حریم خصوصی</a> موافقم',
     register_button: 'ساخت حساب', register_haveAccount: 'حساب دارید؟', register_signIn: 'وارد شوید',
     forgot_sent: 'لینک بازیابی ارسال شد',
-    
-    // Sidebar
     sidebar_workspace: 'فضای کاری', sidebar_overview: 'نمای کلی', sidebar_files: 'فایل‌های من',
     sidebar_upload: 'آپلود', sidebar_import: 'وارد کردن لینک', sidebar_shared: 'اشتراک‌ها',
     sidebar_requests: 'درخواست فایل', sidebar_favorites: 'علاقه‌مندی‌ها', sidebar_trash: 'زباله‌دان',
@@ -1183,49 +1142,32 @@ const I18N = {
     sidebar_storage: 'فضای ذخیره', sidebar_upgrade: 'ارتقا پلن →',
     workspace_switch: 'سوییچ فضای کاری', workspace_personal: 'فضای شخصی',
     plan_pro: 'پلن پرو',
-    
-    // Topbar
     topbar_search: 'جستجو یا دستور...', topbar_upload: 'آپلود',
-    
-    // Mobile
     mob_home: 'خانه', mob_files: 'فایل‌ها', mob_analytics: 'تحلیل', mob_more: 'بیشتر',
-    
-    // Admin
     admin_title: 'مرکز فرماندهی', admin_subtitle: 'مدیریت سیستم',
     admin_dash: 'داشبورد', admin_users: 'کاربران', admin_servers: 'سرورها و صف',
     admin_storage: 'فضای ذخیره', admin_reports: 'تخلفات و گزارش‌ها', admin_logs: 'گزارش ممیزی',
     admin_settings: 'تنظیمات سیستم', admin_backToUser: 'بازگشت به پنل کاربری',
     admin_superadmin: 'مدیر ارشد', admin_allOperational: 'همه سیستم‌ها فعال',
-    
-    // Public
     public_cta: 'فضای ذخیره خود را بسازید', public_secure: 'فایل امن', public_expiry: 'انقضا: ۷ روز دیگر',
     public_scanned: 'اسکن شده ✓', public_sharedBy: 'اشتراک‌گذاری توسط', public_size: 'حجم',
     public_type: 'نوع', public_uploaded: 'آپلود', public_download: 'دانلود فایل',
     public_copyLink: 'کپی لینک', public_qr: 'کد QR', public_share: 'اشتراک',
     public_virusFree: 'بدون ویروس · تحویل CDN', public_poweredBy: 'قدرت گرفته از',
-    
-    // Request
     request_title: 'مدارک خود را ارسال کنید', request_from: 'از طرف', request_drop: 'فایل‌ها را اینجا بکشید یا کلیک کنید',
     request_note: 'بدون نیاز به ثبت‌نام · حداکثر ۲ گیگابایت',
     request_powered: 'قدرت گرفته از', request_noSignup: 'بدون نیاز به حساب',
-    
-    // Status
     status_allOperational: 'همه سیستم‌ها فعال', status_title: 'وضعیت سیستم',
     status_subtitle: 'وضعیت لحظه‌ای تمام سرویس‌های نکسوس', status_uptime: 'پایداری (۹۰ روز گذشته)',
     status_recent: 'رویدادهای اخیر',
-    
-    // Errors
     error_404_title: 'صفحه یافت نشد', error_404_desc: 'صفحه‌ای که دنبال آن هستید وجود ندارد یا منتقل شده است.',
     error_403_title: 'دسترسی ممنوع', error_403_desc: 'شما اجازه دسترسی به این منبع را ندارید.',
     error_500_title: 'خطای سرور', error_500_desc: 'مشکلی در سرور رخ داده است. لطفاً بعداً دوباره امتحان کنید.',
     error_home: 'رفتن به خانه', error_back: 'بازگشت',
-    
-    // Dashboard pages
     dashboard_greeting: 'صبح بخیر، جان 👋', dashboard_greeting_desc: 'امروز چه اتفاقی برای فایل‌های شما افتاده است.',
     dashboard_storage: 'فضای ذخیره', dashboard_files: 'فایل‌ها', dashboard_downloads: 'دانلودها',
     dashboard_activeUploads: 'آپلودهای فعال', unit_tb: 'ترابایت', unit_files: 'فایل',
     dashboard_of5gb: '٪۴۸ از ۵ گیگ',
-    
     insight_storage_title: 'فضای ذخیره ٪۷۲ پر شده',
     insight_storage_desc: '۳ فایل بزرگ ٪۶۸ فضا را مصرف می‌کنند.',
     insight_traffic_title: 'ترافیک دانلود ٪۲۴ افزایش',
@@ -1233,9 +1175,7 @@ const I18N = {
     insight_unused_title: '۴ فایل در ۱۸۰ روز اخیر استفاده نشده',
     insight_unused_desc: 'پیشنهاد: آرشیو یا حذف برای آزادسازی ۱.۲ گیگابایت.',
     insight_check: 'بررسی ←', insight_analyze: 'تحلیل ←', insight_view: 'مشاهده ←',
-    
     quick_upload: 'آپلود فایل', quick_import: 'وارد کردن لینک', quick_request: 'درخواست فایل', quick_share: 'ساخت لینک اشتراک',
-    
     overview_activity: 'فعالیت', overview_7d: '۷ روز گذشته', overview_7d_short: '۷ روز', overview_30d: '۳۰ روز',
     overview_uploads: 'آپلودها', overview_downloads: 'دانلودها',
     overview_storageBreakdown: 'فضای ذخیره', overview_images: 'تصاویر', overview_videos: 'ویدیوها',
@@ -1247,8 +1187,6 @@ const I18N = {
     overview_activity_5: 'فایل <b>draft-v1.docx</b> حذف شد', overview_activity_6: 'نسخه جدید <b>design-system.fig</b> ایجاد شد',
     time_2m: '۲ دقیقه پیش', time_15m: '۱۵ دقیقه پیش', time_1h: '۱ ساعت پیش',
     time_3h: '۳ ساعت پیش', time_5h: '۵ ساعت پیش', time_6h: '۶ ساعت پیش',
-    
-    // Files
     files_title: 'فایل‌های من', files_home: 'خانه', files_all: 'همه فایل‌ها',
     files_upload: 'آپلود', files_searchPlaceholder: 'جستجوی هوشمند... مثلاً "ویدیوهای بزرگ‌تر از ۵۰۰ مگابایت"',
     files_allTypes: 'همه انواع', files_images: 'تصاویر', files_videos: 'ویدیوها', files_docs: 'اسناد',
@@ -1267,8 +1205,6 @@ const I18N = {
     files_bulk_delete: 'حذف', files_bulk_cancel: 'لغو',
     files_notFound: 'فایلی یافت نشد', files_notFound_desc: 'عبارت جستجو را تغییر دهید',
     files_selectAll: 'انتخاب همه',
-    
-    // File details
     details_title: 'جزئیات فایل', details_close: 'بستن', details_download: 'دانلود',
     details_copyLink: 'کپی لینک', details_share: 'اشتراک', details_delete: 'حذف',
     details_favorite: '★ علاقه‌مندی', details_shared: 'اشتراکی',
@@ -1278,12 +1214,10 @@ const I18N = {
     details_size: 'حجم', details_uploaded: 'آپلود', details_downloads: 'دانلودها',
     details_path: 'مسیر', details_owner: 'مالک', details_hash: 'هش',
     details_addTag: '+ افزودن تگ',
-    
-    // Context menu
+    details_preview: 'پیش‌نمایش',
     ctx_download: 'دانلود', ctx_share: 'اشتراک‌گذاری', ctx_rename: 'تغییر نام',
     ctx_copyLink: 'کپی لینک', ctx_favorite: 'افزودن به علاقه‌مندی', ctx_delete: 'حذف',
-    
-    // Upload page
+    ctx_preview: 'پیش‌نمایش',
     upload_title: 'آپلود فایل', upload_subtitle: 'آپلود چانک‌شده با قابلیت ازسرگیری و توقف',
     upload_drop_title: 'فایل‌ها را بکشید و رها کنید یا کلیک کنید',
     upload_drop_desc: 'پشتیبانی از ۵۰+ نوع فایل · حداکثر ۱۰ گیگابایت · آپلود موازی',
@@ -1295,8 +1229,6 @@ const I18N = {
     upload_allDone: 'همه فایل‌ها با موفقیت آپلود شدند 🚀',
     upload_firstFile: 'اولین فایل شما زنده است! 🎉',
     upload_filesUploading: 'فایل در حال آپلود...',
-    
-    // Import
     import_title: 'وارد کردن از لینک', import_subtitle: 'لینک‌ها را وارد کنید تا به‌صورت خودکار دانلود و ذخیره شوند',
     import_label: 'لینک‌ها (هر لینک در یک خط)',
     import_desc: 'ما لینک را اعتبارسنجی، دانلود و پردازش می‌کنیم. آپلود چند لینک همزمان پشتیبانی می‌شود.',
@@ -1305,14 +1237,10 @@ const I18N = {
     import_processing: 'پردازش فایل', import_scanning: 'اسکن ویروس', import_storing: 'ذخیره‌سازی',
     import_ready: 'آماده ✓', import_completed: '✓ وارد شد',
     import_started: 'شروع وارد کردن لینک‌ها',
-    
-    // Shared
     shared_title: 'اشتراک‌گذاری‌ها', shared_active: 'لینک فعال',
     shared_newLink: '+ لینک جدید', shared_file: 'فایل', shared_link: 'لینک',
     shared_downloads: 'دانلودها', shared_expiry: 'انقضا', shared_status: 'وضعیت',
     shared_7d: '۷ روز دیگر', shared_active_status: 'فعال', shared_edit: 'ویرایش',
-    
-    // Requests
     requests_title: 'درخواست‌های فایل', requests_subtitle: 'لینک بسازید تا دیگران بدون ثبت‌نام برای شما فایل بفرستند',
     requests_new: '+ درخواست جدید',
     requests_docs: 'مدارک پروژه', requests_active: 'فعال', requests_expired: 'منقضی',
@@ -1327,18 +1255,12 @@ const I18N = {
     requests_modal_1d: '۱ روز', requests_modal_7d: '۷ روز', requests_modal_30d: '۳۰ روز',
     requests_modal_create: 'ساخت لینک', requests_modal_cancel: 'انصراف',
     requests_created: 'درخواست ساخته شد',
-    
-    // Favorites
     favorites_title: 'علاقه‌مندی‌ها', favorites_count: 'فایل ستاره‌دار',
-    
-    // Trash
     trash_title: 'زباله‌دان', trash_desc: 'فایل‌ها بعد از ۳۰ روز به‌صورت خودکار حذف می‌شوند',
     trash_empty: 'خالی کردن زباله‌دان', trash_empty_done: 'زباله‌دان خالی شد',
     trash_deleted: 'حذف شد:', trash_autoDelete: 'حذف خودکار: ۳۰ روز دیگر',
     trash_restore: 'بازیابی', trash_permanent: 'حذف قطعی',
     trash_restored: 'فایل بازیابی شد', trash_permanentDeleted: 'برای همیشه حذف شد',
-    
-    // Analytics
     analytics_title: 'تحلیل‌ها', analytics_subtitle: 'بینش عمیق درباره عملکرد فایل‌های شما',
     analytics_24h: '۲۴ ساعت', analytics_7d: '۷ روز', analytics_30d: '۳۰ روز',
     analytics_90d: '۹۰ روز', analytics_1y: '۱ سال',
@@ -1351,8 +1273,6 @@ const I18N = {
     device_desktop: 'دسکتاپ', device_mobile: 'موبایل', device_tablet: 'تبلت',
     country_iran: 'ایران', country_us: 'آمریکا', country_germany: 'آلمان',
     country_uk: 'انگلستان', country_other: 'سایر',
-    
-    // API
     api_title: 'API و وبهوک', api_subtitle: 'کلیدهای امن، مستندات تعاملی و رویدادهای لحظه‌ای',
     api_requests24: 'درخواست‌ها (۲۴ ساعت)', api_activeKeys: 'کلیدهای فعال', api_of: 'از',
     api_rateLimit: 'محدودیت نرخ', api_perMin: '/دقیقه', api_proPlan: 'پلن پرو',
@@ -1367,8 +1287,6 @@ const I18N = {
     api_keyModal_title: 'کلید جدید ساخته شد', api_keyModal_desc: 'همین حالا کپی کنید — دیگر نمایش داده نمی‌شود',
     api_keyModal_warning: 'این کلید فقط یک بار نمایش داده می‌شود. در مکان امن ذخیره کنید.',
     api_keyModal_saved: 'ذخیره کردم',
-    
-    // Team
     team_title: 'تیم من', team_subtitle: 'مدیریت اعضا و دسترسی‌ها',
     team_invite: '+ دعوت عضو', team_invited: 'دعوت‌نامه ارسال شد',
     team_owner: 'مالک', team_admin: 'مدیر', team_editor: 'ویرایشگر', team_viewer: 'بیننده',
@@ -1377,8 +1295,6 @@ const I18N = {
     team_permissions: 'مجوزهای نقش‌ها', team_perm: 'مجوز',
     team_perm_upload: 'آپلود', team_perm_download: 'دانلود', team_perm_delete: 'حذف',
     team_perm_share: 'اشتراک‌گذاری', team_perm_manageMembers: 'مدیریت اعضا', team_perm_billing: 'صورتحساب',
-    
-    // Billing
     billing_title: 'صورتحساب', billing_subtitle: 'پلن، مصرف و فاکتورهای شما',
     billing_proPlan: 'پلن پرو', billing_active: 'فعال', billing_renewal: '۹ دلار در ماه · تمدید در ۲۴ مهر',
     billing_upgrade: 'ارتقا', billing_cancel: 'لغو',
@@ -1388,8 +1304,6 @@ const I18N = {
     billing_invoices: 'فاکتورها', billing_september: 'شهریور ۱۴۰۵', billing_august: 'مرداد ۱۴۰۵',
     billing_july: 'تیر ۱۴۰۵', billing_proPlanSub: '۹ دلار · پلن پرو',
     billing_paid: 'پرداخت شده', billing_pdf: 'PDF', billing_downloaded: 'فاکتور دانلود شد',
-    
-    // Security page
     security_title: 'مرکز امنیت', security_subtitle: 'امنیت حساب خود را مدیریت کنید',
     security_score_excellent: 'امتیاز امنیت: عالی (٪۹۸)',
     security_score_desc: 'همه قابلیت‌های امنیتی فعال هستند',
@@ -1406,8 +1320,6 @@ const I18N = {
     device_chrome_mac: 'کروم · مک‌بوک', device_safari_iphone: 'سافاری · آیفون',
     device_firefox_win: 'فایرفاکس · ویندوز', device_firefox_linux: 'فایرفاکس · لینوکس',
     location_tehran: 'تهران، ایران', location_isfahan: 'اصفهان، ایران', location_unknown: 'ناشناس',
-    
-    // Settings
     settings_title: 'تنظیمات', settings_subtitle: 'مدیریت حساب و ترجیحات',
     settings_tab_profile: 'پروفایل', settings_tab_account: 'حساب', settings_tab_appearance: 'ظاهر',
     settings_tab_notifications: 'اعلان‌ها', settings_tab_advanced: 'پیشرفته',
@@ -1427,8 +1339,6 @@ const I18N = {
     settings_currentPlan: 'پلن فعلی', settings_manageBilling: 'مدیریت صورتحساب',
     settings_storage: 'فضای ذخیره', settings_used: '٪۴۸ استفاده شده',
     settings_memberSince: 'عضو از', settings_daysAgo: '۵۸۳ روز پیش',
-    
-    // Admin dashboard
     admin_dash_title: 'مرکز فرماندهی', admin_dash_subtitle: 'نمای لحظه‌ای وضعیت سیستم', admin_live: 'زنده',
     admin_usersOnline: 'کاربران آنلاین', admin_uploadMin: 'آپلود در دقیقه',
     admin_downloadMin: 'دانلود در دقیقه', admin_errors24: 'خطاها (۲۴ ساعت)',
@@ -1444,8 +1354,6 @@ const I18N = {
     live_javad: 'جواد محمدی', live_javad_action: 'به دلیل تخلف معلق شد',
     live_elham: 'الهام کریمی', live_elham_action: '۱۲ فایل به اشتراک گذاشت',
     live_warning: 'هشدار', live_warning_action: 'سرور us-west-2 ظرفیت ٪۹۱',
-    
-    // Admin users
     admin_users_title: 'مدیریت کاربران', admin_users_count: '۵۰٬۲۴۷ کاربر · ۱۲٬۸۴۷ فعال',
     admin_users_new: 'کاربر جدید', admin_users_search: 'جستجوی کاربر...',
     admin_users_allRoles: 'همه نقش‌ها', admin_users_moderator: 'ناظر', admin_users_user: 'کاربر',
@@ -1454,8 +1362,6 @@ const I18N = {
     admin_users_col_storage: 'فضا', admin_users_col_files: 'فایل‌ها', admin_users_col_lastActive: 'آخرین فعالیت',
     admin_users_storage: 'گیگ', admin_users_showing: 'نمایش', admin_users_of: 'از',
     admin_users_prev: 'قبلی', admin_users_next: 'بعدی',
-    
-    // Admin servers
     admin_servers_title: 'سرورها و صف پردازش', admin_servers_subtitle: 'مانیتورینگ لحظه‌ای زیرساخت',
     server_healthy: 'سالم', server_warning: 'هشدار',
     server_cpu: 'CPU', server_ram: 'RAM', server_disk: 'دیسک', server_network: 'شبکه',
@@ -1463,8 +1369,6 @@ const I18N = {
     queue_upload: 'صف آپلود', queue_process: 'صف پردازش', queue_scan: 'صف اسکن ویروس',
     queue_preview: 'صف تولید پیش‌نمایش', queue_email: 'صف ایمیل',
     queue_waiting: 'در انتظار', queue_processing: 'پردازش', queue_completed: 'تکمیل',
-    
-    // Admin storage
     admin_storage_title: 'مدیریت فضای ذخیره', admin_storage_subtitle: 'نمای کلی و بهینه‌سازی فضا',
     storage_total: 'کل فضا', storage_used: 'استفاده شده', storage_free: 'آزاد', storage_growth: 'رشد ماهانه',
     storage_pb: 'پتابایت',
@@ -1472,8 +1376,6 @@ const I18N = {
     admin_storage_dup: 'فایل‌های تکراری شناسایی‌شده',
     dup_versions: 'نسخه تکراری', dup_freeable: 'قابل آزادسازی',
     dup_merge: 'ادغام', dup_merged: 'تکراری‌ها ادغام شدند',
-    
-    // Admin reports
     admin_reports_title: 'مرکز تخلفات', admin_reports_subtitle: '۲۳ گزارش در انتظار بررسی',
     reports_pending: 'در انتظار', reports_reviewing: 'در حال بررسی', reports_resolved: 'حل شده', reports_rejected: 'رد شده',
     report_copyright: 'حق نشر', report_malware: 'بدافزار', report_illegal: 'محتوای غیرقانونی',
@@ -1482,14 +1384,10 @@ const I18N = {
     report_by: 'گزارش توسط', report_autoScanner: 'اسکنر خودکار',
     report_block: 'مسدود', report_review: 'بررسی', report_reject: 'رد',
     report_blocked: 'فایل مسدود شد', report_reviewing: 'در حال بررسی', report_rejected_toast: 'گزارش رد شد',
-    
-    // Admin logs
     admin_logs_title: 'گزارش ممیزی', admin_logs_subtitle: 'تمام فعالیت‌های سیستم با جزئیات کامل',
     logs_allLevels: 'همه سطوح', logs_info: 'اطلاعات', logs_warning: 'هشدار', logs_error: 'خطا', logs_critical: 'بحرانی',
     logs_allServices: 'همه سرویس‌ها', logs_auth: 'احراز هویت',
     logs_export: 'صادرات', logs_exported: 'گزارش صادر شد',
-    
-    // Admin settings
     admin_settings_title: 'تنظیمات سیستم', admin_settings_subtitle: 'پیکربندی سراسری پلتفرم',
     admin_settings_general: 'عمومی', admin_settings_platformName: 'نام پلتفرم',
     admin_settings_maxFileSize: 'حداکثر حجم فایل (مگابایت)',
@@ -1506,8 +1404,6 @@ const I18N = {
     admin_settings_backup: 'آخرین پشتیبان', admin_settings_backup_2h: '۲ ساعت پیش',
     admin_settings_backup_next: 'بعدی: ۲۲ ساعت دیگر',
     admin_settings_saved: 'تنظیمات ذخیره شد',
-    
-    // Legal
     legal_terms_title: 'قوانین استفاده', legal_privacy_title: 'حریم خصوصی',
     legal_updated: 'آخرین به‌روزرسانی: ۱۴ شهریور ۱۴۰۵',
     terms_1_title: '۱. پذیرش قوانین', terms_1_body: 'با دسترسی یا استفاده از نکسوس، شما با این قوانین موافقت می‌کنید.',
@@ -1519,12 +1415,8 @@ const I18N = {
     privacy_2_title: '۲. نحوه استفاده', privacy_2_body: 'اطلاعات برای ارائه و بهبود سرویس استفاده می‌شود.',
     privacy_3_title: '۳. امنیت داده‌ها', privacy_3_body: 'رمزنگاری AES-256 و استانداردهای صنعتی.',
     privacy_4_title: '۴. حقوق شما', privacy_4_body: 'حق دسترسی، اصلاح و حذف داده‌های شخصی در هر زمان.',
-    
-    // Common
     common_copy: 'کپی', common_back: '← بازگشت', common_active: 'فعال', common_live: 'زنده',
     common_cancel: 'انصراف', common_save: 'ذخیره',
-    
-    // Notifications
     notif_title: 'اعلان‌ها', notif_markAll: 'خواندن همه', notif_marked: 'همه به عنوان خوانده شدند',
     notif_viewAll: 'مشاهده همه اعلان‌ها',
     notif_upload: 'آپلود کامل شد', notif_upload_desc: 'فایل project.zip با موفقیت آپلود شد',
@@ -1534,8 +1426,6 @@ const I18N = {
     notif_download: 'دانلود', notif_download_desc: 'فایل Q4-report.pdf ۱۲ بار دانلود شد',
     notif_2m: '۲ دقیقه پیش', notif_1h: '۱ ساعت پیش', notif_3h: '۳ ساعت پیش',
     notif_1d: '۱ روز پیش', notif_2d: '۲ روز پیش',
-    
-    // Toasts
     copied: 'در کلیپ‌بورد کپی شد', copy_error: 'خطا در کپی',
     download_started: 'دانلود شروع شد', qr_generated: 'کد QR تولید شد',
     file_to_trashed: 'به زباله‌دان منتقل شد', favorite_added: 'به علاقه‌مندی‌ها اضافه شد',
@@ -1546,8 +1436,6 @@ const I18N = {
     bulk_shared: 'اشتراک', bulk_deleted: 'فایل به زباله‌دان منتقل شد',
     select_all_toast: 'انتخاب همه',
     link_shared: 'لینک جدید ساخته شد',
-    
-    // AI Assistant
     ai_title: 'دستیار هوشمند نکسوس', ai_subtitle: 'از من هر چه می‌خواهی بپرس',
     ai_placeholder: 'از من هر چه می‌خواهی بپرس...',
     ai_greeting: 'سلام! 👋 من دستیار هوشمند نکسوس هستم. چطور می‌تونم کمکت کنم؟',
@@ -1555,8 +1443,6 @@ const I18N = {
     ai_suggestion_2: 'فایل‌های قدیمی‌ام کجا هستند؟',
     ai_suggestion_3: 'یک لینک اشتراک امن بساز',
     ai_thinking: 'در حال فکر کردن',
-    
-    // Onboarding
     onboard_1_title: 'به نکسوس خوش آمدید 🎉',
     onboard_1_desc: 'بیایید با هم اولین فایل شما را آپلود کنیم. فقط چند قدم ساده!',
     onboard_2_title: 'اولین فایل را آپلود کنید',
@@ -1567,8 +1453,6 @@ const I18N = {
     onboard_4_desc: 'دانلودها، پهنای باند و موقعیت جغرافیایی مخاطبان را در لحظه ببینید.',
     onboard_skip: 'رد کردن', onboard_next: 'بعدی', onboard_start: 'شروع! 🚀',
     onboard_ready: 'آماده‌اید! اولین فایل خود را آپلود کنید 🚀',
-    
-    // Keyboard shortcuts
     kb_title: 'میانبرهای صفحه‌کلید',
     kb_general: 'عمومی', kb_navigation: 'ناوبری', kb_files: 'فایل‌ها',
     kb_search: 'جستجو / پالت دستورات', kb_upload: 'رفتن به آپلود',
@@ -1577,37 +1461,28 @@ const I18N = {
     kb_overview: 'نمای کلی', kb_files_page: 'صفحه فایل‌ها',
     kb_shared: 'اشتراک‌ها', kb_analytics: 'تحلیل‌ها',
     kb_select: 'انتخاب فایل', kb_delete: 'حذف', kb_download: 'دانلود', kb_share: 'اشتراک',
+    preview_play: 'پخش', preview_pause: 'توقف', preview_download: 'دانلود',
+    player_playing: 'در حال پخش', player_paused: 'متوقف',
   },
-  
   en: {
-    // Nav
     nav_features: 'Features', nav_pricing: 'Pricing', nav_developers: 'Developers', nav_status: 'Status',
     nav_blog: 'Blog', nav_login: 'Sign in', nav_getStarted: 'Get Started',
-    
-    // Hero
     hero_badge: 'v3.0 — AI-powered file organization',
     hero_title_1: 'Your files.', hero_title_2: 'Your infrastructure.', hero_title_3: 'Your control.',
     hero_subtitle: 'The intelligent file platform built for teams who demand speed, security, and complete control over their digital assets.',
     hero_cta_primary: 'Start Uploading', hero_cta_secondary: 'Explore Platform',
     hero_feat_1: 'No credit card required', hero_feat_2: '5 GB free forever', hero_feat_3: 'Cancel anytime',
     hero_float_upload: 'Upload Complete', hero_float_security: 'Security', hero_float_allClear: 'All Clear', hero_float_speed: 'Upload Speed',
-    
-    // Trust
     trust_title: 'TRUSTED BY TEAMS, CREATORS & DEVELOPERS',
     trust_users: 'Active Users', trust_files: 'Files Hosted', trust_storage: 'Petabytes of Data', trust_downloads: 'Downloads Served',
-    
-    // Features
-    features_badge: 'FEATURES',
-    features_title_1: 'Built for the way', features_title_2: 'you work.',
+    features_badge: 'FEATURES', features_title_1: 'Built for the way', features_title_2: 'you work.',
     features_subtitle: 'Every feature designed to give you complete control over your files without compromise.',
-    
     feature_01_badge: '01 — ADVANCED UPLOAD', feature_01_title: 'Upload anything, any way you want.',
     feature_01_desc: 'Chunked uploads with resume, pause, cancel, and retry. Files up to 10 GB with real-time speed monitoring and ETA.',
     feature_01_tag_1: 'Chunked Upload', feature_01_tag_2: 'Resumable', feature_01_tag_3: 'Upload Queue',
     feature_01_tag_4: 'Parallel', feature_01_tag_5: 'Background',
     feature_01_drop_title: 'Drop files or click to browse', feature_01_drop_desc: 'Up to 10 GB per file',
     feature_01_done: 'Complete',
-    
     feature_02_badge: '02 — INTELLIGENT PROCESSING', feature_02_pipeline: 'INTELLIGENT PIPELINE',
     feature_02_title_1: 'Every file is', feature_02_title_2: 'auto-processed.',
     feature_02_desc: 'After upload, files are automatically validated, virus-scanned, processed, and receive full metadata. Hash-based duplicate detection saves your storage.',
@@ -1615,13 +1490,11 @@ const I18N = {
     feature_02_tag_4: 'Versioning', feature_02_tag_5: 'Auto Preview',
     pipeline_upload: 'Upload', pipeline_validate: 'Validate', pipeline_scan: 'Scan', pipeline_process: 'Process', pipeline_ready: 'Ready',
     pipeline_mime: 'MIME Type', pipeline_hash: 'SHA-256', pipeline_dims: 'Dimensions', pipeline_dup: 'Duplicate detected', pipeline_reuse: 'Reuse',
-    
     feature_03_badge: '03 — SMART SEARCH', feature_03_title_1: 'Search in', feature_03_title_2: 'natural language.',
     feature_03_desc: 'Advanced search engine with natural language understanding. Search by name, type, size, date, tags, folders, owner, and sharing status.',
     feature_03_tag_1: 'Natural Language', feature_03_tag_2: 'Advanced Filters', feature_03_tag_3: 'Saved Searches', feature_03_tag_4: 'Instant Results',
     feature_03_query: 'Videos larger than 500MB this week',
     feature_03_2d: '2 days ago', feature_03_5d: '5 days ago',
-    
     feature_04_badge: '04 — SHARE ANYWHERE', feature_04_title: 'SHARE CENTER',
     feature_04_title_1: 'Share anywhere,', feature_04_title_2: 'control everything.',
     feature_04_desc: 'Create secure links with password, expiration, download limits, view-only mode, and QR codes. Custom domains supported.',
@@ -1630,59 +1503,42 @@ const I18N = {
     share_public: 'Public Link', share_password: 'Password Protection', share_password_desc: 'Required for access',
     share_expiry: 'Expiration', share_7d: '7 days', share_limit: 'Download Limit',
     share_viewOnly: 'View Only', share_viewOnly_desc: 'Disable download', share_copy: 'Copy Link', share_qr: 'QR Code',
-    
     feature_05_badge: '05 — FILE REQUESTS', feature_05_title_1: 'Receive files', feature_05_title_2: 'without accounts.',
     feature_05_desc: 'Create a request link and share it. Anyone can upload files directly to your storage without creating an account.',
     feature_05_tag_1: 'No Signup', feature_05_tag_2: 'Custom Message', feature_05_tag_3: 'Expiration', feature_05_tag_4: 'Instant Notification',
     feature_05_link: 'YOUR REQUEST LINK', feature_05_drop: 'Drop your documents here', feature_05_from: 'From Nexus Company',
     feature_05_stats: '12 files received · No signup needed',
-    
     feature_06_badge: '06 — ADVANCED ANALYTICS', feature_06_title: 'ADVANCED ANALYTICS',
     feature_06_title_1: 'Insights that', feature_06_title_2: 'drive decisions.',
     feature_06_desc: 'Track downloads, bandwidth, geographic reach, and device types in real-time. Identify top files and generate exportable reports.',
     feature_06_tag_1: 'Real-time', feature_06_tag_2: 'Geography', feature_06_tag_3: 'Devices',
     feature_06_tag_4: 'Traffic Sources', feature_06_tag_5: 'Export Reports',
     feature_06_chart: 'Downloads Over Time', feature_06_stat1: 'Downloads', feature_06_stat2: 'Bandwidth', feature_06_stat3: 'Countries',
-    
     feature_07_badge: '07 — POWERFUL API', feature_07_title_1: 'Built for', feature_07_title_2: 'developers.',
     feature_07_desc: 'Complete REST API with webhooks, chunked uploads, secure keys, and interactive documentation.',
     feature_07_tag_1: 'Interactive Docs',
-    
-    // How it works
     hiw_title_1: 'From upload to share', hiw_title_2: 'in seconds.',
     hiw_step_1_t: 'Upload', hiw_step_1_d: 'Drag, drop, or import from URL. Files up to 10 GB.',
     hiw_step_2_t: 'Process', hiw_step_2_d: 'Virus scan, optimize, extract metadata automatically.',
     hiw_step_3_t: 'Manage', hiw_step_3_d: 'Organize in folders, tags, and smart search.',
     hiw_step_4_t: 'Share', hiw_step_4_d: 'Secure link with password, expiry, and limits.',
-    
-    // Security
     security_badge: 'SECURITY', security_title_1: 'Enterprise security', security_title_2: 'by default.',
     security_desc: 'Your files are protected with bank-grade encryption, continuous monitoring, and strict access controls.',
     security_1: 'AES-256 Encryption', security_2: 'SOC 2 Type II', security_3: 'GDPR Compliant',
     security_4: 'Two-Factor Auth', security_5: 'Virus Scanning', security_6: 'Audit Logs',
     security_status: 'System Status', security_status_desc: 'All systems operational', security_score: 'score',
     security_encryption: 'Encryption', security_threat: 'Threat Detection', security_access: 'Access Logs', security_malware: 'Malware Scan',
-    
-    // Pricing
     pricing_title_1: 'Simple, transparent pricing.', pricing_title_2: 'No surprises.',
-    
-    // FAQ
     faq_title_1: 'Frequently asked', faq_title_2: 'questions.',
-    
-    // CTA
     cta_title: 'Ready to take control of your files?',
     cta_subtitle: 'Join 50,000+ developers and teams already using Nexus. Start free, no credit card required.',
     cta_button_1: 'Start Uploading', cta_button_2: 'Talk to Sales',
-    
-    // Footer
     footer_desc: 'The intelligent file infrastructure for teams who demand speed, security, and complete control.',
     footer_product: 'Product', footer_developers: 'Developers', footer_company: 'Company', footer_legal: 'Legal',
     footer_security: 'Security', footer_enterprise: 'Enterprise', footer_docs: 'Documentation', footer_apiRef: 'API Reference',
     footer_status: 'Status', footer_about: 'About', footer_careers: 'Careers', footer_contact: 'Contact',
     footer_terms: 'Terms', footer_privacy: 'Privacy', footer_cookies: 'Cookies',
     footer_copyright: '© 2026 Nexus Inc. All rights reserved.',
-    
-    // Auth
     login_title: 'Welcome back', login_subtitle: 'Sign in to continue to your workspace',
     login_or: 'or continue with email', login_email: 'Email', login_password: 'Password',
     login_forgot: 'Forgot?', login_remember: 'Remember me', login_button: 'Sign in',
@@ -1693,8 +1549,6 @@ const I18N = {
     register_agree: 'I agree to the <a href="#/terms" class="text-v-400">Terms</a> and <a href="#/privacy" class="text-v-400">Privacy Policy</a>',
     register_button: 'Create account', register_haveAccount: 'Have an account?', register_signIn: 'Sign in',
     forgot_sent: 'Reset link sent to your email',
-    
-    // Sidebar
     sidebar_workspace: 'Workspace', sidebar_overview: 'Overview', sidebar_files: 'My Files',
     sidebar_upload: 'Upload', sidebar_import: 'Import from URL', sidebar_shared: 'Shared',
     sidebar_requests: 'File Requests', sidebar_favorites: 'Favorites', sidebar_trash: 'Trash',
@@ -1704,49 +1558,32 @@ const I18N = {
     sidebar_storage: 'Storage', sidebar_upgrade: 'Upgrade plan →',
     workspace_switch: 'Switch workspace', workspace_personal: 'Personal Space',
     plan_pro: 'Pro Plan',
-    
-    // Topbar
     topbar_search: 'Search or command...', topbar_upload: 'Upload',
-    
-    // Mobile
     mob_home: 'Home', mob_files: 'Files', mob_analytics: 'Analytics', mob_more: 'More',
-    
-    // Admin
     admin_title: 'Command Center', admin_subtitle: 'System Management',
     admin_dash: 'Dashboard', admin_users: 'Users', admin_servers: 'Servers & Queues',
     admin_storage: 'Storage', admin_reports: 'Reports', admin_logs: 'Audit Logs',
     admin_settings: 'System Settings', admin_backToUser: 'Back to User Panel',
     admin_superadmin: 'Super Admin', admin_allOperational: 'All systems operational',
-    
-    // Public
     public_cta: 'Get your own storage', public_secure: 'Secure File', public_expiry: 'Expires in 7 days',
     public_scanned: 'Scanned ✓', public_sharedBy: 'Shared by', public_size: 'Size',
     public_type: 'Type', public_uploaded: 'Uploaded', public_download: 'Download File',
     public_copyLink: 'Copy Link', public_qr: 'QR', public_share: 'Share',
     public_virusFree: 'Virus-free · CDN delivery', public_poweredBy: 'Powered by',
-    
-    // Request
     request_title: 'Submit your documents', request_from: 'From', request_drop: 'Drop files here or click',
     request_note: 'No signup required · Max 2 GB',
     request_powered: 'Powered by', request_noSignup: 'No account needed',
-    
-    // Status
     status_allOperational: 'All Systems Operational', status_title: 'System Status',
     status_subtitle: 'Real-time status of all Nexus services', status_uptime: 'Uptime (Last 90 Days)',
     status_recent: 'Recent Incidents',
-    
-    // Errors
     error_404_title: 'Page Not Found', error_404_desc: "The page you're looking for doesn't exist or has been moved.",
     error_403_title: 'Access Forbidden', error_403_desc: "You don't have permission to access this resource.",
     error_500_title: 'Server Error', error_500_desc: 'Something went wrong on our end. Please try again later.',
     error_home: 'Go Home', error_back: 'Go Back',
-    
-    // Dashboard
     dashboard_greeting: 'Good morning, John 👋', dashboard_greeting_desc: "Here's what's happening with your files today.",
     dashboard_storage: 'Storage', dashboard_files: 'Files', dashboard_downloads: 'Downloads',
     dashboard_activeUploads: 'Active Uploads', unit_tb: 'TB', unit_files: 'files',
     dashboard_of5gb: '48% of 5 GB',
-    
     insight_storage_title: 'Storage is 72% full',
     insight_storage_desc: '3 large files consume 68% of your space.',
     insight_traffic_title: 'Download traffic up 24%',
@@ -1754,9 +1591,7 @@ const I18N = {
     insight_unused_title: '4 files unused in 180 days',
     insight_unused_desc: 'Suggestion: Archive or delete to free 1.2 GB.',
     insight_check: 'Check →', insight_analyze: 'Analyze →', insight_view: 'View →',
-    
     quick_upload: 'Upload Files', quick_import: 'Import from URL', quick_request: 'File Request', quick_share: 'Create Share Link',
-    
     overview_activity: 'Activity', overview_7d: 'Last 7 days', overview_7d_short: '7 days', overview_30d: '30 days',
     overview_uploads: 'Uploads', overview_downloads: 'Downloads',
     overview_storageBreakdown: 'Storage', overview_images: 'Images', overview_videos: 'Videos',
@@ -1768,8 +1603,6 @@ const I18N = {
     overview_activity_5: 'Deleted <b>draft-v1.docx</b>', overview_activity_6: 'New version of <b>design-system.fig</b>',
     time_2m: '2 min ago', time_15m: '15 min ago', time_1h: '1 hour ago',
     time_3h: '3 hours ago', time_5h: '5 hours ago', time_6h: '6 hours ago',
-    
-    // Files
     files_title: 'My Files', files_home: 'Home', files_all: 'All Files',
     files_upload: 'Upload', files_searchPlaceholder: 'Smart search... e.g., "videos larger than 500MB"',
     files_allTypes: 'All types', files_images: 'Images', files_videos: 'Videos', files_docs: 'Documents',
@@ -1788,8 +1621,6 @@ const I18N = {
     files_bulk_delete: 'Delete', files_bulk_cancel: 'Cancel',
     files_notFound: 'No files found', files_notFound_desc: 'Try adjusting your search',
     files_selectAll: 'Select all',
-    
-    // File details
     details_title: 'File Details', details_close: 'Close', details_download: 'Download',
     details_copyLink: 'Copy Link', details_share: 'Share', details_delete: 'Delete',
     details_favorite: '★ Favorite', details_shared: 'Shared',
@@ -1799,12 +1630,10 @@ const I18N = {
     details_size: 'Size', details_uploaded: 'Uploaded', details_downloads: 'Downloads',
     details_path: 'Path', details_owner: 'Owner', details_hash: 'Hash',
     details_addTag: '+ Add tag',
-    
-    // Context menu
+    details_preview: 'Preview',
     ctx_download: 'Download', ctx_share: 'Share', ctx_rename: 'Rename',
     ctx_copyLink: 'Copy Link', ctx_favorite: 'Add to Favorites', ctx_delete: 'Delete',
-    
-    // Upload
+    ctx_preview: 'Preview',
     upload_title: 'Upload Files', upload_subtitle: 'Chunked upload with resume and pause support',
     upload_drop_title: 'Drag and drop files or click to browse',
     upload_drop_desc: '50+ file types supported · Up to 10 GB · Parallel uploads',
@@ -1816,8 +1645,6 @@ const I18N = {
     upload_allDone: 'All files uploaded successfully 🚀',
     upload_firstFile: 'Your first file is live! 🎉',
     upload_filesUploading: 'files uploading...',
-    
-    // Import
     import_title: 'Import from URL', import_subtitle: 'Enter URLs to automatically download and save',
     import_label: 'URLs (one per line)',
     import_desc: "We'll validate, download, and process the files. Batch import supported.",
@@ -1826,14 +1653,10 @@ const I18N = {
     import_processing: 'Processing', import_scanning: 'Virus scan', import_storing: 'Storing',
     import_ready: 'Ready ✓', import_completed: '✓ Imported',
     import_started: 'Starting import',
-    
-    // Shared
     shared_title: 'Shared Files', shared_active: 'active links',
     shared_newLink: '+ New Link', shared_file: 'File', shared_link: 'Link',
     shared_downloads: 'Downloads', shared_expiry: 'Expires', shared_status: 'Status',
     shared_7d: '7 days', shared_active_status: 'Active', shared_edit: 'Edit',
-    
-    // Requests
     requests_title: 'File Requests', requests_subtitle: 'Create links so others can send files without signing up',
     requests_new: '+ New Request',
     requests_docs: 'Project Documents', requests_active: 'Active', requests_expired: 'Expired',
@@ -1848,18 +1671,12 @@ const I18N = {
     requests_modal_1d: '1 day', requests_modal_7d: '7 days', requests_modal_30d: '30 days',
     requests_modal_create: 'Create Link', requests_modal_cancel: 'Cancel',
     requests_created: 'Request created',
-    
-    // Favorites
     favorites_title: 'Favorites', favorites_count: 'starred files',
-    
-    // Trash
     trash_title: 'Trash', trash_desc: 'Files are permanently deleted after 30 days',
     trash_empty: 'Empty Trash', trash_empty_done: 'Trash emptied',
     trash_deleted: 'Deleted:', trash_autoDelete: 'Auto-delete: 30 days',
     trash_restore: 'Restore', trash_permanent: 'Delete Forever',
     trash_restored: 'File restored', trash_permanentDeleted: 'Permanently deleted',
-    
-    // Analytics
     analytics_title: 'Analytics', analytics_subtitle: 'Deep insights into your file performance',
     analytics_24h: '24 hours', analytics_7d: '7 days', analytics_30d: '30 days',
     analytics_90d: '90 days', analytics_1y: '1 year',
@@ -1872,8 +1689,6 @@ const I18N = {
     device_desktop: 'Desktop', device_mobile: 'Mobile', device_tablet: 'Tablet',
     country_iran: 'Iran', country_us: 'USA', country_germany: 'Germany',
     country_uk: 'UK', country_other: 'Other',
-    
-    // API
     api_title: 'API & Webhooks', api_subtitle: 'Secure keys, interactive docs, and real-time events',
     api_requests24: 'Requests (24h)', api_activeKeys: 'Active Keys', api_of: 'of',
     api_rateLimit: 'Rate Limit', api_perMin: '/min', api_proPlan: 'Pro plan',
@@ -1885,11 +1700,9 @@ const I18N = {
     api_webhooks: 'Webhooks', api_webhook_active: 'Active', api_webhook_inactive: 'Inactive',
     api_test: 'Test', api_webhook_tested: 'Webhook tested',
     api_sample: 'Sample Code', api_viewDocs: 'View interactive docs',
-    api_keyModal_title: 'New Key Created', api_keyModal_desc: 'Copy now — it won\'t be shown again',
+    api_keyModal_title: 'New Key Created', api_keyModal_desc: "Copy now — it won't be shown again",
     api_keyModal_warning: 'This key will only be displayed once. Store it securely.',
     api_keyModal_saved: "I've saved it",
-    
-    // Team
     team_title: 'My Team', team_subtitle: 'Manage members and permissions',
     team_invite: '+ Invite Member', team_invited: 'Invitation sent',
     team_owner: 'Owner', team_admin: 'Admin', team_editor: 'Editor', team_viewer: 'Viewer',
@@ -1898,8 +1711,6 @@ const I18N = {
     team_permissions: 'Role Permissions', team_perm: 'Permission',
     team_perm_upload: 'Upload', team_perm_download: 'Download', team_perm_delete: 'Delete',
     team_perm_share: 'Share', team_perm_manageMembers: 'Manage Members', team_perm_billing: 'Billing',
-    
-    // Billing
     billing_title: 'Billing', billing_subtitle: 'Your plan, usage, and invoices',
     billing_proPlan: 'Pro Plan', billing_active: 'Active', billing_renewal: '$9/month · Renews Oct 15',
     billing_upgrade: 'Upgrade', billing_cancel: 'Cancel',
@@ -1909,8 +1720,6 @@ const I18N = {
     billing_invoices: 'Invoices', billing_september: 'September 2026', billing_august: 'August 2026',
     billing_july: 'July 2026', billing_proPlanSub: '$9 · Pro Plan',
     billing_paid: 'Paid', billing_pdf: 'PDF', billing_downloaded: 'Invoice downloaded',
-    
-    // Security page
     security_title: 'Security Center', security_subtitle: 'Manage your account security',
     security_score_excellent: 'Security Score: Excellent (98%)',
     security_score_desc: 'All security features enabled',
@@ -1927,8 +1736,6 @@ const I18N = {
     device_chrome_mac: 'Chrome · MacBook', device_safari_iphone: 'Safari · iPhone',
     device_firefox_win: 'Firefox · Windows', device_firefox_linux: 'Firefox · Linux',
     location_tehran: 'Tehran, Iran', location_isfahan: 'Isfahan, Iran', location_unknown: 'Unknown',
-    
-    // Settings
     settings_title: 'Settings', settings_subtitle: 'Manage your account and preferences',
     settings_tab_profile: 'Profile', settings_tab_account: 'Account', settings_tab_appearance: 'Appearance',
     settings_tab_notifications: 'Notifications', settings_tab_advanced: 'Advanced',
@@ -1948,8 +1755,6 @@ const I18N = {
     settings_currentPlan: 'Current Plan', settings_manageBilling: 'Manage Billing',
     settings_storage: 'Storage', settings_used: '48% used',
     settings_memberSince: 'Member since', settings_daysAgo: '583 days ago',
-    
-    // Admin dashboard
     admin_dash_title: 'Command Center', admin_dash_subtitle: 'Real-time system overview', admin_live: 'Live',
     admin_usersOnline: 'Users Online', admin_uploadMin: 'Uploads/min',
     admin_downloadMin: 'Downloads/min', admin_errors24: 'Errors (24h)',
@@ -1965,8 +1770,6 @@ const I18N = {
     live_javad: 'Javad Mohammadi', live_javad_action: 'suspended for abuse',
     live_elham: 'Elham Karimi', live_elham_action: 'shared 12 files',
     live_warning: 'Warning', live_warning_action: 'us-west-2 server at 91% capacity',
-    
-    // Admin users
     admin_users_title: 'User Management', admin_users_count: '50,247 users · 12,847 active',
     admin_users_new: 'New User', admin_users_search: 'Search users...',
     admin_users_allRoles: 'All roles', admin_users_moderator: 'Moderator', admin_users_user: 'User',
@@ -1975,8 +1778,6 @@ const I18N = {
     admin_users_col_storage: 'Storage', admin_users_col_files: 'Files', admin_users_col_lastActive: 'Last Active',
     admin_users_storage: 'GB', admin_users_showing: 'Showing', admin_users_of: 'of',
     admin_users_prev: 'Previous', admin_users_next: 'Next',
-    
-    // Admin servers
     admin_servers_title: 'Servers & Queues', admin_servers_subtitle: 'Real-time infrastructure monitoring',
     server_healthy: 'Healthy', server_warning: 'Warning',
     server_cpu: 'CPU', server_ram: 'RAM', server_disk: 'Disk', server_network: 'Network',
@@ -1984,8 +1785,6 @@ const I18N = {
     queue_upload: 'Upload Queue', queue_process: 'Processing Queue', queue_scan: 'Virus Scan Queue',
     queue_preview: 'Preview Queue', queue_email: 'Email Queue',
     queue_waiting: 'Waiting', queue_processing: 'Processing', queue_completed: 'Completed',
-    
-    // Admin storage
     admin_storage_title: 'Storage Management', admin_storage_subtitle: 'Overview and optimization',
     storage_total: 'Total Storage', storage_used: 'Used', storage_free: 'Free', storage_growth: 'Monthly Growth',
     storage_pb: 'PB',
@@ -1993,8 +1792,6 @@ const I18N = {
     admin_storage_dup: 'Detected Duplicates',
     dup_versions: 'duplicate versions', dup_freeable: 'freeable',
     dup_merge: 'Merge', dup_merged: 'Duplicates merged',
-    
-    // Admin reports
     admin_reports_title: 'Reports Center', admin_reports_subtitle: '23 reports pending review',
     reports_pending: 'Pending', reports_reviewing: 'Reviewing', reports_resolved: 'Resolved', reports_rejected: 'Rejected',
     report_copyright: 'Copyright', report_malware: 'Malware', report_illegal: 'Illegal Content',
@@ -2003,14 +1800,10 @@ const I18N = {
     report_by: 'Reported by', report_autoScanner: 'auto scanner',
     report_block: 'Block', report_review: 'Review', report_reject: 'Reject',
     report_blocked: 'File blocked', report_reviewing: 'Under review', report_rejected_toast: 'Report rejected',
-    
-    // Admin logs
     admin_logs_title: 'Audit Logs', admin_logs_subtitle: 'Complete system activity',
     logs_allLevels: 'All levels', logs_info: 'Info', logs_warning: 'Warning', logs_error: 'Error', logs_critical: 'Critical',
     logs_allServices: 'All services', logs_auth: 'Authentication',
     logs_export: 'Export', logs_exported: 'Report exported',
-    
-    // Admin settings
     admin_settings_title: 'System Settings', admin_settings_subtitle: 'Global platform configuration',
     admin_settings_general: 'General', admin_settings_platformName: 'Platform Name',
     admin_settings_maxFileSize: 'Max File Size (MB)',
@@ -2027,8 +1820,6 @@ const I18N = {
     admin_settings_backup: 'Last Backup', admin_settings_backup_2h: '2 hours ago',
     admin_settings_backup_next: 'Next: in 22 hours',
     admin_settings_saved: 'Settings saved',
-    
-    // Legal
     legal_terms_title: 'Terms of Service', legal_privacy_title: 'Privacy Policy',
     legal_updated: 'Last updated: September 5, 2026',
     terms_1_title: '1. Acceptance of Terms', terms_1_body: 'By accessing Nexus, you agree to these Terms.',
@@ -2040,12 +1831,8 @@ const I18N = {
     privacy_2_title: '2. How We Use Information', privacy_2_body: 'Information is used to provide and improve the service.',
     privacy_3_title: '3. Data Security', privacy_3_body: 'AES-256 encryption and industry standards.',
     privacy_4_title: '4. Your Rights', privacy_4_body: 'Right to access, correct, or delete your personal data at any time.',
-    
-    // Common
     common_copy: 'Copy', common_back: '← Back', common_active: 'Active', common_live: 'Live',
     common_cancel: 'Cancel', common_save: 'Save',
-    
-    // Notifications
     notif_title: 'Notifications', notif_markAll: 'Mark all read', notif_marked: 'All marked as read',
     notif_viewAll: 'View all notifications',
     notif_upload: 'Upload Complete', notif_upload_desc: 'project.zip uploaded successfully',
@@ -2055,8 +1842,6 @@ const I18N = {
     notif_download: 'Downloads', notif_download_desc: 'Q4-report.pdf downloaded 12 times',
     notif_2m: '2 min ago', notif_1h: '1 hour ago', notif_3h: '3 hours ago',
     notif_1d: '1 day ago', notif_2d: '2 days ago',
-    
-    // Toasts
     copied: 'Copied to clipboard', copy_error: 'Copy failed',
     download_started: 'Download started', qr_generated: 'QR code generated',
     file_to_trashed: 'Moved to trash', favorite_added: 'Added to favorites',
@@ -2067,8 +1852,6 @@ const I18N = {
     bulk_shared: 'Shared', bulk_deleted: 'files moved to trash',
     select_all_toast: 'Select all',
     link_shared: 'New link created',
-    
-    // AI
     ai_title: 'Nexus AI Assistant', ai_subtitle: 'Ask me anything',
     ai_placeholder: 'Ask me anything...',
     ai_greeting: "Hi! 👋 I'm the Nexus AI assistant. How can I help you?",
@@ -2076,8 +1859,6 @@ const I18N = {
     ai_suggestion_2: 'Where are my old files?',
     ai_suggestion_3: 'Create a secure share link',
     ai_thinking: 'Thinking',
-    
-    // Onboarding
     onboard_1_title: 'Welcome to Nexus 🎉',
     onboard_1_desc: "Let's upload your first file together. Just a few simple steps!",
     onboard_2_title: 'Upload your first file',
@@ -2088,8 +1869,6 @@ const I18N = {
     onboard_4_desc: 'See downloads, bandwidth, and audience geography in real-time.',
     onboard_skip: 'Skip', onboard_next: 'Next', onboard_start: 'Start! 🚀',
     onboard_ready: "Ready! Upload your first file 🚀",
-    
-    // Keyboard shortcuts
     kb_title: 'Keyboard Shortcuts',
     kb_general: 'General', kb_navigation: 'Navigation', kb_files: 'Files',
     kb_search: 'Search / Command palette', kb_upload: 'Go to Upload',
@@ -2098,6 +1877,8 @@ const I18N = {
     kb_overview: 'Overview', kb_files_page: 'Files page',
     kb_shared: 'Shared', kb_analytics: 'Analytics',
     kb_select: 'Select file', kb_delete: 'Delete', kb_download: 'Download', kb_share: 'Share',
+    preview_play: 'Play', preview_pause: 'Pause', preview_download: 'Download',
+    player_playing: 'Now Playing', player_paused: 'Paused',
   }
 };
 
@@ -2114,11 +1895,9 @@ function setLang(lang){
   document.getElementById('lang-en').classList.toggle('active', lang==='en');
   updateTranslations();
   renderLandingContent();
-  // Re-render current page
   const hash = window.location.hash || '#/';
   if(hash.startsWith('#/dashboard')){renderDash(hash.slice(1))}
   else if(hash.startsWith('#/admin')){renderAdmin(hash.slice(1))}
-  else if(hash==='#/status'){renderStatus()}
   else if(hash.startsWith('#/terms')||hash.startsWith('#/privacy')){renderLegal(hash.slice(1))}
 }
 
@@ -2133,16 +1912,16 @@ function updateTranslations(){
 
 // ═══════════ DATA ═══════════
 const FILES=[
-{id:'f1',name:'hero-banner.png',type:'image',size:2457600,mime:'image/png',uploaded:'2026-09-05T10:23:00',downloads:1247,folder:'/',fav:true,shared:true,tags:['design','project-x'],versions:1},
+{id:'f1',name:'hero-banner.png',type:'image',size:2457600,mime:'image/png',uploaded:'2026-09-05T10:23:00',downloads:1247,folder:'/',fav:true,shared:true,tags:['design','project-x'],versions:1,preview:'https://picsum.photos/seed/hero/800/600'},
 {id:'f2',name:'Q4-report.pdf',type:'doc',size:8388608,mime:'application/pdf',uploaded:'2026-09-05T09:15:00',downloads:342,folder:'/reports',fav:false,shared:false,tags:['important','finance'],versions:3},
 {id:'f3',name:'product-demo.mp4',type:'video',size:130023424,mime:'video/mp4',uploaded:'2026-09-04T18:45:00',downloads:89,folder:'/videos',fav:true,shared:true,tags:['marketing'],versions:2},
 {id:'f4',name:'project-assets.zip',type:'archive',size:262144000,mime:'application/zip',uploaded:'2026-09-04T14:20:00',downloads:56,folder:'/',fav:false,shared:true,tags:['project-x'],versions:1},
-{id:'f5',name:'podcast-ep12.mp3',type:'audio',size:45088768,mime:'audio/mpeg',uploaded:'2026-09-03T11:00:00',downloads:234,folder:'/audio',fav:false,shared:false,tags:['podcast'],versions:1},
+{id:'f5',name:'podcast-ep12.mp3',type:'audio',size:45088768,mime:'audio/mpeg',uploaded:'2026-09-03T11:00:00',downloads:234,folder:'/audio',fav:false,shared:false,tags:['podcast'],versions:1,duration:'42:18'},
 {id:'f6',name:'design-system.fig',type:'other',size:15728640,mime:'application/octet-stream',uploaded:'2026-09-03T09:30:00',downloads:12,folder:'/design',fav:true,shared:false,tags:['design'],versions:4},
 {id:'f7',name:'api-docs.md',type:'code',size:45056,mime:'text/markdown',uploaded:'2026-09-02T16:00:00',downloads:78,folder:'/',fav:false,shared:false,tags:['docs'],versions:7},
-{id:'f8',name:'team-photo.jpg',type:'image',size:3145728,mime:'image/jpeg',uploaded:'2026-09-02T10:15:00',downloads:45,folder:'/',fav:false,shared:true,tags:[],versions:1},
+{id:'f8',name:'team-photo.jpg',type:'image',size:3145728,mime:'image/jpeg',uploaded:'2026-09-02T10:15:00',downloads:45,folder:'/',fav:false,shared:true,tags:[],versions:1,preview:'https://picsum.photos/seed/team/800/600'},
 {id:'f9',name:'budget-2026.xlsx',type:'doc',size:1048576,mime:'application/vnd.ms-excel',uploaded:'2026-09-01T14:00:00',downloads:23,folder:'/reports',fav:false,shared:false,tags:['finance'],versions:2},
-{id:'f10',name:'intro-music.wav',type:'audio',size:52428800,mime:'audio/wav',uploaded:'2026-09-01T09:00:00',downloads:156,folder:'/audio',fav:true,shared:false,tags:[],versions:1},
+{id:'f10',name:'intro-music.wav',type:'audio',size:52428800,mime:'audio/wav',uploaded:'2026-09-01T09:00:00',downloads:156,folder:'/audio',fav:true,shared:false,tags:[],versions:1,duration:'3:45'},
 {id:'f11',name:'app-release.apk',type:'archive',size:78643200,mime:'application/octet-stream',uploaded:'2026-08-31T17:30:00',downloads:892,folder:'/',fav:false,shared:true,tags:['project-x'],versions:5},
 {id:'f12',name:'presentation.pptx',type:'doc',size:20971520,mime:'application/vnd.ms-powerpoint',uploaded:'2026-08-31T11:00:00',downloads:67,folder:'/',fav:false,shared:false,tags:[],versions:2},
 ];
@@ -2180,6 +1959,19 @@ c.appendChild(t);
 setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-8px)';t.style.transition='all .2s';setTimeout(()=>t.remove(),200)},3500);
 }
 
+function confetti(){
+  for(let i=0;i<30;i++){
+    const el=document.createElement('div');
+    el.className='confetti';
+    el.style.left=Math.random()*100+'vw';
+    el.style.background=`hsl(${Math.random()*360},80%,60%)`;
+    el.style.width='8px';el.style.height='8px';
+    el.style.animationDelay=Math.random()*0.5+'s';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),3500);
+  }
+}
+
 function copy(text){navigator.clipboard.writeText(text).then(()=>toast(t('copied'),'success')).catch(()=>toast(t('copy_error'),'error'))}
 
 function toggleTheme(){
@@ -2204,7 +1996,7 @@ else if(p.startsWith('/request'))document.getElementById('p-request').classList.
 else if(p.startsWith('/s/')||p.startsWith('/file/'))document.getElementById('p-public').classList.add('active');
 else if(p.startsWith('/dashboard')){document.getElementById('p-dashboard').classList.add('active');document.getElementById('ai-fab').classList.remove('hidden');renderDash(p)}
 else if(p.startsWith('/admin')){document.getElementById('p-admin').classList.add('active');document.getElementById('ai-fab').classList.add('hidden');renderAdmin(p)}
-else if(p==='/status'){document.getElementById('p-status').classList.add('active');renderStatus()}
+else if(p==='/status'){document.getElementById('p-status').classList.add('active')}
 else if(p==='/terms'||p==='/privacy'){document.getElementById('p-legal').classList.add('active');renderLegal(p)}
 else if(p==='/features'||p==='/pricing'){document.getElementById('p-landing').classList.add('active');setTimeout(()=>{const el=document.getElementById(p.slice(1));if(el)el.scrollIntoView({behavior:'smooth'})},100)}
 else if(p==='/404'||p==='/403'||p==='/500'){document.getElementById('p-error').classList.add('active');renderError(p.slice(1))}
@@ -2213,9 +2005,17 @@ document.querySelectorAll('.nav-item').forEach(l=>{const r=l.getAttribute('data-
 window.scrollTo(0,0);
 }
 
+function renderError(code){
+const titles={'404':t('error_404_title'),'403':t('error_403_title'),'500':t('error_500_title')};
+const descs={'404':t('error_404_desc'),'403':t('error_403_desc'),'500':t('error_500_desc')};
+document.getElementById('error-code').textContent=code;
+document.getElementById('error-title').textContent=titles[code];
+document.getElementById('error-desc').textContent=descs[code];
+}
+
 // ═══════════ AUTH ═══════════
 function handleLogin(e){e.preventDefault();toast(t('welcome_back'),'success');setTimeout(()=>navigate('#/dashboard'),400)}
-function handleRegister(e){e.preventDefault();toast(t('account_created'),'success');setTimeout(()=>{navigate('#/dashboard');setTimeout(showOnboarding,600)},400)}
+function handleRegister(e){e.preventDefault();toast(t('account_created'),'success');confetti();setTimeout(()=>{navigate('#/dashboard');setTimeout(showOnboarding,600)},400)}
 function handleLogout(){toast(t('logged_out'),'info');setTimeout(()=>navigate('#/'),400)}
 
 // ═══════════ ONBOARDING ═══════════
@@ -2244,7 +2044,7 @@ document.getElementById('modal-root').innerHTML=`
 </div>`;
 };
 window.onboardingNext=()=>{step++;render()};
-window.onboardingDone=()=>{closeModal();toast(t('onboard_ready'),'success');navigate('#/dashboard/upload')};
+window.onboardingDone=()=>{closeModal();toast(t('onboard_ready'),'success');confetti();navigate('#/dashboard/upload')};
 render();
 }
 
@@ -2288,18 +2088,7 @@ ${n.type==='upload'?'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyl
 
 // ═══════════ COMMAND PALETTE ═══════════
 function openCmd(){
-document.getElementById('cmd-root').innerHTML=`
-<div class="fixed inset-0 z-[150] flex items-start justify-center pt-[15vh] px-4">
-<div class="absolute inset-0 bg-s-950/70 backdrop-blur-sm" style="animation:fadeIn .15s" onclick="closeCmd()"></div>
-<div class="relative surface-overlay rounded-xl border border-v-500/15 w-full max-w-lg shadow-2xl overflow-hidden" style="animation:modalIn .2s cubic-bezier(.16,1,.3,1)">
-<div class="flex items-center gap-2 p-3 border-b border-white/[.04]">
-<svg class="w-4 h-4 text-s-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-<input type="text" placeholder="${t('topbar_search')}" class="flex-1 bg-transparent text-sm outline-none placeholder:text-s-600" id="cmd-input" oninput="filterCmd(this.value)"/>
-<kbd>ESC</kbd>
-</div>
-<div class="p-1.5 max-h-[320px] overflow-y-auto" id="cmd-list">
-<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1">${currentLang==='fa'?'دستورات':'Commands'}</div>
-${[
+const allCommands=[
 {i:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/>',l:t('sidebar_upload'),k:'U',a:()=>navigate('#/dashboard/upload')},
 {i:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>',l:t('sidebar_import'),a:()=>navigate('#/dashboard/import')},
 {i:'<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>',l:t('kb_newFolder'),a:()=>{toast(t('kb_newFolder'),'success');closeCmd()}},
@@ -2307,20 +2096,62 @@ ${[
 {i:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',l:t('sidebar_analytics'),a:()=>navigate('#/dashboard/analytics')},
 {i:'<polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>',l:t('sidebar_api'),a:()=>navigate('#/dashboard/api')},
 {i:'<circle cx="12" cy="12" r="3"/>',l:t('sidebar_settings'),k:'S',a:()=>navigate('#/dashboard/settings')},
-].map((c,i)=>`
-<button data-cmd onclick="cmdAction(${i});closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] transition-colors text-start">
-<div class="w-4 h-4 text-s-500 shrink-0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${c.i}</svg></div>
-<span class="flex-1">${c.l}</span>${c.k?`<kbd>${c.k}</kbd>`:''}
-</button>`).join('')}
-<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1 mt-2">${currentLang==='fa'?'فایل‌ها':'Files'}</div>
-${FILES.slice(0,4).map(f=>`<button onclick="openDetails('${f.id}');closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] text-start"><div class="w-5 h-5 rounded ft-${f.type} flex items-center justify-center shrink-0"><div class="w-3 h-3 text-white">${fIcon(f.type)}</div></div><span class="truncate flex-1" dir="ltr">${f.name}</span><span class="text-[9px] text-s-600">${fmtSize(f.size)}</span></button>`).join('')}
+{i:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77"/>',l:t('sidebar_favorites'),a:()=>navigate('#/dashboard/favorites')},
+{i:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/>',l:t('sidebar_trash'),a:()=>navigate('#/dashboard/trash')},
+{i:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>',l:t('sidebar_team'),a:()=>navigate('#/dashboard/team')},
+{i:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',l:t('sidebar_security'),a:()=>navigate('#/dashboard/security')},
+{i:'<rect x="1" y="4" width="22" height="16" rx="2"/>',l:t('sidebar_billing'),a:()=>navigate('#/dashboard/billing')},
+];
+const allFiles=FILES.slice(0,6);
+document.getElementById('cmd-root').innerHTML=`
+<div class="fixed inset-0 z-[150] flex items-start justify-center pt-[10vh] px-4">
+<div class="absolute inset-0 bg-s-950/70 backdrop-blur-sm" style="animation:fadeIn .15s" onclick="closeCmd()"></div>
+<div class="relative surface-overlay rounded-2xl border border-v-500/15 w-full max-w-lg shadow-2xl overflow-hidden" style="animation:modalIn .2s cubic-bezier(.16,1,.3,1)">
+<div class="flex items-center gap-2 p-3 border-b border-white/[.04]">
+<svg class="w-4 h-4 text-s-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+<input type="text" placeholder="${t('topbar_search')}" class="flex-1 bg-transparent text-sm outline-none placeholder:text-s-600" id="cmd-input"/>
+<kbd>ESC</kbd>
 </div>
+<div class="max-h-[400px] overflow-y-auto p-1.5" id="cmd-list"></div>
 </div>
 </div>`;
-window.cmdActions=[()=>navigate('#/dashboard/upload'),()=>navigate('#/dashboard/import'),()=>toast(t('kb_newFolder'),'success'),()=>navigate('#/dashboard/requests'),()=>navigate('#/dashboard/analytics'),()=>navigate('#/dashboard/api'),()=>navigate('#/dashboard/settings')];
-window.cmdAction=(i)=>window.cmdActions[i]();
-window.filterCmd=(q)=>{document.querySelectorAll('#cmd-list [data-cmd]').forEach(b=>{b.style.display=b.textContent.toLowerCase().includes(q.toLowerCase())?'':'none'})};
-setTimeout(()=>document.getElementById('cmd-input')?.focus(),50);
+const renderList=(q='')=>{
+  const list=document.getElementById('cmd-list');
+  const ql=q.toLowerCase();
+  const matchedCmds=allCommands.filter(c=>c.l.toLowerCase().includes(ql));
+  const matchedFiles=allFiles.filter(f=>f.name.toLowerCase().includes(ql));
+  let html='';
+  if(matchedCmds.length){
+    html+=`<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1">${currentLang==='fa'?'دستورات':'Commands'}</div>`;
+    matchedCmds.forEach((c,i)=>{
+      html+=`<button data-cmd="${i}" onclick="window.cmdActions[${i}]();closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] transition-colors text-start">
+<div class="w-4 h-4 text-s-500 shrink-0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${c.i}</svg></div>
+<span class="flex-1">${c.l}</span>${c.k?`<kbd>${c.k}</kbd>`:''}
+</button>`;
+    });
+  }
+  if(matchedFiles.length){
+    html+=`<div class="text-[9px] font-semibold text-s-600 uppercase tracking-wider px-2 py-1 mt-2">${currentLang==='fa'?'فایل‌ها':'Files'}</div>`;
+    matchedFiles.forEach(f=>{
+      html+=`<button onclick="openDetails('${f.id}');closeCmd()" class="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs text-s-300 hover:bg-white/[.04] text-start"><div class="w-5 h-5 rounded ft-${f.type} flex items-center justify-center shrink-0"><div class="w-3 h-3 text-white">${fIcon(f.type)}</div></div><span class="truncate flex-1" dir="ltr">${f.name}</span><span class="text-[9px] text-s-600">${fmtSize(f.size)}</span></button>`;
+    });
+  }
+  if(!matchedCmds.length && !matchedFiles.length){
+    html=`<div class="p-8 text-center text-xs text-s-500">${currentLang==='fa'?'نتیجه‌ای یافت نشد':'No results found'}</div>`;
+  }
+  list.innerHTML=html;
+  window.cmdActions=matchedCmds.map(c=>c.a);
+};
+renderList();
+const input=document.getElementById('cmd-input');
+input.addEventListener('input',e=>renderList(e.target.value));
+setTimeout(()=>input.focus(),50);
+input.addEventListener('keydown',e=>{
+  if(e.key==='Enter'){
+    const first=document.querySelector('[data-cmd="0"]');
+    if(first)first.click();
+  }
+});
 }
 function closeCmd(){document.getElementById('cmd-root').innerHTML=''}
 
@@ -2403,6 +2234,34 @@ msgs.scrollTop=msgs.scrollHeight;
 },1500);
 }
 
+// ═══════════ MINI PLAYER ═══════════
+let miniPlayerActive=false;
+function showMiniPlayer(file){
+  if(file.type!=='audio')return;
+  miniPlayerActive=true;
+  document.getElementById('mini-player-root').innerHTML=`
+<div class="mini-player surface-raised rounded-xl p-3 border border-v-500/15 shadow-2xl w-80">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg ft-audio flex items-center justify-center shrink-0"><svg class="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+<div class="flex-1 min-w-0">
+<div class="text-xs font-medium truncate" dir="ltr">${file.name}</div>
+<div class="text-[10px] text-s-500">${t('player_playing')} · ${file.duration||'--:--'}</div>
+<div class="waveform mt-1">${Array.from({length:20}).map((_,i)=>`<span style="animation-delay:${i*0.05}s;height:${Math.random()*80+20}%"></span>`).join('')}</div>
+</div>
+<button onclick="pauseMiniPlayer()" class="p-1.5 rounded hover:bg-white/[.06]"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg></button>
+<button onclick="closeMiniPlayer()" class="p-1.5 rounded hover:bg-white/[.06]"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+</div>`;
+}
+function pauseMiniPlayer(){
+  document.getElementById('mini-player-root').innerHTML='';
+  miniPlayerActive=false;
+}
+function closeMiniPlayer(){
+  document.getElementById('mini-player-root').innerHTML='';
+  miniPlayerActive=false;
+}
+
 // ═══════════ LANDING ═══════════
 function animateCounters(){
 document.querySelectorAll('.counter').forEach(el=>{
@@ -2449,16 +2308,28 @@ document.getElementById('faq-list').innerHTML=faqs.map(f=>`
 updateTranslations();
 }
 
-function renderStatus(){
-// Already rendered in HTML
+function renderLegal(p){
+const tEl=document.getElementById('legal-title');const cEl=document.getElementById('legal-content');const uEl=document.getElementById('legal-updated');
+if(p==='/terms'){
+tEl.textContent=t('legal_terms_title');
+uEl.textContent=t('legal_updated');
+cEl.innerHTML=[
+{h:t('terms_1_title'),b:t('terms_1_body')},
+{h:t('terms_2_title'),b:t('terms_2_body')},
+{h:t('terms_3_title'),b:t('terms_3_body')},
+{h:t('terms_4_title'),b:t('terms_4_body')},
+{h:t('terms_5_title'),b:t('terms_5_body')}
+].map(({h,b})=>`<section><h2 class="text-base font-bold text-s-100 mb-1.5">${h}</h2><p>${b}</p></section>`).join('');
+}else{
+tEl.textContent=t('legal_privacy_title');
+uEl.textContent=t('legal_updated');
+cEl.innerHTML=[
+{h:t('privacy_1_title'),b:t('privacy_1_body')},
+{h:t('privacy_2_title'),b:t('privacy_2_body')},
+{h:t('privacy_3_title'),b:t('privacy_3_body')},
+{h:t('privacy_4_title'),b:t('privacy_4_body')}
+].map(({h,b})=>`<section><h2 class="text-base font-bold text-s-100 mb-1.5">${h}</h2><p>${b}</p></section>`).join('');
 }
-
-function renderError(code){
-const titles={'404':t('error_404_title'),'403':t('error_403_title'),'500':t('error_500_title')};
-const descs={'404':t('error_404_desc'),'403':t('error_403_desc'),'500':t('error_500_desc')};
-document.getElementById('error-code').textContent=code;
-document.getElementById('error-title').textContent=titles[code];
-document.getElementById('error-desc').textContent=descs[code];
 }
 
 // ═══════════ DASHBOARD ═══════════
@@ -2658,7 +2529,7 @@ if(viewMode==='grid'){
 area.innerHTML=`<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">${files.map(f=>`
 <div class="file-item surface rounded-xl border border-white/[.06] overflow-hidden cursor-pointer group ${selectedFiles.has(f.id)?'selected':''}" onclick="openDetails('${f.id}')" oncontextmenu="showCtxMenu(event,'${f.id}')">
 <div class="aspect-square bg-s-950/40 relative flex items-center justify-center overflow-hidden">
-<div class="w-14 h-14 rounded-2xl ft-${f.type} flex items-center justify-center"><div class="w-7 h-7 text-white">${fIcon(f.type)}</div></div>
+${f.preview?`<img src="${f.preview}" class="w-full h-full object-cover"/>`:`<div class="w-14 h-14 rounded-2xl ft-${f.type} flex items-center justify-center"><div class="w-7 h-7 text-white">${fIcon(f.type)}</div></div>`}
 <div class="absolute top-1.5 ${currentLang==='fa'?'right':'left'}-1.5 opacity-0 group-hover:opacity-100 transition-opacity"><input type="checkbox" class="chk" ${selectedFiles.has(f.id)?'checked':''} onclick="toggleSel('${f.id}',event)"/></div>
 ${f.fav?`<div class="absolute top-1.5 ${currentLang==='fa'?'left':'right'}-1.5"><svg class="w-3.5 h-3.5 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>`:''}
 ${f.versions>1?`<div class="absolute bottom-1.5 ${currentLang==='fa'?'right':'left'}-1.5"><span class="badge bg-s-900/80 border border-white/[.1] text-[8px]">v${fmtNum(f.versions)}</span></div>`:''}
@@ -2687,6 +2558,7 @@ document.getElementById('ctx-root').innerHTML=`
 <div class="fixed inset-0 z-[120]" onclick="document.getElementById('ctx-root').innerHTML=''">
 <div class="absolute surface-overlay rounded-xl border border-v-500/15 shadow-2xl py-1 min-w-[180px]" style="top:${Math.min(e.clientY,window.innerHeight-250)}px;${currentLang==='fa'?'right':'left'}:${currentLang==='fa'?window.innerWidth-e.clientX:e.clientX}px;animation:modalIn .15s">
 ${[
+{t:t('ctx_preview'),i:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/>',a:()=>showPreview(id)},
 {t:t('ctx_download'),i:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/>',a:()=>toast(t('download_started'),'success')},
 {t:t('ctx_share'),i:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>',a:()=>openShareModal(id)},
 {t:t('ctx_rename'),i:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>',a:()=>toast(t('ctx_rename'),'info')},
@@ -2696,8 +2568,31 @@ ${[
 ].map((m,i)=>`<button onclick="ctxAction(${i});document.getElementById('ctx-root').innerHTML=''" class="w-full flex items-center gap-2.5 px-3 py-1.5 text-[11px] text-start hover:bg-white/[.04] ${m.danger?'text-rose-400':''}"><svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${m.i}</svg>${m.t}</button>`).join('')}
 </div>
 </div>`;
-window.ctxMenuActions=[()=>toast(t('download_started'),'success'),()=>openShareModal(id),()=>toast(t('ctx_rename'),'info'),()=>copy('https://nexus.app/s/'+id),()=>toast(t('favorite_added'),'success'),()=>toast(t('file_to_trashed'),'warning')];
+window.ctxMenuActions=[()=>showPreview(id),()=>toast(t('download_started'),'success'),()=>openShareModal(id),()=>toast(t('ctx_rename'),'info'),()=>copy('https://nexus.app/s/'+id),()=>toast(t('favorite_added'),'success'),()=>toast(t('file_to_trashed'),'warning')];
 window.ctxAction=(i)=>window.ctxMenuActions[i]();
+}
+
+function showPreview(id){
+  const f=FILES.find(x=>x.id===id);if(!f)return;
+  document.getElementById('modal-root').innerHTML=`
+<div class="fixed inset-0 z-[100] flex items-center justify-center p-4">
+<div class="absolute inset-0 bg-s-950/90 backdrop-blur-sm" onclick="closeModal()" style="animation:fadeIn .15s"></div>
+<div class="relative max-w-4xl w-full" style="animation:modalIn .25s cubic-bezier(.16,1,.3,1)">
+<div class="flex items-center justify-between mb-3">
+<div class="text-sm font-semibold text-white">${f.name}</div>
+<div class="flex gap-1">
+<button onclick="toast(t('download_started'),'success')" class="btn-secondary px-3 py-1.5 rounded-lg text-xs font-medium">${t('preview_download')}</button>
+<button onclick="closeModal()" class="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+</div>
+</div>
+<div class="preview-area rounded-xl overflow-hidden bg-s-900/60 border border-white/10 flex items-center justify-center min-h-[400px]">
+${f.type==='image'&&f.preview?`<img src="${f.preview}" class="max-w-full max-h-[80vh] object-contain"/>`:
+f.type==='video'?`<div class="text-center p-10"><div class="w-20 h-20 rounded-full bg-gradient-to-br from-v-500 to-v-700 flex items-center justify-center mb-4 mx-auto cursor-pointer hover:scale-110 transition-transform" onclick="toast('▶ Playing','info')"><svg class="w-8 h-8 text-white" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg></div><div class="text-sm text-white">Click to play video</div></div>`:
+f.type==='audio'?`<div class="p-10 w-full"><div class="waveform justify-center mb-4">${Array.from({length:50}).map((_,i)=>`<span style="animation-delay:${i*0.04}s;height:${Math.random()*80+20}%"></span>`).join('')}</div><div class="text-center"><button onclick="showMiniPlayer(${JSON.stringify(f).replace(/"/g,'&quot;')});closeModal()" class="btn-primary px-4 py-2 rounded-lg text-sm">${t('preview_play')}</button></div></div>`:
+`<div class="text-center p-10"><div class="w-20 h-20 rounded-2xl ft-${f.type} flex items-center justify-center mb-4 mx-auto"><div class="w-10 h-10 text-white">${fIcon(f.type)}</div></div><div class="text-sm text-white">${f.type}</div><div class="text-xs text-s-400 mt-2">${fmtSize(f.size)}</div></div>`}
+</div>
+</div>
+</div>`;
 }
 
 function openDetails(id){
@@ -2711,7 +2606,9 @@ document.getElementById('drawer-root').innerHTML=`
 <button onclick="closeDrawer()" class="p-1.5 rounded-lg btn-ghost" aria-label="Close"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
 </div>
 <div class="p-5">
-<div class="aspect-video rounded-xl bg-s-950/60 border border-white/[.06] mb-5 flex items-center justify-center"><div class="w-20 h-20 rounded-2xl ft-${f.type} flex items-center justify-center"><div class="w-10 h-10 text-white">${fIcon(f.type)}</div></div></div>
+<div class="aspect-video rounded-xl preview-area border border-white/[.06] mb-5 flex items-center justify-center overflow-hidden bg-s-950/60">
+${f.preview?`<img src="${f.preview}" class="w-full h-full object-cover"/>`:`<div class="w-20 h-20 rounded-2xl ft-${f.type} flex items-center justify-center cursor-pointer hover:scale-110 transition-transform" onclick="showPreview('${f.id}')"><div class="w-10 h-10 text-white">${fIcon(f.type)}</div></div>`}
+</div>
 <h2 class="text-lg font-bold mb-1 break-all" dir="ltr">${f.name}</h2>
 <div class="flex items-center gap-1.5 mb-5 flex-wrap">
 <span class="badge surface border border-white/[.06] uppercase text-[9px]">${f.mime}</span>
@@ -2733,7 +2630,7 @@ ${f.versions>1?`
 ${Array.from({length:Math.min(f.versions,3)},(_,i)=>f.versions-i).map((v,i)=>`
 <div class="p-2.5 flex items-center justify-between text-[11px]">
 <div class="flex items-center gap-2"><span class="badge ${i===0?'bg-v-500/10 text-v-300 border border-v-500/20':'surface border border-white/[.06]'} text-[8px]">${t('details_version')} ${fmtNum(v)}</span><span class="text-s-500 text-[9px]">${i===0?t('details_current'):(currentLang==='fa'?toFa(i*2+1)+' '+t('details_daysAgo'):(i*2+1)+' '+t('details_daysAgo'))}</span></div>
-<div class="flex gap-1"><button onclick="toast('${t('details_version')} ${fmtNum(v)} ${t('details_restore').toLowerCase()}','success')" class="text-[9px] text-v-400 hover:text-v-300">${t('details_restore')}</button>${i>0?`<button onclick="toast('${t('details_deleteVersion')}','warning')" class="text-[9px] text-rose-400 ms-2">${t('details_delete')}</button>`:''}</div>
+<div class="flex gap-1"><button onclick="toast('${t('details_version')} ${fmtNum(v)} restored','success')" class="text-[9px] text-v-400 hover:text-v-300">${t('details_restore')}</button>${i>0?`<button onclick="toast('Version deleted','warning')" class="text-[9px] text-rose-400 ms-2">${t('details_delete')}</button>`:''}</div>
 </div>`).join('')}
 </div>`:''}
 
@@ -2815,6 +2712,7 @@ runUploadQueue([
 function runUploadQueue(files){
 const q=document.getElementById('upload-queue');
 showUploadWidget(files.length);
+let isFirstUpload=!localStorage.getItem('nx-first-upload');
 files.forEach(f=>{
 const uid='up'+(uploadId++);
 const totalChunks=Math.max(3,Math.ceil(f.size/(5*1024*1024)));
@@ -2868,6 +2766,7 @@ document.getElementById('upload-widget').classList.add('hidden');
 toast(t('upload_allDone'),'success');
 if(!localStorage.getItem('nx-first-upload')){
 localStorage.setItem('nx-first-upload','1');
+confetti();
 setTimeout(()=>toast(t('upload_firstFile'),'success'),500);
 }
 }
@@ -3006,7 +2905,10 @@ const favs=FILES.filter(f=>f.fav);
 el.innerHTML=`<div style="animation:fadeIn .3s"><div class="mb-5"><h1 class="text-xl font-bold">${t('favorites_title')}</h1><p class="text-xs text-s-400 mt-0.5">${fmtNum(favs.length)} ${t('favorites_count')}</p></div>
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2">${favs.map(f=>`
 <div class="file-item surface rounded-xl border border-white/[.06] overflow-hidden cursor-pointer" onclick="openDetails('${f.id}')">
-<div class="aspect-square bg-s-950/40 relative flex items-center justify-center"><div class="w-14 h-14 rounded-2xl ft-${f.type} flex items-center justify-center"><div class="w-7 h-7 text-white">${fIcon(f.type)}</div></div><div class="absolute top-1.5 ${currentLang==='fa'?'left':'right'}-1.5"><svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div></div>
+<div class="aspect-square bg-s-950/40 relative flex items-center justify-center">
+${f.preview?`<img src="${f.preview}" class="w-full h-full object-cover"/>`:`<div class="w-14 h-14 rounded-2xl ft-${f.type} flex items-center justify-center"><div class="w-7 h-7 text-white">${fIcon(f.type)}</div></div>`}
+<div class="absolute top-1.5 ${currentLang==='fa'?'left':'right'}-1.5"><svg class="w-4 h-4 text-amber-400" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+</div>
 <div class="p-2.5"><div class="text-[11px] font-medium truncate" dir="ltr">${f.name}</div><div class="text-[9px] text-s-500 mt-0.5">${fmtSize(f.size)}</div></div>
 </div>`).join('')}</div></div>`;
 }
@@ -3214,7 +3116,7 @@ ${[
 </div>
 </div>
 <div class="surface rounded-xl border border-white/[.06]">
-<div class="p-3.5 border-b border-white-[.04]"><div class="text-sm font-semibold">${t('security_history')}</div></div>
+<div class="p-3.5 border-b border-white/[.04]"><div class="text-sm font-semibold">${t('security_history')}</div></div>
 <div class="divide-y divide-white/[.04]">
 ${[
 {d:t('device_chrome_mac'),ip:'185.120.10.5',l:t('location_tehran'),time:currentLang==='fa'?'امروز، ۱۰:۲۳':'Today, 10:23',ok:true},
@@ -3247,7 +3149,7 @@ ${['settings_tab_profile','settings_tab_account','settings_tab_appearance','sett
 <div class="space-y-3">
 <div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_emailNotif')}</div><div class="text-[10px] text-s-500">${t('settings_emailNotif_desc')}</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
 <div class="flex items-center justify-between"><div><div class="text-xs font-medium">${t('settings_webhookNotif')}</div><div class="text-[10px] text-s-500">${t('settings_webhookNotif_desc')}</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
-<div><label class="text-xs font-medium mb-1 block">${t('settings_language')}</label><select class="input w-full px-3 py-1.5 rounded-lg text-xs"><option ${currentLang==='fa'?'selected':''}>${t('settings_lang_fa')}</option><option ${currentLang==='en'?'selected':''}>${t('settings_lang_en')}</option><option>${t('settings_lang_ar')}</option></select></div>
+<div><label class="text-xs font-medium mb-1 block">${t('settings_language')}</label><select class="input w-full px-3 py-1.5 rounded-lg text-xs" onchange="setLang(this.value)"><option value="fa" ${currentLang==='fa'?'selected':''}>${t('settings_lang_fa')}</option><option value="en" ${currentLang==='en'?'selected':''}>${t('settings_lang_en')}</option><option value="ar">${t('settings_lang_ar')}</option></select></div>
 <div><label class="text-xs font-medium mb-1 block">${t('settings_timezone')}</label><select class="input w-full px-3 py-1.5 rounded-lg text-xs"><option>${t('settings_tz_tehran')}</option><option>${t('settings_tz_utc')}</option></select></div>
 </div>
 </div>
@@ -3538,30 +3440,6 @@ ${[
 </div></div>`;
 }
 
-function renderLegal(p){
-const tEl=document.getElementById('legal-title');const cEl=document.getElementById('legal-content');const uEl=document.getElementById('legal-updated');
-if(p==='/terms'){
-tEl.textContent=t('legal_terms_title');
-uEl.textContent=t('legal_updated');
-cEl.innerHTML=[
-{h:t('terms_1_title'),b:t('terms_1_body')},
-{h:t('terms_2_title'),b:t('terms_2_body')},
-{h:t('terms_3_title'),b:t('terms_3_body')},
-{h:t('terms_4_title'),b:t('terms_4_body')},
-{h:t('terms_5_title'),b:t('terms_5_body')}
-].map(({h,b})=>`<section><h2 class="text-base font-bold text-s-100 mb-1.5">${h}</h2><p>${b}</p></section>`).join('');
-}else{
-tEl.textContent=t('legal_privacy_title');
-uEl.textContent=t('legal_updated');
-cEl.innerHTML=[
-{h:t('privacy_1_title'),b:t('privacy_1_body')},
-{h:t('privacy_2_title'),b:t('privacy_2_body')},
-{h:t('privacy_3_title'),b:t('privacy_3_body')},
-{h:t('privacy_4_title'),b:t('privacy_4_body')}
-].map(({h,b})=>`<section><h2 class="text-base font-bold text-s-100 mb-1.5">${h}</h2><p>${b}</p></section>`).join('');
-}
-}
-
 // ═══════════ INIT ═══════════
 function init(){
 if(localStorage.getItem('nx-theme')==='light')toggleTheme();
@@ -3587,7 +3465,7 @@ document.addEventListener('keydown',e=>{
 if((e.metaKey||e.ctrlKey)&&e.key==='k'){e.preventDefault();openCmd()}
 if(e.key==='Escape'){closeCmd();closeModal();closeDrawer();document.getElementById('ctx-root').innerHTML='';document.getElementById('notif-root').innerHTML=''}
 if(e.key==='?'){e.preventDefault();showKeyboardHelp()}
-if(document.getElementById('p-dashboard')?.classList.contains('active')&&!e.target.matches('input,textarea')){
+if(document.getElementById('p-dashboard')?.classList.contains('active')&&!e.target.matches('input,textarea,select')){
 if(e.key==='u'||e.key==='U'){e.preventDefault();navigate('#/dashboard/upload')}
 if(e.key==='f'||e.key==='F'){e.preventDefault();openCmd()}
 if(e.key==='n'||e.key==='N'){e.preventDefault();toast(t('kb_newFolder'),'success')}
@@ -3601,6 +3479,12 @@ if(e.key==='4'){navigate('#/dashboard/analytics')}
 
 window.addEventListener('hashchange',route);
 window.addEventListener('DOMContentLoaded',init);
+
+// Live hero speed animation
+setInterval(()=>{
+  const el=document.getElementById('hero-speed');
+  if(el){el.textContent=(3+Math.random()*3).toFixed(1)}
+},2000);
 </script>
 </body>
 </html>
